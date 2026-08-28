@@ -1,0 +1,145 @@
+{
+  "_meta": {
+    "source": "https://nexola.framer.website/",
+    "method": "Playwright browser_evaluate computed-style extraction (not visual estimation)",
+    "capturedAt": "2026-08-03",
+    "correctedAt": "2026-08-04",
+    "viewportsTested": [1440, 810, 390],
+    "note": "Nearly monochrome (black/white/gray) with ONE deliberate accent: a small lime-green #B3FF00 status dot (6x6px) on the 'Available for Projects' nav badge -- found via a full-page color sweep. rgb(0,0,238) appearing on some <a> tags is the unstyled browser default link color inherited by wrapper anchors with no visible text of their own -- not a design color.",
+    "correctionNote": "The first crawl pass got the hero/intro background WRONG (marked dark, actually light) and missed that the nav is a permanent solid light bar and that primary buttons are dark pills by default. Root cause: this template renders duplicate overlapping elements at identical coordinates for several key nodes (e.g. two <h1>NEXOLA</h1> at the exact same rect, one rgb(246,246,246) one rgb(15,15,15)) -- plain `document.querySelector()` + getComputedStyle silently grabbed the occluded/wrong one. Re-verified every section using document.elementFromPoint() at the actual painted pixel (after scrollIntoView) instead of trusting the first DOM match. See colors.note and components.nav/heroSection below for the corrected values."
+  },
+
+  "breakpoints": {
+    "desktop": { "mediaQuery": "(min-width: 1200px)", "testedAt": 1440 },
+    "tablet": { "mediaQuery": "(min-width: 810px) and (max-width: 1199.98px)", "testedAt": 810 },
+    "mobile": { "mediaQuery": "(max-width: 809.98px)", "testedAt": 390 }
+  },
+
+  "colors": {
+    "bgDark": "rgb(15, 15, 15)",
+    "bgDarkHex": "#0F0F0F",
+    "bgLight": "rgb(246, 246, 246)",
+    "bgLightHex": "#F6F6F6",
+    "textOnDark": "rgb(246, 246, 246)",
+    "textOnLight": "rgb(15, 15, 15)",
+    "textMuted": ["rgb(102, 102, 102)", "rgb(107, 107, 107)", "rgb(117, 117, 117)"],
+    "textMutedLight": "rgb(150, 150, 150)",
+    "textMutedFaint": "rgb(191, 191, 191)",
+    "accent": "rgb(179, 255, 0) / #B3FF00 -- used ONLY for the 6x6px 'available' status dot, nowhere else",
+    "note": "CORRECTED section-by-section background map, verified via elementFromPoint (not inferred from text color): Hero = LIGHT. Introduction (CEO quote/stats) = LIGHT. Projects = LIGHT. Case Study = DARK. Skillset = LIGHT. Team = LIGHT. Pricing = DARK (cards flush dark, except the featured 'Growth' card's CTA which inverts to a light pill). Testimonials/'Why choose us'/brand strip = DARK (testimonial cards themselves are white/#FFF cards popping against the dark section, not flush). FAQ = LIGHT (the whole section, not just the accordion list). Contact = DARK. Footer = LIGHT. So the page is mostly light with two dark bands (Case Study, and Pricing-through-Contact) rather than 'dark by default with light islands' as first assumed."
+  },
+
+  "typography": {
+    "fontFamily": "\"Inter Display\", \"Inter Display Placeholder\", sans-serif",
+    "scale": {
+      "heroDisplay": {
+        "desktop": { "fontSize": "200px", "lineHeight": "160px", "fontWeight": 800 },
+        "tablet":  { "fontSize": "130px", "lineHeight": "104px", "fontWeight": 800 },
+        "mobile":  { "fontSize": "76px",  "lineHeight": "60.8px", "fontWeight": 800 },
+        "usage": "Hero H1 brand wordmark (e.g. 'NEXOLA')"
+      },
+      "sectionHeadingLarge": {
+        "desktop": { "fontSize": "120px", "lineHeight": "120px", "fontWeight": 600 },
+        "tablet":  { "fontSize": "95px",  "lineHeight": "95px", "fontWeight": 600 },
+        "mobile":  { "fontSize": "58px",  "lineHeight": "58px", "fontWeight": 600 },
+        "usage": "H2 section titles: Projects, Case Study, Contact"
+      },
+      "sectionHeadingMedium": {
+        "desktop": { "fontSize": "90px", "lineHeight": "81px", "fontWeight": 600 },
+        "usage": "H2/H5 section titles: Skillset, Pricing, Team heading"
+      },
+      "navLogo": { "fontSize": "21px", "lineHeight": "23.1px", "fontWeight": 900 },
+      "bodyText": {
+        "fontSize": "16px", "lineHeight": "19.2px", "fontWeight": 400,
+        "color": "muted gray (~#666-#6B6B6B depending on context)",
+        "usage": "Paragraph copy, card descriptions"
+      },
+      "labelSmall": {
+        "fontSize": "14px", "lineHeight": "16.8px", "fontWeight": 600,
+        "color": "rgb(102, 102, 102)",
+        "usage": "Stat labels ('established since'), nav badge ('Available for Projects')"
+      }
+    },
+    "lineHeightRatio": "~1.0-1.08 for display/heading sizes (tight), ~1.2 for body/label sizes"
+  },
+
+  "spacing": {
+    "pageGutter": { "desktop": "30px", "mobile": "20px", "note": "horizontal padding at viewport edges, measured at 1440 and 390" },
+    "contentMaxWidth": "~1365px effective content width inside gutters at 1440 viewport (container itself ~1425-1440px)",
+    "sectionVerticalPadding": { "desktop": "90px-100px top/bottom" },
+    "twoColumnGrid": {
+      "desktop": { "columns": "682.4px 682.4px", "rowGap": "30px", "columnGap": "0px" },
+      "tablet": { "columns": "367.6px 367.6px", "rowGap": "30px", "columnGap": "0px" },
+      "mobile": { "columns": "1fr (single column)", "rowGap": "30px", "columnGap": "0px" },
+      "usage": "Skillset services grid, Pricing header (intro cell + 3 pricing-tier cells in a 2x2 grid)"
+    },
+    "cardPadding": "30px",
+    "cardInternalGap": "10px",
+    "buttonPadding": { "primary": "20px 40px", "secondary": "20px 30px" },
+    "footerPadding": "100px 0px 0px (top only; inner columns handle their own horizontal padding)",
+    "footerGap": "60px"
+  },
+
+  "borderRadius": {
+    "button": "100px (full pill)",
+    "avatarImage": "100px (circle, on 50x50 images)",
+    "card": "0px (pricing/project cards are square-cornered)",
+    "projectImage": "0px (square corners, object-fit: cover)"
+  },
+
+  "motion": {
+    "scrollReveal": {
+      "trigger": "IntersectionObserver-driven appear animation (Framer's built-in scroll-triggered reveal), not hover",
+      "initial": { "opacity": 0.001, "y": 200 },
+      "animate": { "opacity": 1, "y": 0 },
+      "duration": 0.8,
+      "easing": "cubic-bezier(0.75, 0, 0.25, 1)",
+      "type": "tween",
+      "delay": 0,
+      "usage": "Applied per-section/element as content scrolls into view: fades in while translating up 200px to 0."
+    },
+    "hoverInteractions": {
+      "note": "Buttons/links show transition-duration: 0s and transition-property: all in their resting computed style -- hover/tap feedback is driven by JS (Framer Motion whileHover/whileTap), not a static CSS transition. Treat button hover states as a short (~150-250ms) opacity/scale response rather than a measured CSS value."
+    }
+  },
+
+  "components": {
+    "nav": {
+      "height": "60px",
+      "background": "CORRECTED: permanently solid bgLight (rgb(246,246,246)), fixed position (position:fixed on an ancestor wrapper, z-index:10) -- does NOT change on scroll. The `nav` tag itself computes transparent; the real opaque background lives on an inner wrapper div, which is why a shallow querySelector check missed it.",
+      "textColor": "always bgDark/#0F0F0F, regardless of what section scrolls beneath",
+      "logoFontSize": "21px",
+      "logoFontWeight": 900,
+      "mobileBehavior": "stacks to flex-direction: column at <=809px viewport; no distinct hamburger-button element detected in DOM inspection"
+    },
+    "heroSection": {
+      "background": "CORRECTED: bgLight, not bgDark. Verified via elementFromPoint after discovering two overlapping <h1>NEXOLA</h1> nodes at the same rect (one per color) -- querySelector('h1') grabbed the wrong (occluded) one originally.",
+      "textColor": "bgDark (#0F0F0F) headline text on the light section",
+      "h1FontSize": "200px/130px/76px (desktop/tablet/mobile)",
+      "statLabels": "14px/600 weight muted gray, e.g. '2022 established since', '120+ brands launched'",
+      "ctaButtons": "pill buttons, 20px 40px padding, 100px radius. CORRECTED: default/primary CTA is a DARK pill (bg #0F0F0F, text #F6F6F6) -- confirmed on hero 'Start Your Project', footer newsletter button, and non-featured pricing CTAs. Only the featured pricing card's CTA inverts to a light pill (bg #F6F6F6, text #0F0F0F) for emphasis against its dark card."
+    },
+    "projectCards": {
+      "layout": "stacked full-width rows (NOT a 3-column grid) -- each card ~1365px wide x 372px tall, 20px vertical gap between rows",
+      "image": { "objectFit": "cover", "borderRadius": "0px" }
+    },
+    "pricingSection": {
+      "layout": "2x2 grid: cell(0,0) = intro/toggle content (682x400), remaining 3 cells = Starter/Growth/Performance cards (682x400 each), 0px gap between cells",
+      "cardPadding": "30px",
+      "cardBackground": "rgb(15,15,15) -- flush with dark section bg, no visible border/shadow separating cards"
+    },
+    "faqAccordion": {
+      "closedRowHeight": "~65px",
+      "closedRowPadding": "20px",
+      "closedRowBackground": "rgba(224,224,224,0) (transparent at rest)",
+      "panelBackground": "CORRECTED: the entire FAQ section is bgLight, not just an inset list panel on a dark section -- verified via elementFromPoint at the section's outer heading."
+    },
+    "footer": {
+      "background": "bgLight",
+      "paddingTop": "100px",
+      "gap": "60px",
+      "newsletterButton": "pill, 20px 40px padding, 100px radius, dark bg (#0F0F0F) with light text -- inverse of primary button"
+    },
+    "avatars": { "size": "50x50px", "borderRadius": "100px (circle)" }
+  }
+}

@@ -1,0 +1,421 @@
+- generic [active] [ref=f44e1]:
+  - generic [ref=f44e2]: INSIGHTS
+  - link "Skip to content" [ref=f44e4] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f44e5]:
+    - generic [ref=f44e6]:
+      - link "INSIGHTS" [ref=f44e7] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=f44e9]:
+        - link "Work" [ref=f44e10] [cursor=pointer]:
+          - /url: /work
+        - link "Services" [ref=f44e11] [cursor=pointer]:
+          - /url: /services
+        - link "About" [ref=f44e12] [cursor=pointer]:
+          - /url: /about
+        - link "Contact" [ref=f44e13] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=f44e14]:
+        - generic [ref=f44e15]: Available for projects
+        - link "Book a call" [ref=f44e17] [cursor=pointer]:
+          - /url: /contact
+        - link "Start a project" [ref=f44e18] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f44e20]:
+    - generic [ref=f44e21]:
+      - generic [ref=f44e22]:
+        - generic [ref=f44e23]:
+          - paragraph [ref=f44e24]: Design, branding & marketing studio · est. 2024
+          - heading "INSIGHTS" [level=1] [ref=f44e25]
+          - paragraph [ref=f44e28]: Insights Marketers partners with ambitious brands across Kerala — turning category players into market leaders through identity, digital infrastructure, and marketing that compounds.
+          - generic [ref=f44e29]:
+            - link "Start your project" [ref=f44e30] [cursor=pointer]:
+              - /url: /contact
+            - link "Book a free strategy call" [ref=f44e32] [cursor=pointer]:
+              - /url: /contact
+        - generic [ref=f44e35]:
+          - generic [ref=f44e36]:
+            - generic [ref=f44e37]: "0"
+            - generic [ref=f44e38]: +
+            - generic [ref=f44e39]: brands partnered
+          - generic [ref=f44e40]:
+            - generic [ref=f44e41]: "0"
+            - generic [ref=f44e42]: specialized disciplines
+          - generic [ref=f44e43]:
+            - generic [ref=f44e44]: "0"
+            - generic [ref=f44e45]: core pillars
+      - generic [ref=f44e47]:
+        - generic [ref=f44e48]: Social Media
+        - generic [ref=f44e49]: ·
+        - generic [ref=f44e50]: SEO
+        - generic [ref=f44e51]: ·
+        - generic [ref=f44e52]: SEM
+        - generic [ref=f44e53]: ·
+        - generic [ref=f44e54]: Content
+        - generic [ref=f44e55]: ·
+        - generic [ref=f44e56]: Branding
+        - generic [ref=f44e57]: ·
+        - generic [ref=f44e58]: Packaging
+        - generic [ref=f44e59]: ·
+        - generic [ref=f44e60]: Graphic Design
+        - generic [ref=f44e61]: ·
+        - generic [ref=f44e62]: Web Development
+        - generic [ref=f44e63]: ·
+        - generic [ref=f44e64]: Video Production
+        - generic [ref=f44e65]: ·
+        - generic [ref=f44e66]: Social Media
+        - generic [ref=f44e67]: ·
+        - generic [ref=f44e68]: SEO
+        - generic [ref=f44e69]: ·
+        - generic [ref=f44e70]: SEM
+        - generic [ref=f44e71]: ·
+        - generic [ref=f44e72]: Content
+        - generic [ref=f44e73]: ·
+        - generic [ref=f44e74]: Branding
+        - generic [ref=f44e75]: ·
+        - generic [ref=f44e76]: Packaging
+        - generic [ref=f44e77]: ·
+        - generic [ref=f44e78]: Graphic Design
+        - generic [ref=f44e79]: ·
+        - generic [ref=f44e80]: Web Development
+        - generic [ref=f44e81]: ·
+        - generic [ref=f44e82]: Video Production
+    - generic [ref=f44e84]:
+      - paragraph [ref=f44e85]:
+        - text: Most studios sell disconnected services. We built one studio around three pillars instead — so
+        - strong [ref=f44e86]: identity, infrastructure and strategy move together
+        - text: ", not through separate vendors."
+      - generic [ref=f44e87]:
+        - generic [ref=f44e88]:
+          - text: "0"
+          - paragraph [ref=f44e89]: step process, every project
+        - generic [ref=f44e90]:
+          - text: "0"
+          - paragraph [ref=f44e91]: disciplines under one roof
+        - generic [ref=f44e92]:
+          - text: "0"
+          - paragraph [ref=f44e93]: founders, no account managers
+    - generic [ref=f44e95]:
+      - generic [ref=f44e96]:
+        - generic [ref=f44e97]:
+          - generic [ref=f44e98]: "01"
+          - paragraph [ref=f44e99]: Selected work
+        - heading "PROJECTS." [level=2] [ref=f44e100]
+      - generic [ref=f44e103]:
+        - article [ref=f44e104]:
+          - generic [ref=f44e105]:
+            - generic [ref=f44e106]:
+              - heading "Arena Animation" [level=3] [ref=f44e107]
+              - paragraph [ref=f44e108]: Education · Branding + web
+            - paragraph [ref=f44e109]: Jump to project
+          - generic [ref=f44e112]:
+            - generic [ref=f44e113]: ↗
+            - generic [ref=f44e114]:
+              - generic [ref=f44e115]:
+                - generic [ref=f44e116]: Time
+                - generic [ref=f44e117]: 4 weeks
+              - generic [ref=f44e118]:
+                - generic [ref=f44e119]: Field
+                - generic [ref=f44e120]: Branding
+        - article [ref=f44e121]:
+          - generic [ref=f44e122]:
+            - generic [ref=f44e123]:
+              - heading "Beyond Borders" [level=3] [ref=f44e124]
+              - paragraph [ref=f44e125]: Travel · Social + content
+            - paragraph [ref=f44e126]: Jump to project
+          - generic [ref=f44e129]:
+            - generic [ref=f44e130]: ↗
+            - generic [ref=f44e131]:
+              - generic [ref=f44e132]:
+                - generic [ref=f44e133]: Time
+                - generic [ref=f44e134]: 4 weeks
+              - generic [ref=f44e135]:
+                - generic [ref=f44e136]: Field
+                - generic [ref=f44e137]: Social Media Marketing
+        - article [ref=f44e138]:
+          - generic [ref=f44e139]:
+            - generic [ref=f44e140]:
+              - heading "Educ Kshetra" [level=3] [ref=f44e141]
+              - paragraph [ref=f44e142]: Education · Website development
+            - paragraph [ref=f44e143]: Jump to project
+          - generic [ref=f44e146]:
+            - generic [ref=f44e147]: ↗
+            - generic [ref=f44e148]:
+              - generic [ref=f44e149]:
+                - generic [ref=f44e150]: Time
+                - generic [ref=f44e151]: 4 weeks
+              - generic [ref=f44e152]:
+                - generic [ref=f44e153]: Field
+                - generic [ref=f44e154]: Website Development
+      - link "View all projects" [ref=f44e155] [cursor=pointer]:
+        - /url: /work
+        - text: View all projects
+        - generic [ref=f44e156]: →
+    - generic [ref=f44e158]:
+      - generic [ref=f44e159]:
+        - generic [ref=f44e160]:
+          - generic [ref=f44e161]: "02"
+          - paragraph [ref=f44e162]: Case study
+        - heading "How Arena Animation filled three campuses" [level=2] [ref=f44e163]:
+          - generic [ref=f44e164]: How
+          - generic [ref=f44e166]: Arena
+          - generic [ref=f44e168]: Animation
+          - generic [ref=f44e170]: filled
+          - generic [ref=f44e172]: three
+          - generic [ref=f44e174]: campuses
+        - paragraph [ref=f44e176]: "Arena Animation had strong instructors but a brand that undersold them — generic collateral, no consistent identity across branches. We rebuilt the brand and digital presence around one goal: make enquiry-to-enrolment as short as possible."
+        - blockquote [ref=f44e177]:
+          - text: "\"They didn't just redesign our logo — they rebuilt how every campus presents itself, online and off.\""
+          - generic [ref=f44e178]: — Arena Animation
+      - list [ref=f44e181]:
+        - listitem [ref=f44e182]:
+          - strong [ref=f44e183]: "0"
+          - text: campuses rebranded
+        - listitem [ref=f44e184]:
+          - strong [ref=f44e185]: "0"
+          - text: "% more enquiry submissions"
+    - generic [ref=f44e187]:
+      - generic [ref=f44e188]:
+        - generic [ref=f44e189]:
+          - paragraph [ref=f44e190]: 03 · What we do
+          - heading "Skillset" [level=2] [ref=f44e191]
+          - list [ref=f44e192]:
+            - listitem [ref=f44e193]: 4 Marketing
+            - listitem [ref=f44e194]: 3 Branding
+            - listitem [ref=f44e195]: 2 Build
+        - generic [ref=f44e196]:
+          - paragraph [ref=f44e197]:
+            - strong [ref=f44e198]: We don't just deliver services.
+            - text: We deliver outcomes — our core competencies empower brands to grow, stand out, and lead with confidence.
+          - generic [ref=f44e199]:
+            - generic [ref=f44e200]: Last updated
+            - strong [ref=f44e201]: "2026"
+      - generic [ref=f44e202]:
+        - generic [ref=f44e203]:
+          - button "01 Marketing" [ref=f44e204] [cursor=pointer]:
+            - generic [ref=f44e205]: "01"
+            - generic [ref=f44e206]: Marketing
+            - generic [ref=f44e207]: +
+          - generic [ref=f44e208]:
+            - list [ref=f44e209]:
+              - listitem [ref=f44e210]: Social Media Marketing
+              - listitem [ref=f44e211]: Search Engine Optimization
+              - listitem [ref=f44e212]: Search Engine Marketing
+              - listitem [ref=f44e213]: Content Marketing
+            - link "All services" [ref=f44e214] [cursor=pointer]:
+              - /url: /services
+              - text: All services
+              - generic [ref=f44e215]: →
+        - generic [ref=f44e216]:
+          - button "02 Branding" [ref=f44e217] [cursor=pointer]:
+            - generic [ref=f44e218]: "02"
+            - generic [ref=f44e219]: Branding
+            - generic [ref=f44e220]: +
+          - generic [ref=f44e221]:
+            - list [ref=f44e222]:
+              - listitem [ref=f44e223]: Corporate Branding & Identity
+              - listitem [ref=f44e224]: Package Designing
+              - listitem [ref=f44e225]: Graphic Designing
+            - link "All services" [ref=f44e226] [cursor=pointer]:
+              - /url: /services
+              - text: All services
+              - generic [ref=f44e227]: →
+        - generic [ref=f44e228]:
+          - button "03 Build" [ref=f44e229] [cursor=pointer]:
+            - generic [ref=f44e230]: "03"
+            - generic [ref=f44e231]: Build
+            - generic [ref=f44e232]: +
+          - generic [ref=f44e233]:
+            - list [ref=f44e234]:
+              - listitem [ref=f44e235]: Website Development
+              - listitem [ref=f44e236]: Video Production
+            - link "All services" [ref=f44e237] [cursor=pointer]:
+              - /url: /services
+              - text: All services
+              - generic [ref=f44e238]: →
+    - generic [ref=f44e240]:
+      - generic [ref=f44e241]:
+        - generic [ref=f44e242]:
+          - generic [ref=f44e243]: "04"
+          - paragraph [ref=f44e244]: The studio
+        - heading "You work with us. Not an account manager." [level=2] [ref=f44e245]:
+          - generic [ref=f44e246]: You
+          - generic [ref=f44e248]: work
+          - generic [ref=f44e250]: with
+          - generic [ref=f44e252]: us.
+          - generic [ref=f44e254]: Not
+          - generic [ref=f44e256]: an
+          - generic [ref=f44e258]: account
+          - generic [ref=f44e260]: manager.
+        - paragraph [ref=f44e262]: Insights Marketers is led directly by its founders — Nived A. Sumithran and Nuhman Daris — no layers, no hand-offs, between you and the people doing the work.
+      - generic [ref=f44e263]:
+        - generic [ref=f44e264]:
+          - generic [ref=f44e265]: "2024"
+          - text: founded
+        - generic [ref=f44e266]:
+          - generic [ref=f44e267]: "2"
+          - text: founders
+        - generic [ref=f44e268]:
+          - generic [ref=f44e269]: "9"
+          - text: disciplines
+    - generic [ref=f44e272]:
+      - figure [ref=f44e273]:
+        - generic [ref=f44e274]:
+          - generic [ref=f44e275]: RM
+          - generic [ref=f44e276]:
+            - paragraph [ref=f44e277]: Rahul Menon
+            - paragraph [ref=f44e278]: Arena Animation
+        - blockquote [ref=f44e279]: “They asked better questions than any consultant we've used.”
+        - generic [ref=f44e280]:
+          - generic [ref=f44e281]: ★★★★★
+          - generic [ref=f44e282]: 5.0/5
+      - figure [ref=f44e283]:
+        - generic [ref=f44e284]:
+          - generic [ref=f44e285]: ST
+          - generic [ref=f44e286]:
+            - paragraph [ref=f44e287]: Sarah Thomas
+            - paragraph [ref=f44e288]: Beyond Borders
+        - blockquote [ref=f44e289]: “Fast, structured, and refreshingly honest.”
+        - generic [ref=f44e290]:
+          - generic [ref=f44e291]: ★★★★★
+          - generic [ref=f44e292]: 5.0/5
+      - figure [ref=f44e293]:
+        - generic [ref=f44e294]:
+          - generic [ref=f44e295]: VN
+          - generic [ref=f44e296]:
+            - paragraph [ref=f44e297]: Vishnu Nair
+            - paragraph [ref=f44e298]: Zica Calicut
+        - blockquote [ref=f44e299]: “The kind of studio that treats your brand like it's their own.”
+        - generic [ref=f44e300]:
+          - generic [ref=f44e301]: ★★★★★
+          - generic [ref=f44e302]: 4.5/5
+      - generic [ref=f44e303]:
+        - generic [ref=f44e304]:
+          - generic [ref=f44e305]: "05"
+          - paragraph [ref=f44e306]: Client feedback
+        - heading "Why Brands Choose To Work With Us" [level=2] [ref=f44e307]:
+          - generic [ref=f44e308]: Why
+          - generic [ref=f44e310]: Brands
+          - generic [ref=f44e312]: Choose
+          - generic [ref=f44e314]: To
+          - generic [ref=f44e316]: Work
+          - generic [ref=f44e318]: With
+          - generic [ref=f44e320]: Us
+        - paragraph [ref=f44e322]:
+          - generic [ref=f44e323]: Real feedback,
+          - generic [ref=f44e324]: from real clients.
+        - generic [ref=f44e325]:
+          - generic [ref=f44e326]: 12+
+          - generic [ref=f44e331]:
+            - paragraph [ref=f44e332]: Trusted by clients
+            - paragraph [ref=f44e333]:
+              - generic [ref=f44e334]: ★★★★★
+              - text: 4.8 / 5
+    - generic [ref=f44e337]:
+      - generic [ref=f44e338]:
+        - paragraph [ref=f44e339]: We partner with ambitious brands across education, hospitality, events, adventure and travel.
+        - heading "Good questions, straight answers." [level=2] [ref=f44e340]: Good questions,straight answers.
+      - generic [ref=f44e341]:
+        - generic [ref=f44e343]:
+          - generic [ref=f44e344]: Arena Animation
+          - generic [ref=f44e345]: Beyond Borders
+          - generic [ref=f44e346]: Educ Kshetra
+          - generic [ref=f44e347]: La Via Deux
+          - generic [ref=f44e348]: Kannur Events
+          - generic [ref=f44e349]: Bougain Kayak
+          - generic [ref=f44e350]: Zica Calicut
+          - generic [ref=f44e351]: Arena Animation
+          - generic [ref=f44e352]: Beyond Borders
+          - generic [ref=f44e353]: Educ Kshetra
+          - generic [ref=f44e354]: La Via Deux
+          - generic [ref=f44e355]: Kannur Events
+          - generic [ref=f44e356]: Bougain Kayak
+          - generic [ref=f44e357]: Zica Calicut
+        - generic [ref=f44e358]:
+          - link "View our work" [ref=f44e359] [cursor=pointer]:
+            - /url: /work
+            - text: View our work
+            - generic [ref=f44e360]: →
+          - link "Book a call" [ref=f44e361] [cursor=pointer]:
+            - /url: /contact
+            - text: Book a call
+            - generic [ref=f44e362]: →
+        - generic [ref=f44e363]:
+          - generic [ref=f44e364]:
+            - button "What's your process?" [ref=f44e365] [cursor=pointer]:
+              - generic [ref=f44e367]: +
+            - paragraph [ref=f44e368]: "Four steps, every time: we listen to understand real goals, plan the strategy before any design work starts, build identity, web platforms and campaigns with precision, and measure results transparently — then keep optimizing."
+          - generic [ref=f44e369]:
+            - button "Do I get a dedicated account manager?" [ref=f44e370] [cursor=pointer]:
+              - generic [ref=f44e372]: +
+            - paragraph [ref=f44e373]: "No — you work directly with the founders and the specialists on your project. That's the whole philosophy: no layers between you and the people doing the work."
+          - generic [ref=f44e374]:
+            - button "What's covered across your three pillars?" [ref=f44e375] [cursor=pointer]:
+              - generic [ref=f44e377]: +
+            - paragraph [ref=f44e378]: Marketing (social, SEO, SEM, content), Branding (identity, packaging, graphic design), and Build (websites, video production) — nine disciplines that move together instead of as separate vendors.
+          - generic [ref=f44e379]:
+            - button "Which industries do you work with?" [ref=f44e380] [cursor=pointer]:
+              - generic [ref=f44e382]: +
+            - paragraph [ref=f44e383]: Education, hospitality, events, adventure and travel brands among others — if the goal is a sharper identity and measurable growth, the playbook transfers.
+    - generic [ref=f44e386]:
+      - generic [ref=f44e387]:
+        - generic [ref=f44e388]:
+          - generic [ref=f44e389]: "07"
+          - paragraph [ref=f44e390]: Get in touch
+        - heading "CONTACT US" [level=2] [ref=f44e391]: CONTACTUS
+        - paragraph [ref=f44e392]: Send a note below — a strategist replies within one business day.
+        - generic [ref=f44e393]:
+          - generic [ref=f44e394]: (Mail)
+          - link "hello@insightsmarketers.com" [ref=f44e395] [cursor=pointer]:
+            - /url: mailto:hello@insightsmarketers.com
+        - generic [ref=f44e396]:
+          - generic [ref=f44e397]: (Phone)
+          - link "+91 00000 00001" [ref=f44e398] [cursor=pointer]:
+            - /url: tel:+910000000001
+      - generic [ref=f44e399]:
+        - textbox "Name*" [ref=f44e400]
+        - textbox "Email*" [ref=f44e401]
+        - textbox "Message*" [ref=f44e402]
+        - button "Send message" [ref=f44e404] [cursor=pointer]
+        - status [ref=f44e406]
+  - contentinfo [ref=f44e407]:
+    - generic [ref=f44e408]:
+      - generic [ref=f44e409]:
+        - link "INSIGHTS" [ref=f44e410] [cursor=pointer]:
+          - /url: /
+        - paragraph [ref=f44e412]: Digital marketing, branding & web development studio, based in Kerala.
+      - navigation "Footer" [ref=f44e413]:
+        - generic [ref=f44e414]:
+          - heading "Studio" [level=4] [ref=f44e415]
+          - link "About" [ref=f44e416] [cursor=pointer]:
+            - /url: /about
+          - link "Work" [ref=f44e417] [cursor=pointer]:
+            - /url: /work
+          - link "Services" [ref=f44e418] [cursor=pointer]:
+            - /url: /services
+          - link "Journal" [ref=f44e419] [cursor=pointer]:
+            - /url: /blogs
+          - link "Contact" [ref=f44e420] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=f44e421]:
+          - heading "Elsewhere" [level=4] [ref=f44e422]
+          - link "LinkedIn" [ref=f44e423] [cursor=pointer]:
+            - /url: "#"
+          - link "Instagram" [ref=f44e424] [cursor=pointer]:
+            - /url: "#"
+          - link "YouTube" [ref=f44e425] [cursor=pointer]:
+            - /url: "#"
+        - generic [ref=f44e426]:
+          - heading "Legal" [level=4] [ref=f44e427]
+          - link "Privacy policy" [ref=f44e428] [cursor=pointer]:
+            - /url: /privacy-policy
+          - link "Terms of service" [ref=f44e429] [cursor=pointer]:
+            - /url: /terms-of-service
+    - generic [ref=f44e430]:
+      - paragraph [ref=f44e431]: © 2026 Insights Marketers. All rights reserved.
+      - button "Back to top" [ref=f44e432] [cursor=pointer]: ↑
+  - generic [ref=f44e435]:
+    - button [ref=f44e436]
+    - button [ref=f44e442]
+    - button [ref=f44e446]
+    - button [ref=f44e451]

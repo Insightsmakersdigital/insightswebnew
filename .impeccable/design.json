@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-11T00:00:00.000Z",
+  "title": "Design System: Insights Marketers",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "primary", "displayName": "Ink", "canonical": "#0f0f0f", "tonalRamp": ["#0f0f0f", "#262626", "#666666", "#6b6b6b", "#757575", "#969696", "#bfbfbf", "#f6f6f6"] },
+      "paper": { "role": "primary", "displayName": "Paper", "canonical": "#f6f6f6", "tonalRamp": ["#0f0f0f", "#262626", "#666666", "#6b6b6b", "#757575", "#969696", "#bfbfbf", "#f6f6f6"] },
+      "accent-lime": { "role": "secondary", "displayName": "Accent Lime", "canonical": "#b3ff00", "tonalRamp": ["#263000", "#445700", "#628000", "#84b300", "#b3ff00", "#c6ff33", "#ddff80", "#f4ffd9"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "canonical": "#666666" },
+      "slate": { "role": "neutral", "displayName": "Slate", "canonical": "#6b6b6b" },
+      "ash": { "role": "neutral", "displayName": "Ash", "canonical": "#757575" },
+      "fog": { "role": "neutral", "displayName": "Fog", "canonical": "#969696" },
+      "mist": { "role": "neutral", "displayName": "Mist", "canonical": "#bfbfbf" },
+      "surface-dark": { "role": "neutral", "displayName": "Surface Dark", "canonical": "#1a1a1a" },
+      "surface-light": { "role": "neutral", "displayName": "Surface Light", "canonical": "#ececec" },
+      "domino-teal": { "role": "tertiary", "displayName": "Domino Teal (confirmed one-off exception)", "canonical": "#20807b", "tonalRamp": ["#04100e", "#28423d", "#3b5a55", "#4d736c", "#68998f", "#7bb1a7", "#8dcabe", "#9fe3d6"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero brand wordmark only." },
+      "headline": { "displayName": "Headline", "purpose": "Major section headings (Projects, Case Study, Contact)." },
+      "title": { "displayName": "Title", "purpose": "Secondary section headings (Skillset, Team)." },
+      "body": { "displayName": "Body", "purpose": "Paragraph copy, row/card descriptions." },
+      "label": { "displayName": "Label", "purpose": "Stat labels, nav badge text, small muted captions." }
+    },
+    "shadows": [
+      { "name": "domino-ground", "value": "0 14px 22px -14px rgb(0 0 0 / 40%)", "purpose": "Physical ground shadow under the homepage domino tiles only — not a general card-elevation token." }
+    ],
+    "motion": [
+      { "name": "ease-reveal", "value": "cubic-bezier(0.75, 0, 0.25, 1)", "purpose": "Default scroll-in fade+rise reveal, 0.8s." },
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Micro-interaction default (unmeasured, reasonable default), 200ms." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Symmetric transitions, e.g. loader sweep." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "<=809.98px" },
+      { "name": "desktop-nav", "value": "901px" },
+      { "name": "container-max", "value": "1400px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Fixed ink/paper pill CTA, section-independent (never adapts to light/dark panel).",
+      "html": "<a href=\"#\" class=\"ds-btn-primary\"><span>Start your project</span></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 20px 24px; border-radius: 100px; background: #0f0f0f; color: #f6f6f6; font-weight: 600; font-size: 0.95rem; text-decoration: none; white-space: nowrap; min-height: 44px; transition: background 0.2s cubic-bezier(0.16,1,0.3,1), transform 0.2s cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: #262626; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #f6f6f6; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Theme-relative secondary button — border and text follow the panel's own text color, unlike the fixed primary.",
+      "html": "<a href=\"#\" class=\"ds-btn-outline\"><span>All services</span></a>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 20px 24px; border-radius: 100px; border: 1px solid rgb(15 15 15 / 12%); color: #0f0f0f; font-weight: 600; font-size: 0.95rem; text-decoration: none; white-space: nowrap; min-height: 44px; transition: border-color 0.2s, background 0.2s; } .ds-btn-outline:hover { border-color: #666666; background: #ececec; } .ds-btn-outline:focus-visible { outline: 2px solid #0f0f0f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ledger Row",
+      "kind": "custom",
+      "refersTo": "ledger-row",
+      "description": "The site's real card pattern: flush, full-width, separated only by a top hairline — no radius, no shadow, no boxed border. Used for work items, founders, pillar groups, FAQ rows.",
+      "html": "<div class=\"ds-ledger-row\"><h3>Corporate Branding &amp; Identity</h3><p>End-to-end brand identity — logo, style guide, positioning.</p></div>",
+      "css": ".ds-ledger-row { padding: 30px 0; border-top: 1px solid rgb(15 15 15 / 10%); } .ds-ledger-row h3 { margin: 0 0 4px; font-family: 'Inter Display', Inter, sans-serif; font-size: 1.25rem; font-weight: 600; color: #0f0f0f; } .ds-ledger-row p { margin: 0; font-size: 0.9rem; color: #666666; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "status-badge",
+      "description": "The one sanctioned use of the accent color: a small lime dot plus 'available' text. Do not reuse the dot color for anything else.",
+      "html": "<span class=\"ds-badge\"><span class=\"ds-badge-dot\"></span>Available for projects</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter Display', Inter, sans-serif; font-size: 0.875rem; font-weight: 600; color: #666666; } .ds-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #b3ff00; flex-shrink: 0; }"
+    },
+    {
+      "name": "Domino Tile",
+      "kind": "custom",
+      "refersTo": "domino-tile",
+      "description": "Signature homepage component. The confirmed one-off exception to both the monochrome rule (teal gradient fill) and the ambient-motion rule (falls only on direct touch, once, then stays fallen). Not a pattern to reuse elsewhere without the same explicit sign-off.",
+      "html": "<div class=\"ds-domino\" style=\"background:#20807b\"></div>",
+      "css": ".ds-domino { width: 16px; height: 78px; border-radius: 3px; box-shadow: 0 14px 22px -14px rgb(0 0 0 / 40%); transform-origin: bottom center; transition: transform 0.48s cubic-bezier(0.34,1.56,0.64,1); } .ds-domino:hover { transform: rotate(90deg); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Open Ledger",
+    "overview": "Everything on this site is either black, white, or one of five measured grays between them — with exactly one exception, a lime-green status dot that means \"available,\" and nowhere else. That restraint isn't decoration; it's the same claim the copy makes out loud: no layers, no filtering, direct access to the people doing the work. A visitor should be able to tell, just from how quiet the page is, that nothing is being dressed up to look bigger than it is.\n\nThe recurring structural pattern — work items, founder bios, pillar groups, FAQ rows, process steps — is a flush row separated by a hairline, not a boxed card with a shadow and a border-radius. That's the \"ledger\" half of the name: content is entered into the page like line items, not packaged into little product-shot tiles. Coverage is shown the same honest way — a discipline with a real case study looks different from one that doesn't have one yet (\"Open now, no case study yet\"), never silently omitted or faked to look complete.\n\nOne page, the homepage's process visualization (a domino chain, \"The model\" section), deliberately breaks the one-accent rule with a confirmed teal gradient run across its tiles. That's a logged, one-off exception — not a precedent for introducing color elsewhere without asking first.",
+    "keyCharacteristics": [
+      "Monochrome ink/paper base; exactly one accent color (lime), reserved for a single \"available\" status meaning",
+      "Flush hairline-divided rows instead of boxed/shadowed cards — square corners everywhere except pills and circles",
+      "Confident, oversized Inter Display headings at every major heading tier; plain Inter for body copy",
+      "Motion is a slow, deliberate fade-and-rise on scroll-in (0.8s), never idle/ambient, never louder than the content it reveals",
+      "Honesty over completeness: gaps in real content (missing case studies) are named plainly, not hidden"
+    ],
+    "rules": [
+      { "name": "The One Signal Rule", "body": "The accent color appears in exactly one component family (status dots) and means exactly one thing (\"available\"). If you're reaching for lime to make something else stand out, the answer is contrast/size/weight in the existing grayscale, not a second use of the accent.", "section": "colors" },
+      { "name": "The Confirmed Exception Rule", "body": "The domino gradient on the homepage is real and intentional, not a violation to \"fix\" — but it's also not evidence that color is now open season elsewhere. New color anywhere else needs the same kind of explicit, deliberate sign-off it got.", "section": "colors" },
+      { "name": "The Normal Tracking Rule", "body": "Letter-spacing stays at normal even at display sizes. Don't tighten headings toward a \"techy\" condensed look — that reads as a different brand voice than this one.", "section": "typography" },
+      { "name": "The Flat Ledger Rule", "body": "Surfaces don't lift. If something needs to feel separated from its neighbor, that's a hairline border-top, not a shadow.", "section": "elevation" },
+      { "name": "The Pill-or-Square Rule", "body": "There is no middle ground (no 4px/12px/16px \"softly rounded\" card). A shape is either a full pill/circle or perfectly square.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep new color usage to ink/paper/the five measured grays, with the accent lime reserved for \"available\" status meaning only.",
+      "Do use flush, hairline-divided rows for any new list-like content (case studies, team members, FAQ items, steps) instead of a bordered/shadowed card.",
+      "Do keep primary buttons a fixed ink/paper pill regardless of what section they sit in.",
+      "Do use normal letter-spacing at display/headline sizes — don't tighten toward a condensed look.",
+      "Do show real gaps honestly (an \"open, no case study yet\" state) rather than omitting or padding out incomplete content."
+    ],
+    "donts": [
+      "Don't introduce generic SaaS gradient/glow treatments — no purple-blue hero gradients, no glassmorphism, no glow-on-hover \"premium\" effects. They contradict both the one-accent-color discipline and the plainspoken positioning.",
+      "Don't add a second general-purpose accent color without the same explicit, logged sign-off the domino teal exception got.",
+      "Don't give cards/rows a border-radius, drop shadow, or visible border-all-sides treatment — the system's \"card\" is a flush row with a top hairline, not a boxed container.",
+      "Don't add idle/ambient motion. Reveals fire once on scroll-in or on direct interaction (hover/tap); nothing loops or plays on its own."
+    ]
+  }
+}

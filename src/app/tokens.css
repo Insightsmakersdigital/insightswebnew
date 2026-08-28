@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Design tokens — measured from https://nexola.framer.website/
+   Values here come from design-tokens.json (Playwright computed-style crawl),
+   not visual guesswork. Key findings that reshaped this file vs. the old
+   placeholder:
+   - Nearly monochrome, but NOT strictly so: there is one deliberate accent,
+     a small lime-green status dot on the nav's "Available for Projects"
+     badge. Everything else is black/white/gray.
+   - The page alternates light and dark section "panels" -- the DEFAULT
+     (root) theme here is dark (Case Study, Pricing, Testimonials, Contact);
+     .panel-light overrides it for the sections actually measured light
+     (Hero, Introduction, Projects, Skillset, Team, FAQ, Footer, and the nav
+     itself). --bg/--text/--surface/--border are themed this way so
+     components just keep using var(--text) etc. without per-section logic.
+   - Buttons are NOT theme-relative: the primary CTA is always a dark pill
+     (ink bg / paper text) regardless of section, and only the one
+     "featured" pricing card inverts to a light pill for emphasis.
+   - Headings use normal (untightened) letter-spacing at every size measured.
+   - Cards are flush with their section background (no border, no radius);
+     only buttons (100px pill) and avatars (circle) are rounded.
+   ========================================================================== */
+
+:root {
+  /* ink/paper + muted grayscale ramp (measured, no brand hue exists) */
+  --ink: #0f0f0f;
+  --paper: #f6f6f6;
+  --muted-1: #666666;
+  --muted-2: #6b6b6b;
+  --muted-3: #757575;
+  --muted-4: #969696;
+  --muted-5: #bfbfbf;
+
+  /* default page theme = dark panel (matches measured body background) */
+  --bg: var(--ink);
+  --surface: var(--ink);
+  --surface-2: #1a1a1a;
+  --border: rgb(255 255 255 / 12%);
+  --text: var(--paper);
+  --text-dim: var(--muted-4);
+  --text-faint: var(--muted-5);
+
+  /* "accent" = contrast color, not a hue -- the page is monochrome except
+     for one deliberate lime-green status dot (see --accent-lime below) */
+  --accent: var(--paper);
+  --accent-dim: var(--muted-5);
+  --accent-ink: var(--ink);
+  --accent-lime: #b3ff00;
+
+  /* buttons are fixed ink/paper, not theme-relative (see file header note) */
+  --nav-height: 60px;
+
+  /* radii — measured: buttons/avatars are pill/circle, cards are square */
+  --radius-sm: 8px;
+  --radius-md: 8px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-pill: 100px;
+
+  /* spacing scale, derived from measured values (page gutter 30/20, card
+     padding 30, card gap 10, button padding 20x40/20x30, footer gap 60,
+     section vertical padding 90-100) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 10px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 30px;
+  --space-8: 40px;
+  --space-10: 60px;
+  --space-12: 80px;
+  --space-14: 90px;
+  --space-16: 100px;
+  --space-20: 120px;
+
+  /* layout */
+  --container-max: 1400px;
+  --page-gutter: 30px;
+  --measure: 62ch;
+
+  /* editorial hairlines used by section-heads/dividers -- adaptive via
+     var(--text), so they flip correctly inside .panel-light. */
+  --hairline: color-mix(in oklab, var(--text) 12%, transparent);
+  --hairline-strong: color-mix(in oklab, var(--text) 22%, transparent);
+
+  /* page column grid -- measured directly from the reference: 5 fixed 1px
+     lines (rgb(224,224,224), NOT theme-adaptive) spanning the content width
+     at every breakpoint, confirmed 4 equal columns from 1440 down to 390.
+     The 682px/341px section-grid tracks measured elsewhere are exactly 2
+     and 1 of these columns, so this is the real underlying module. */
+  --grid-cols: 4;
+  --grid-line-color: rgb(224, 224, 224);
+
+  /* generous, fluid "cinematic" spacing for hero/section-head air —
+     scales with viewport instead of stepping at breakpoints */
+  --space-cinematic: clamp(4.5rem, 2.5rem + 9vw, 9rem);
+
+  /* motion — measured Framer scroll-reveal: fade in + rise, 0.8s,
+     cubic-bezier(0.75,0,0.25,1). Hover/tap feedback on the reference is
+     JS-driven (0s CSS transition at rest), so --dur-fast/--ease-out remain
+     reasonable unmeasured defaults for micro-interactions only. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-reveal: cubic-bezier(0.75, 0, 0.25, 1);
+  --dur-fast: 200ms;
+  --dur-med: 420ms;
+  --dur-slow: 800ms;
+  --reveal-rise: 56px;
+
+  /* misc */
+  --shadow-lg: none;
+
+  /* type — measured font stack is "Inter Display" for headings/display type.
+     It isn't on Google Fonts as its own family (only plain "Inter" is), so
+     it's self-hosted from the official rsms/inter release -- see the
+     @font-face block at the top of global.css. --font-body stays on Inter
+     via Google Fonts, unchanged. */
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Inter Display", "Inter", sans-serif;
+
+  /* type scale — measured px at 1440 / 810 / 390, clamp()-interpolated.
+     --fs-hero was clamping too high on narrow phones for a single word
+     ("INSIGHTS") to fit one line -- lowered floor/ceiling so it always
+     fits (paired with white-space:nowrap on .hero-brand as a hard
+     backstop); --lh-hero keeps the same 0.8 ratio the loader's handoff
+     math depends on. */
+  --fs-hero: clamp(3rem, 13vw, 8.125rem); /* 48px -> 130px */
+  --lh-hero: clamp(2.4rem, 10.4vw, 6.5rem); /* 38.4px -> 104px */
+  --fs-h2-lg: clamp(3.625rem, 1.83rem + 7.62vw, 7.5rem); /* 58px -> 120px */
+  --lh-h2-lg: var(--fs-h2-lg);
+  --fs-h2-md: clamp(2.75rem, 1.79rem + 4.05vw, 5.625rem); /* 44px -> 90px */
+  --lh-h2-md: clamp(2.475rem, 1.61rem + 3.65vw, 5.0625rem);
+  --fs-body: 1rem; /* 16px, all breakpoints */
+  --lh-body: 1.2rem;
+  --fs-label: 0.875rem; /* 14px */
+  --lh-label: 1.05rem;
+  --fs-logo: 1.3125rem; /* 21px */
+
+  color-scheme: dark;
+}
+
+/* Light panel theme — applied to every section measured light: Hero,
+   Introduction, Projects, Skillset, Team, FAQ, Footer, and the nav. */
+.panel-light {
+  --bg: var(--paper);
+  --surface: var(--paper);
+  --surface-2: #ececec;
+  --border: rgb(0 0 0 / 10%);
+  --text: var(--ink);
+  --text-dim: var(--muted-1);
+  --text-faint: var(--muted-3);
+  --accent: var(--ink);
+  --accent-dim: var(--muted-1);
+  --accent-ink: var(--paper);
+  color-scheme: light;
+}

@@ -1,0 +1,186 @@
+INSIGHTS MARKETERS -- SERVICE PAGE IMAGE PROMPTS
+=================================================
+12 prompts, one per service. Every prompt below already includes the
+mandatory style prefix -- paste each one whole into the image generator,
+do not mix and match halves.
+
+MANDATORY STYLE PREFIX (baked into every prompt below):
+"Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces."
+
+-------------------------------------------------
+
+01. SOCIAL MEDIA MARKETING (slug: social-media-marketing)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a printed monthly content calendar taped to a studio wall, grid
+squares filled with handwritten notes, several dates crossed out with a
+pen, corners slightly curling. Shot straight-on, close enough to read the
+grid structure but not the handwriting.
+
+02. SEARCH ENGINE OPTIMIZATION (slug: search-engine-optimization)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a large printed website sitemap/crawl diagram spread flat across
+a table, dense with boxes and connecting lines, covered in red pen circles
+and cross-outs marking broken paths. Shot from directly above.
+
+03. SEARCH ENGINE MARKETING (slug: search-engine-marketing)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a printed spreadsheet of bid numbers on a desk, several columns
+hand-highlighted with a gray marker, an analog stopwatch resting on top of
+the page. Shot at a slight angle, shallow depth of field.
+
+04. CONTENT MARKETING (slug: content-marketing)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a stack of printed article drafts on a desk, visible red-pen
+edits and margin notes on the top page, a faint coffee-cup ring stain, a
+pair of reading glasses resting on the stack. Close, slightly overhead
+angle.
+
+05. CORPORATE BRANDING & IDENTITY (slug: branding)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a studio wall covered in material and paper swatches at varying
+gray tones, pinned up in a loose grid, with a single blank logo mark
+printed on card stock pinned slightly off-center among them -- the moment
+before a final choice is made, not a finished brand wall.
+
+06. PACKAGE DESIGNING (slug: package-designing)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: flat, unfolded die-cut packaging templates (cardboard nets) on a
+cutting table, a metal ruler and craft knife beside them, one template
+partly folded up into a 3D box shape while the rest stay flat. Shot from
+above.
+
+07. GRAPHIC DESIGNING (slug: graphic-designing)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a lightbox table glowing softly white, several transparent print
+proof sheets layered on top of each other, crop marks and registration
+crosses visible at the corners of each sheet. Close, straight-on shot.
+
+08. WEBSITE DEVELOPMENT (slug: website-development)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a printed paper wireframe sketch taped directly over a computer
+monitor so the paper layout sits where the screen would be, a metal ruler
+and pencil resting on the desk below it. Shot at a slight three-quarter
+angle.
+
+09. VIDEO PRODUCTION (slug: video-production)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a strip of physical film negatives held up against a flat white
+light panel, individual frames visible in sequence, a grease pencil marked
+"x" through one bad frame. Close macro-style shot.
+
+10. APP DEVELOPMENT (slug: app-development)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a row of small printed paper rectangles, each sketched with a
+different blank app screen layout, laid out left to right on a table with
+thin string or tape connecting them in sequence to show the flow between
+screens. Shot from directly above.
+
+11. AUTOMATIONS (slug: automations)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a whiteboard close-up showing a hand-drawn IF/THEN flowchart --
+boxes, diamonds, and arrows branching into two paths -- drawn in dry-erase
+marker, one branch circled twice. Shot straight-on, marker resting in
+frame at the bottom edge.
+
+12. CUSTOM SOFTWARE (slug: custom-software)
+Monochrome photography only: pure black (#0f0f0f) and off-white paper
+(#f6f6f6) with neutral measured grays in between -- no color, no tint, no
+gradients, no glassmorphism, no glow or bloom effects. Documentary and
+editorial photo style, not illustration, not 3D render, not glossy stock
+photography. Flat, even lighting -- no dramatic shadows, no vignette, no
+lens flare. Slightly desaturated, quiet, restrained -- like a serious
+design studio's own internal photography, not a SaaS marketing hero.
+Square or landscape aspect ratio. No text, no logos, no visible faces.
+Subject: a large whiteboard covered in system-architecture boxes and
+connecting arrows, one corner partially erased with visible ghost marks,
+a dry-erase marker resting mid-sentence at the edge of the last box drawn.
+Shot straight-on, slightly wide to show the whole board.
+
+-------------------------------------------------
+NOTE: the site currently has 12 services in src/data/site.ts, not 13 --
+if there's a 13th service you're planning to add, tell me and I'll draft
+a matching prompt for it.

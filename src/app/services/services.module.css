@@ -1,0 +1,184 @@
+/* Interactive service list -- adapted from the Hyperiux "interactive list
+   preview" pattern (row-hover reveals a clipped image, a highlight band
+   tracks the hovered row, difference-blended image for contrast) to this
+   site's own system: ink/paper tokens instead of a fixed dark palette,
+   Inter/Inter Display instead of a foreign monospace, square corners
+   (Pill-or-Square Rule), and no rounded card radii. The geometry-driven
+   parts (highlight band position, image clip-path/opacity, cursor
+   parallax) are GSAP, same as this file's siblings (StatementSection,
+   ApproachTrack, TeamHero) -- CSS handles color/theme via a plain
+   .is-active class instead of tweening literal colors, so it stays
+   theme-token-correct without hardcoding hex values into the script. */
+
+/* Tightens the hero + section air specifically on this page so all 12
+   rows sit closer to one screenful instead of needing a scroll for the
+   last few -- overrides via :global() rather than touching PageHero or
+   the sitewide `section` rule, so nothing else on the site is affected. */
+.pageCompact :global(.page-hero) { padding-block: var(--space-8) var(--space-5); }
+.pageCompact :global(.page-hero-heading) { font-size: clamp(2rem, 1.2rem + 3vw, 3.25rem); line-height: 1.05; max-width: 30ch; }
+.pageCompact :global(.page-hero .eyebrow) { margin-bottom: var(--space-3); }
+.pageCompact :global(.page-hero .hero-sub) { margin-top: var(--space-3); font-size: 1rem; }
+.pageCompact section { padding-block: var(--space-5) var(--space-6); }
+
+.stage {
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 1;
+  background: var(--paper);
+  opacity: 0;
+}
+
+.imageLayer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  mix-blend-mode: difference;
+}
+
+.previewImage {
+  /* Sits between the name column and the category/headline block pushed
+     to the right (see .cellPillar/.cellHeadline below), not pinned to
+     the stage's right edge. --preview-scale is set inline from
+     CONFIG.imageSize in ServiceHoverList.tsx. */
+  position: absolute;
+  top: 50%;
+  left: 48%;
+  width: calc(min(320px, 26vw) * var(--preview-scale, 1));
+  aspect-ratio: 3 / 4;
+  transform: translateY(-50%);
+  visibility: hidden;
+  will-change: clip-path, opacity;
+}
+.previewImage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.table {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.row {
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  /* Without this, Chromium suppresses the native `click` event whenever a
+     mousedown->mouseup sequence changes the text selection in between --
+     trivially easy to trigger on a text-heavy row like this one, and it
+     silently eats the row's onClick navigation with no console error. */
+  user-select: none;
+}
+.row:first-child { border-top: 1px solid var(--border); }
+
+.cell {
+  /* Compact on purpose -- with 12 rows now, the site's usual spacious
+     ledger-row padding pushed the last few below the fold. Closer to the
+     original reference's own row height (py-3/px-6) than this site's
+     typical row spacing, by request. */
+  padding: 12px var(--space-4);
+  color: var(--text-dim);
+  font-size: var(--fs-label);
+  letter-spacing: 0.02em;
+  transition: color var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.row.isActive .cell { color: var(--ink); }
+
+.cellIndex { width: 4em; font-variant-numeric: tabular-nums; color: var(--text-faint); }
+.row.isActive .cellIndex { color: var(--ink); }
+
+.cellTitle {
+  width: 26%;
+  white-space: normal;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-body);
+  letter-spacing: normal;
+  color: var(--text);
+  text-transform: none;
+}
+.cellTitle a {
+  color: inherit;
+  text-decoration: none;
+}
+.row.isActive .cellTitle { color: var(--ink); }
+
+/* Category + headline are pushed to the far right of the row, with the
+   preview image (see .previewImage above) floating in the gap between
+   them and the name column. */
+.cellPillar {
+  width: 10em;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cellHeadline {
+  width: auto;
+  white-space: normal;
+  text-align: right;
+  color: var(--text-faint);
+}
+.row.isActive .cellHeadline { color: var(--ink); }
+
+.cellArrow {
+  width: 3em;
+  text-align: right;
+  font-size: var(--fs-body);
+}
+
+/* mobile: no hover, so images sit always-visible next to each row */
+.mobileList { display: none; }
+
+@media (max-width: 809.98px) {
+  .stage { display: none; }
+  .mobileList { display: block; }
+}
+
+.mobileRow {
+  display: flex;
+  gap: var(--space-5);
+  align-items: center;
+  padding-block: var(--space-6);
+  border-bottom: 1px solid var(--border);
+  color: inherit;
+  text-decoration: none;
+}
+.mobileRow:first-child { border-top: 1px solid var(--border); }
+
+.mobileText { flex: 1; min-width: 0; }
+.mobileIndex { font-size: var(--fs-label); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.mobileTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-body);
+  margin-block: var(--space-2);
+}
+.mobilePillar {
+  font-size: var(--fs-label);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+.mobileHeadline { margin-top: var(--space-2); color: var(--text-dim); font-size: var(--fs-label); }
+
+.mobileImage {
+  flex-shrink: 0;
+  width: 84px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+.mobileImage img { width: 100%; height: 100%; object-fit: cover; display: block; }

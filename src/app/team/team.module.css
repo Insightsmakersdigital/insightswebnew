@@ -1,0 +1,162 @@
+/* Ported from a GSAP CodePen reference at the user's explicit request,
+   idle float included -- kept as a second confirmed, named exception to
+   DESIGN.md's "no idle motion" rule (see the domino chain for the
+   first). Everything about the ORIGINAL reference's chrome (the warm
+   orange/cream palette, glossy inset-shadow cards, soft 18-22px card
+   radii) did NOT get ported -- only the motion mechanic did. Fill,
+   shape, and shadow here still follow this site's own system: ink/paper
+   only, square corners (Pill-or-Square Rule), and the flat, minimal
+   shadow already established on the domino tiles rather than the
+   original's heavy glossy treatment. */
+.teamHero {
+  position: relative;
+  min-height: 100vh;
+  padding: calc(var(--nav-height) + var(--space-16)) var(--page-gutter) var(--space-10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* This hero's three type sizes (title, ghost-text, sub-line) are
+   deliberately off DESIGN.md's five named tiers -- they're a one-off
+   cinematic composition sized to fit "Small team," + "whole access" as
+   a two-line word-reveal, not reusable headings. Flagged by the design
+   hook; left as bespoke rather than forced onto Display/Headline/Title,
+   since none of those tiers were sized for this exact two-line layout. */
+.teamHeroTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 1.2rem + 6vw, 5.75rem);
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: center;
+  position: relative;
+  z-index: 4;
+  margin: 0;
+  /* global.css's `h1 { color: var(--text) }` resolves against the root
+     (dark-theme) tokens here, since this section isn't wrapped in
+     .panel-light -- it only overrides --ink/paper via literal
+     background/color on .teamHero, which the h1's own color rule
+     doesn't inherit. Pin it explicitly instead of flipping the whole
+     section's token set just for this one element. */
+  color: var(--ink);
+}
+.teamHeroTitle [data-word] { display: inline-block; overflow: hidden; vertical-align: top; }
+.teamHeroTitle [data-word] > span { display: inline-block; transform: translateY(105%); }
+
+.teamHeroGhostWrap {
+  position: relative;
+  width: 100%;
+  margin-top: -0.5rem;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+.teamHeroGhost {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3.5rem, 1rem + 13vw, 11rem);
+  letter-spacing: normal;
+  line-height: 0.85;
+  color: var(--mist, #bfbfbf);
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+}
+.teamHeroGhost [data-letter] { display: inline-block; transform-origin: bottom; }
+
+.teamHeroCards {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 320px;
+  z-index: 3;
+  pointer-events: none;
+}
+.teamHeroCards > * { pointer-events: auto; }
+
+.teamHeroCard {
+  position: absolute;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: 0 14px 22px -14px rgb(0 0 0 / 40%);
+  cursor: pointer;
+  will-change: transform;
+}
+.teamHeroCard img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+
+.card1 { width: 110px; height: 155px; left: 4%;  top: 30px; }
+.card2 { width: 140px; height: 190px; left: 12%; top: 50px; }
+.card3 { width: 175px; height: 235px; left: 22%; top: 20px; }
+.card4 { width: 130px; height: 175px; left: 36%; top: 70px; }
+.card5 { width: 200px; height: 270px; left: 44%; top: 0; }
+.card6 { width: 140px; height: 190px; left: 59%; top: 55px; }
+.card7 { width: 155px; height: 210px; left: 70%; top: 30px; }
+.card8 { width: 110px; height: 150px; left: 84%; top: 50px; }
+
+.teamHeroSub { margin-top: 180px; text-align: center; z-index: 4; position: relative; }
+.teamHeroPill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--ink); color: var(--paper);
+  padding: var(--space-5) var(--space-5) var(--space-5) var(--space-6);
+  border-radius: var(--radius-pill);
+  font-weight: 600; font-size: 0.9rem;
+}
+.teamHeroPill [data-arrow] {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--paper); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.teamHeroPill:hover [data-arrow] { transform: rotate(45deg); }
+.teamHeroSubText { margin-top: var(--space-5); font-size: 0.8rem; color: var(--muted-1, #666); letter-spacing: 0.04em; }
+
+@media (max-width: 809.98px) {
+  .teamHeroCards { height: 220px; }
+  .card1 { width: 70px;  height: 96px;  left: 0%;  top: 20px; }
+  .card2 { width: 80px;  height: 112px; left: 10%; top: 35px; }
+  .card3 { width: 96px;  height: 130px; left: 22%; top: 15px; }
+  .card4 { width: 80px;  height: 106px; left: 36%; top: 50px; }
+  .card5 { width: 112px; height: 155px; left: 46%; top: 0; }
+  .card6 { width: 84px;  height: 112px; left: 62%; top: 40px; }
+  .card7 { width: 88px;  height: 120px; left: 74%; top: 20px; }
+  .card8 { width: 70px;  height: 96px;  left: 87%; top: 35px; }
+  .teamHeroSub { margin-top: 120px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teamHeroTitle .word > span { transform: none; }
+  .teamHeroGhost, .teamHeroSub, .teamHeroCard { opacity: 1 !important; transform: none !important; }
+}
+
+/* The Roster Wall. Signature move: the whole roster is one draggable
+   photo sphere (InfiniteMenu) instead of a grid -- filled seats carry a
+   real (grayscale) photo tile, open seats carry a generated ink tile
+   with just a cross on it, so "most seats don't have a face yet" is
+   visible on the object itself, not just in the note underneath. No
+   heading/hint copy above it on purpose -- the sphere is the whole
+   section now, so it gets the room instead. */
+.wallStage {
+  position: relative;
+  width: 100%;
+  height: clamp(680px, 96vh, 1100px);
+  margin-top: var(--space-6);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+/* The sphere's canvas sets touch-action: none so a drag rotates it
+   instead of scrolling the page -- fine at desktop size, but at 96vh
+   tall on a phone that "none" zone is almost the entire screen, so a
+   thumb landing anywhere near it can't scroll past the section at all.
+   Capping it well under the viewport height on narrow screens leaves
+   real scrollable margin above and below it. */
+@media (max-width: 809.98px) {
+  .wallStage { height: min(70vh, 520px); }
+}

@@ -1,0 +1,106 @@
+================================================================================
+                       INSIGHTS MARKETERS - WEBSITE SITEMAP & CONTENT
+================================================================================
+
+--------------------------------------------------------------------------------
+1. COMPREHENSIVE SITE MAP
+--------------------------------------------------------------------------------
+
+Insights Marketers Website
+│
+├── /about (About Us)
+│   ├── Header: "You work with us. Not an account manager."
+│   ├── Studio Overview & Philosophy
+│   └── Founder Profiles Grid (Nived A. Sumithran & Nuhman Daris)
+│
+├── /services (Services Directory)
+│   ├── Header: "Nine disciplines. Three pillars."
+│   ├── 1. Marketing Pillar
+│   │   ├── /services/social-media-marketing
+│   │   ├── /services/search-engine-optimization
+│   │   ├── /services/search-engine-marketing
+│   │   └── /services/content-marketing
+│   ├── 2. Branding Pillar
+│   │   ├── /services/branding
+│   │   ├── /services/package-designing
+│   │   └── /services/graphic-designing
+│   └── 3. Build Pillar
+│       ├── /services/website-development
+│       └── /services/video-production
+│
+├── /work (Work & Portfolio Directory)
+│   ├── Header: "12 brands. Since 2024."
+│   ├── Category Filters:
+│   │   ├── /work/branding
+│   │   ├── /work/social-media-marketing
+│   │   ├── /work/website-development
+│   │   ├── /work/video-production
+│   │   └── /work/graphic-designing
+│   └── Client Portfolio Grid Showcase
+│
+├── /blogs (Journal / Blog)
+│   └── Header: "Insights." (Coming soon placeholder)
+│
+├── /contact (Contact Page)
+│   ├── Direct WhatsApp Messaging Link
+│   ├── Phone Numbers (+91 00000 00001 / 00002 / 00003)
+│   └── Email (hello@insightsmarketers.com)
+│
+└── Legal Pages
+    ├── /privacy-policy (Privacy Policy)
+    └── /terms-of-service (Terms of Service)
+
+
+
+
+================================================================================
+                      INSIGHTS MARKETERS - COMPANY & SERVICES OVERVIEW
+================================================================================
+
+ABOUT THE COMPANY
+-----------------
+Insights Marketers is a Kerala-based digital marketing, branding, and web development studio led directly by founders Nived A. Sumithran (Chief Executive Officer) and Nuhman Daris (Chief Marketing Officer). Founded in 2024, the studio operates on a direct, client-first philosophy: "You work with us. Not an account manager." The team helps businesses stand out in competitive markets by establishing memorable brand identities, high-converting digital infrastructure, and data-driven marketing campaigns that turn category players into market leaders.
+
+
+THE THREE PILLARS OF INSIGHTS MARKETERS
+----------------------------------------
+Rather than selling disconnected services, Insights Marketers integrates its solutions under three core pillars: Marketing, Branding, and Build. Together, these pillars cover nine specialized disciplines designed to work synchronously toward business growth.
+
+
+1. MARKETING PILLAR
+-------------------
+• Social Media Marketing (SMM): Reaches over 5 billion social media users worldwide through tailored content strategy, paid social advertising campaigns, community engagement, and performance auditing. Designed to build brand awareness, generate qualified leads, and build an active customer community.
+
+• Search Engine Optimization (SEO): Delivers compounding organic search growth by optimizing website architecture, conducting high-intent keyword research, fixing technical bottlenecks, executing on-page/local SEO (Google Business Profile), and building high-authority backlinks.
+
+• Search Engine Marketing (SEM / PPC): Instant search visibility through targeted Pay-Per-Click (PPC) campaigns on search engines like Google Ads. Focuses on high-converting keyword targeting, compelling ad copy, and continuous ROI optimization so every rupee spent drives measurable leads.
+
+• Content Marketing: Strategic research, creation, and distribution of valuable blogs, newsletters, and digital media. Establishes long-term brand authority, boosts organic site traffic, and converts curious readers into loyal customers.
+
+
+2. BRANDING PILLAR
+------------------
+• Corporate Branding & Identity: End-to-end brand identity creation, including market research, audience positioning, logo design, value propositions, corporate style guides, and brand storytelling. Transforms businesses into distinct, recognizable names.
+
+• Package Designing: Structural and visual packaging design engineered to command shelf presence. Combines aesthetic appeal with print-ready dielines and functional usability while maintaining multi-product range consistency.
+
+• Graphic Designing: Custom visual assets including corporate logos, marketing collateral, business cards, brochures, infographics, and social media graphics tailored to enhance brand perception.
+
+
+3. BUILD PILLAR
+---------------
+• Website Development: High-performance, mobile-responsive, and SEO-optimized website engineering. Handles full UX/UI design, front-end and back-end development, e-commerce integration, multi-device testing, and post-launch maintenance to convert visitors into paying clients.
+
+• Video Production: High-impact video storytelling spanning corporate messaging, user-generated content (UGC), product demos, explainer animations, customer testimonials, podcast video setups, and commercial ad productions optimized for YouTube, social media, and websites.
+
+
+OUR PROCESS & PROVEN TRACK RECORD
+---------------------------------
+Every project follows a structured 4-step workflow:
+1. We Listen – Understanding true business goals rather than pushing easy sales.
+2. We Plan – Developing strategy before designing a single pixel.
+3. We Build – Executing identity, web platforms, and campaigns with precision.
+4. We Measure – Tracking metrics transparently and optimizing continuously.
+
+Since 2024, Insights Marketers has partnered with key regional brands across Kerala—including Arena Animation (Kannur, Thrissur, Thiruvananthapuram), Beyond Borders, Educ Kshetra, La Via Deux, Kannur Events, Bougain Kayak, and Zica Calicut.
+================================================================================

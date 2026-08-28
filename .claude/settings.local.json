@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"c:\\\\Users\\\\hehea\\\\Desktop\\\\Insights-4\" && rm -rf src/components/react src/lib src/styles/tailwind-scoped.css components.json *)",
+      "Bash(npm uninstall *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4321/team)",
+      "Bash(npx astro *)",
+      "Bash(curl -s http://localhost:4321/team -o /tmp/team3.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"/ -> %{http_code}\\\\n\" http://localhost:4321/)",
+      "Bash(curl -s -o /dev/null -w \"/work -> %{http_code}\\\\n\" http://localhost:4321/work)",
+      "Bash(curl -s -o /dev/null -w \"/about -> %{http_code}\\\\n\" http://localhost:4321/about)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:4321//work\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:4321//about\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:4321//\")",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"home %{http_code}\\\\n\" http://localhost:4321/)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"work %{http_code}\\\\n\" http://localhost:4321/work)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"about %{http_code}\\\\n\" http://localhost:4321/about)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"team %{http_code}\\\\n\" http://localhost:4321/team)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ ! -f \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook.mjs\" ] || node \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook.mjs\"",
+            "timeout": 5,
+            "statusMessage": "Checking UI changes"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ ! -f \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook.mjs\" ] || node \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook.mjs\"",
+            "timeout": 30,
+            "statusMessage": "Design deep pass"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Impeccable design detector: immediate-tier checks after Edit/Write/MultiEdit on UI files, full-rule deep pass on Stop."
+}

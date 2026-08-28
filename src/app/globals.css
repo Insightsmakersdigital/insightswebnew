@@ -1,0 +1,2159 @@
+@import "./tokens.css";
+
+/* Inter Display -- self-hosted (not on Google Fonts as its own family; only
+   plain "Inter" is). Pulled from the official rsms/inter release, the
+   display-optimized cut with tighter spacing meant for large headings --
+   this is what --font-display uses (see tokens.css), not --font-body,
+   since a display cut isn't right for paragraph text. */
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterDisplay-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterDisplay-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterDisplay-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterDisplay-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterDisplay-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterDisplay-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   Base / reset
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: normal;
+  margin: 0;
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+h2 { font-size: var(--fs-h2-md); line-height: var(--lh-h2-md); font-weight: 600; letter-spacing: normal; }
+h3 { font-size: 1.25rem; letter-spacing: normal; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+ul { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; }
+em { font-style: italic; color: var(--accent); }
+strong { font-weight: 700; color: var(--text); }
+
+main { position: relative; z-index: 0; }
+
+/* .wrap is a REAL 4-column grid, not just a width constraint -- this is the
+   same module the visible grid lines (section::before, below) are drawn
+   from, verified against the reference by measuring actual element edges:
+   the intro heading's right edge lands exactly on column-line 3, the CEO
+   quote block occupies exactly column 4, section headings start at
+   column-line 2 leaving column 1 as a deliberate empty margin, etc.
+   Content is meant to snap to these column boundaries, not float at
+   arbitrary ch-based widths -- that's what "grid-column" below is for.
+   Direct children default to full width (all 4 columns); specific
+   components override that to occupy just the columns they were measured
+   at. */
+.wrap {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+}
+@media (min-width: 810px) { .wrap { padding-inline: var(--page-gutter); } }
+.wrap > * { grid-column: 1 / -1; }
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 1000;
+  background: var(--paper); color: var(--ink); padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm); font-weight: 600;
+}
+.skip-link:focus { left: var(--space-4); top: var(--space-4); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* intro loader — see the comment on the markup in BaseLayout.astro: this
+   is built from a description, not something independently verified.
+   Visible by default (no-JS/no-FOUC fallback shows the brand mark instead
+   of a flash of the real page); the script plays the sequence on every
+   load, or hides it instantly under reduced motion. */
+/* .loader is erased via clip-path only (never a transform -- that would
+   drag its child .loader-text along with it). .loader-decoy-stage is a
+   second, independent fixed/full-viewport layer sitting UNDER the loader
+   but OVER the real page, centering a dark copy of the same wordmark at
+   pixel-identical coordinates -- when the clip edge sweeps past, the dark
+   copy shows through where the light one used to be, reading as a colour
+   swap rather than motion. Both stages use the exact same flex-centering
+   trick (fixed + inset:0 + centered flex child) instead of
+   transform:translate(-50%,-50%), so neither wordmark carries a base
+   transform of its own -- the grow+move onto the real H1's position runs
+   on BOTH copies at once, in lockstep, entirely before the sweep starts
+   (still fully covered by the black overlay); the sweep afterward only
+   ever reveals what's already landed, it never repositions anything. */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  will-change: clip-path;
+}
+.loader-decoy-stage {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.loader-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 1.5rem + 6vw, 5rem);
+  /* must match --lh-hero / --fs-hero's ratio (0.8) exactly, and be
+     IDENTICAL between .loader-text and .loader-decoy -- any mismatch
+     shows as a visible jump when the clip edge passes over the letters */
+  line-height: 0.8;
+  letter-spacing: normal;
+  white-space: nowrap;
+  will-change: transform;
+  /* left-top origin so the grow+move scale grows from the same corner
+     the translate math targets -- default center-origin would throw off
+     the landing position */
+  transform-origin: left top;
+}
+.loader-text { color: var(--paper); }
+.loader-decoy { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .loader, .loader-decoy-stage { display: none !important; }
+}
+
+/* texture ------------------------------------------------------------- */
+.noise-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 999;
+  opacity: 0.025; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.cta-glow {
+  position: fixed; width: 480px; height: 480px; border-radius: 50%; z-index: 0;
+  pointer-events: none; opacity: 0; transition: opacity var(--dur-med) var(--ease-out);
+  background: radial-gradient(circle, rgb(128 128 128 / 14%), transparent 70%);
+  transform: translate(-50%, -50%); left: 0; top: 0; filter: blur(10px);
+}
+
+/* buttons --------------------------------------------------------------- */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  min-height: 44px;
+}
+.btn span { position: relative; z-index: 1; }
+/* verified: the primary CTA is a fixed dark pill regardless of section theme
+   (confirmed on the light hero, light footer, AND dark non-featured pricing
+   cards) -- not adaptive to --bg/--text like most components here. */
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: #262626; }
+.btn-primary:active { transform: scale(0.97); }
+/* the inverse -- verified on the featured pricing card's CTA only, where a
+   light pill is used to stand out against its own dark card */
+.btn-invert { background: var(--paper); color: var(--ink); }
+.btn-invert:hover { background: var(--muted-5); }
+.btn-invert:active { transform: scale(0.97); }
+.btn-outline { border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--text-dim); background: var(--surface-2); }
+.btn-ghost { color: var(--text-dim); padding-inline: var(--space-3); }
+.btn-ghost:hover { color: var(--text); }
+.btn-lg { padding: var(--space-5) var(--space-8); font-size: 1rem; }
+.btn-block { width: 100%; }
+
+.magnetic { will-change: transform; }
+
+.text-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 600; color: var(--text);
+  padding-bottom: 2px; border-bottom: 1px solid var(--border);
+  transition: border-color var(--dur-fast) var(--ease-out), gap var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.text-link:hover { border-color: var(--text); gap: 10px; }
+
+/* header -- .nav-desktop and .nav-mobile are two entirely separate
+   elements (see the markup comments in Header.astro for why), each with
+   its own background/border/height, rather than one row with children
+   display:none'd. #siteHeader itself carries the sticky positioning as
+   the shared outer wrapper; only ONE of the two children is ever
+   display:block at a given viewport, so it alone determines the header's
+   rendered height. Always a solid, opaque, single-colored bar (paper bg,
+   ink text) -- it used to invert to transparent + white over dark
+   sections via a scroll-driven class toggle in BaseLayout, but that was
+   glitchy on real scroll paths, so it's gone; the header no longer
+   changes at all as the page scrolls. Colors here are hardcoded (not
+   var(--bg)/var(--text)) since this bar intentionally never follows the
+   panel-light/dark cascade underneath it. */
+#siteHeader { position: sticky; top: 0; z-index: 100; }
+
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 900; letter-spacing: normal;
+  font-size: var(--fs-logo); margin-right: auto;
+  color: var(--ink);
+}
+.brand-mark {
+  width: 18px; height: 18px; border-radius: var(--radius-pill);
+  background: var(--ink);
+}
+
+/* ===== desktop nav (>=901px) ===================================== */
+.nav-desktop {
+  display: none;
+  background: var(--paper); color: var(--ink);
+  border-bottom: 1px solid rgb(0 0 0 / 8%);
+}
+.nav-desktop-inner { display: flex; align-items: center; gap: var(--space-6); width: 100%; height: 60px; }
+@media (min-width: 901px) { .nav-desktop { display: block; } }
+
+.nav-desktop-links { display: flex; gap: var(--space-8); align-items: center; }
+.nav-desktop-links a {
+  font-size: 0.92rem; font-weight: 500; color: rgb(15 15 15 / 65%);
+  transition: color var(--dur-fast) var(--ease-out);
+  position: relative;
+}
+.nav-desktop-links a:hover { color: var(--ink); }
+.nav-desktop-links a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px;
+  background: var(--ink); transform: scaleX(0); transform-origin: right;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.nav-desktop-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* services mega-dropdown -- .nav-services is forced to the header's full
+   60px height (not just its link's own line-height) so the hover area
+   reaches all the way down to the panel's top edge with zero dead zone;
+   without that, the panel would close the instant the cursor left the
+   small text box on its way down to the panel below. The panel itself is
+   position:fixed (not absolute) so its width/columns are independent of
+   where "Services" happens to sit in the nav, and can align to the same
+   page grid as everything below it. Colors are hardcoded ink-on-paper
+   here, same as the rest of this header -- .text-link/var(--text) resolve
+   against the DARK root theme by default (this header isn't inside a
+   .panel-light section), which is exactly the invisible-text bug already
+   hit once on /services. */
+.nav-services { position: relative; height: 60px; display: flex; align-items: center; }
+.nav-caret {
+  display: inline-block; width: 6px; height: 6px; margin-left: 6px; margin-bottom: 1px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform var(--dur-fast) var(--ease-out);
+}
+.nav-services:hover .nav-caret, .nav-services:focus-within .nav-caret { transform: rotate(-135deg); }
+
+.nav-services-panel {
+  position: fixed; top: 60px; left: 0; right: 0; z-index: 90;
+  background: var(--paper); color: var(--ink);
+  border-top: 1px solid rgb(0 0 0 / 8%);
+  border-bottom: 1px solid rgb(0 0 0 / 8%);
+  box-shadow: 0 20px 40px rgb(0 0 0 / 10%);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out), visibility 0s linear var(--dur-med);
+}
+.nav-services:hover .nav-services-panel,
+.nav-services:focus-within .nav-services-panel {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0);
+  transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out), visibility 0s;
+}
+
+.nav-services-inner {
+  width: 100%; max-width: var(--container-max); margin-inline: auto;
+  padding: var(--space-8) var(--space-5) var(--space-10);
+  display: grid; grid-template-columns: repeat(var(--grid-cols), 1fr); gap: var(--space-8);
+}
+@media (min-width: 810px) { .nav-services-inner { padding-inline: var(--page-gutter); } }
+
+.nav-services-heading {
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+  color: rgb(15 15 15 / 45%);
+}
+.nav-services-col ul { display: flex; flex-direction: column; margin-top: var(--space-3); }
+.nav-services-col li a {
+  display: block; padding: 7px 0; font-size: 0.95rem; font-weight: 500;
+  color: rgb(15 15 15 / 70%); transition: color var(--dur-fast) var(--ease-out);
+}
+.nav-services-col li a:hover { color: var(--ink); }
+
+.nav-services-cta {
+  border-left: 1px solid rgb(0 0 0 / 8%); padding-left: var(--space-8);
+  display: flex; flex-direction: column;
+}
+.nav-services-copy { margin-top: var(--space-3); font-size: 0.9rem; line-height: 1.5; color: rgb(15 15 15 / 60%); max-width: 24ch; }
+.nav-services-viewall {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: var(--space-6);
+  font-size: 0.9rem; font-weight: 600; color: var(--ink);
+  padding-bottom: 2px; border-bottom: 1px solid rgb(0 0 0 / 25%);
+  transition: gap var(--dur-fast) var(--ease-out);
+}
+.nav-services-viewall:hover { gap: 10px; }
+.nav-services-viewall span { transition: transform 200ms ease; }
+.nav-services-viewall:hover span { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-services-panel, .nav-caret { transition: none; }
+}
+
+.header-actions { display: none; align-items: center; gap: var(--space-6); }
+.header-actions .btn-ghost { color: rgb(15 15 15 / 65%); }
+.header-actions .btn-ghost:hover { color: var(--ink); }
+@media (min-width: 901px) { .header-actions { display: flex; } }
+
+/* the page's one deliberate accent -- a small lime status dot on the nav's
+   availability badge. Everything else stays monochrome. Base rule is
+   display:none since the desktop badge only shows >=901px; the mobile
+   panel's own copy of this badge overrides that further down. */
+.nav-badge { display: none; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500; color: rgb(15 15 15 / 70%); }
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-lime); flex-shrink: 0; }
+@media (min-width: 901px) { .nav-badge { display: inline-flex; } }
+
+/* ===== mobile nav (<901px) ========================================
+   Closed bar: persistent, logo + toggle only -- nothing else lives
+   here, so there's nothing for it to overflow around. The panel is a
+   completely separate, position:fixed element, absent from normal
+   layout (and therefore incapable of pushing the bar around) until
+   .is-open is added. */
+.nav-mobile { display: block; }
+@media (min-width: 901px) { .nav-mobile { display: none; } }
+
+.nav-mobile-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  background: #f6f6f6; color: #0f0f0f;
+  border-bottom: 1px solid #e5e4e1;
+}
+.nav-mobile-brand { font-size: 18px; font-weight: 700; }
+
+.nav-mobile-toggle {
+  width: 44px; height: 44px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background: none; border: 0; padding: 0; cursor: pointer;
+}
+.nav-mobile-toggle span {
+  display: block; width: 20px; height: 1.5px; background: #0f0f0f;
+  transform-origin: center;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), background var(--dur-fast) var(--ease-out);
+}
+/* forming a clean X (not a ">") needs both bars rotating around the
+   SAME point -- at rest they sit 6px apart (each still offset from the
+   button's true center), so opening has to cancel that offset (+-3.75px,
+   half the 7.5px gap between each bar's own center and the shared
+   midpoint) at the same time as the 45deg rotation, not after it */
+.nav-mobile-toggle[aria-expanded="true"] span:first-child { transform: translateY(3.75px) rotate(45deg); }
+.nav-mobile-toggle[aria-expanded="true"] span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+
+.nav-mobile__panel {
+  position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+  background: #f6f6f6; color: #0f0f0f;
+  z-index: 999;
+  display: flex; flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 450ms cubic-bezier(0.76, 0, 0.24, 1);
+  pointer-events: none;
+}
+.nav-mobile__panel.is-open { clip-path: inset(0 0 0 0); pointer-events: auto; }
+
+.nav-mobile-items { display: flex; flex-direction: column; gap: 28px; }
+.nav-mobile-items a {
+  display: flex; align-items: center; min-height: 48px;
+  font-size: 32px; font-weight: 500; color: #0f0f0f;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+/* asymmetric on purpose: closing (removing .is-open) falls back to this
+   base rule -- fast, no delay, so items fade first. Opening (below) adds
+   the longer duration + stagger only in that direction. */
+.nav-mobile__panel.is-open .nav-mobile-items a {
+  opacity: 1; transform: translateY(0);
+  transition-duration: 400ms; transition-delay: 150ms;
+}
+.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(2) { transition-delay: 210ms; }
+.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(3) { transition-delay: 270ms; }
+.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(4) { transition-delay: 330ms; }
+
+.nav-mobile-footer {
+  margin-top: auto; padding-top: 24px;
+  border-top: 1px solid #e5e4e1;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.nav-mobile-footer .nav-badge { display: flex; font-size: 14px; color: rgb(15 15 15 / 70%); }
+.nav-mobile-cta { width: 100%; height: 56px; border-radius: 999px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-mobile-toggle span { transition: none; }
+  .nav-mobile__panel { transition: none; }
+  .nav-mobile-items a { transition: none; }
+}
+
+/* page column grid — measured directly off the reference (see tokens.css):
+   5 fixed 1px lines, NOT theme-adaptive, running behind the main content at
+   full opacity and behind the footer at half opacity. Homepage-only by
+   request -- scoped under .home-page (see src/app/page.tsx) rather than
+   every section/footer sitewide.
+
+   Implemented as a ::before on every section/footer rather than a shared
+   sibling overlay: a pseudo-element always paints after its own element's
+   background but before that element's real children, which is exactly the
+   "lines sit on top of the section's bg, behind its text" layering the
+   reference has -- and a shared absolutely-positioned sibling can't get
+   that right, since an opaque section coming later in DOM order will
+   occlude it regardless of z-index sign. Zero extra DOM nodes this way. */
+section, footer { position: relative; }
+.home-page section::before, .home-page footer::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+  margin-inline: auto;
+  max-width: var(--container-max);
+  padding-inline: var(--space-5);
+  background-repeat: repeat;
+  background-origin: content-box;
+  background-clip: content-box;
+  background-image: repeating-linear-gradient(to right,
+    var(--grid-line-color) 0, var(--grid-line-color) 1px,
+    transparent 1px, transparent calc(100% / var(--grid-cols)));
+}
+@media (min-width: 810px) {
+  .home-page section::before, .home-page footer::before { padding-inline: var(--page-gutter); }
+}
+.home-page footer::before { opacity: 0.5; }
+/* every section's real content needs to paint above its own grid line
+   pseudo-element, since ::before is otherwise the first painted child */
+.home-page section > *, .home-page footer > * { position: relative; z-index: 1; }
+
+/* hero ------------------------------------------------------------- */
+.hero { position: relative; padding-block: var(--space-cinematic) var(--space-16); overflow: hidden; background: var(--bg); color: var(--text); }
+
+/* measured pattern: a single companion block (the CEO quote, in the
+   reference's Introduction section) occupies exactly column 4 while the
+   primary content spans columns 1-3 -- reused here for hero main+stats. */
+.hero-grid {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  gap: var(--space-12);
+}
+.hero-main, .hero-aside { grid-column: 1 / -1; }
+@media (min-width: 810px) {
+  .hero-grid { align-items: end; }
+  .hero-main { grid-column: 1 / 4; }
+  .hero-aside { grid-column: 4; }
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: var(--fs-label); font-weight: 600; letter-spacing: normal;
+  color: var(--text-dim);
+  margin-bottom: var(--space-4);
+}
+
+/* the brand wordmark -- matches --fs-hero, the measured 200/130/76px tier
+   the reference reserves for its single-word H1. This is also the loader's
+   handoff target: it grows/moves to this element's position, then the
+   loader panel wipes away to reveal the same word already sitting here. */
+.hero-brand { font-size: var(--fs-hero); line-height: var(--lh-hero); font-weight: 800; letter-spacing: normal; margin: 0; white-space: nowrap; }
+.reveal-line { display: block; overflow: clip; }
+.reveal-line span { display: block; }
+
+.hero-sub { display: block; max-width: 46ch; margin: var(--space-6) 0 0; font-size: 1.1rem; color: var(--text-dim); }
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-10); }
+
+/* aside marginalia — stats read as a companion column, not a centered row */
+.hero-aside { border-top: 1px solid var(--hairline); padding-top: var(--space-5); }
+@media (min-width: 810px) { .hero-aside { padding-bottom: var(--space-3); } }
+.metric-num {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: normal;
+  font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.stat-suffix { font-weight: 800; font-size: 1.3rem; color: var(--text); vertical-align: super; }
+
+/* hero stat carousel — one stat visible at a time, right-aligned, hugging
+   col 4's right edge. Slides are stacked via position:absolute inside a
+   fixed-height box (not min-height -- every slide is removed from flow,
+   so the parent needs a real height to not collapse); default/leaving/
+   active are three distinct states rather than a single toggle, since the
+   entrance and exit each travel in a different direction (in from below,
+   out toward above) and a plain is-active flip can't express that. */
+.hero-stat-carousel { display: flex; flex-direction: column; align-items: flex-end; }
+.hero-stat-indicators { display: flex; align-items: center; gap: 20px; }
+
+.hero-stat-dot { position: relative; width: 20px; height: 20px; padding: 0; background: none; border: 0; cursor: pointer; }
+.hero-stat-dot-fill {
+  position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; border-radius: 50%;
+  background: #c9c9c4; transform: translate(-50%, -50%);
+  transition: opacity 200ms ease;
+}
+.hero-stat-ring { position: absolute; inset: 0; opacity: 0; transition: opacity 200ms ease; }
+.hero-stat-ring-track { fill: none; stroke: #e5e4e1; stroke-width: 1.5; }
+.hero-stat-ring-progress {
+  fill: none; stroke: #111; stroke-width: 1.5; stroke-linecap: round;
+  stroke-dasharray: 43.98; stroke-dashoffset: 43.98;
+  transform: rotate(-90deg); transform-origin: center;
+}
+.hero-stat-dot.is-active .hero-stat-dot-fill { opacity: 0; }
+.hero-stat-dot.is-active .hero-stat-ring { opacity: 1; }
+.hero-stat-dot.is-active .hero-stat-ring-progress { animation: heroStatArc 4000ms linear forwards; }
+.hero-stat-carousel.is-paused .hero-stat-ring-progress { animation-play-state: paused; }
+@keyframes heroStatArc {
+  from { stroke-dashoffset: 43.98; }
+  to { stroke-dashoffset: 0; }
+}
+
+.hero-stat-display {
+  position: relative; width: 100%; height: 84px;
+  margin-top: 24px; padding-top: var(--space-5);
+  border-top: 1px solid var(--hairline);
+}
+.hero-stat-slide {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; align-items: flex-end;
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+.hero-stat-slide.is-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.hero-stat-slide.is-leaving { opacity: 0; transform: translateY(-8px); }
+/* "12+" etc. is one string in one element by construction (see Hero.astro)
+   -- never split across a number span + a unit span, which is what causes
+   a stray unit to wrap onto its own line under tight width */
+.hero-stat-value { font-size: 56px; font-weight: 500; line-height: 1; color: #111; }
+.hero-stat-label { margin-top: 8px; font-size: 15px; font-weight: 400; color: #8a8a85; }
+
+@media (max-width: 809.98px) {
+  .hero-stat-value { font-size: 40px; }
+  .hero-stat-display { height: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-stat-slide { transition: none; }
+  .hero-stat-ring-progress { animation: none !important; stroke-dashoffset: 0; }
+}
+
+/* generic sections --------------------------------------------------- */
+section { padding-block: var(--space-16); background: var(--bg); color: var(--text); transition: background var(--dur-med) var(--ease-out); }
+
+/* interior-page hero -- lighter-weight than the homepage Hero (no
+   wordmark/loader/marquee), used to open /about, /services, /work, etc. */
+.page-hero { padding-block: var(--space-cinematic) var(--space-14); }
+.page-hero .eyebrow { margin-bottom: var(--space-5); }
+.page-hero-heading { font-size: var(--fs-h2-lg); line-height: var(--lh-h2-lg); font-weight: 600; letter-spacing: normal; max-width: 20ch; margin: 0; }
+.page-hero .hero-sub { margin-top: var(--space-6); }
+
+/* /work hero -- DriftWall (React Bits) as a full-bleed drifting photo
+   wall behind the page title, replacing the plain .page-hero here only.
+   Text sits in a pointer-events:none layer so hover/click still reaches
+   the tiles underneath it, same as a video-background hero. */
+.work-hero { position: relative; height: 480px; overflow: hidden; background: var(--ink); }
+@media (min-width: 810px) {
+  .work-hero { height: 620px; }
+}
+.work-hero-wall { position: absolute; inset: 0; z-index: 0; }
+.work-hero-content {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: center; gap: var(--space-6);
+  pointer-events: none;
+  color: var(--paper);
+}
+@media (min-width: 810px) {
+  /* spread: heading anchors the left edge, subhead anchors the right --
+     the same "content touches both sides" move as .contact-ledger and
+     the homepage skillset head, not a new layout idea for this page. */
+  .work-hero-content { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: var(--space-10); }
+}
+.work-hero-content .eyebrow { color: rgb(255 255 255 / 70%); margin-bottom: var(--space-5); }
+.work-hero-heading {
+  font-size: var(--fs-h2-lg); line-height: var(--lh-h2-lg); font-weight: 600; letter-spacing: normal;
+  max-width: 20ch; margin: 0; color: var(--paper);
+}
+.work-hero-sub { display: block; max-width: 34ch; margin: 0; font-size: 1.1rem; color: rgb(255 255 255 / 75%); flex-shrink: 0; }
+@media (min-width: 810px) {
+  .work-hero-sub { text-align: right; }
+}
+
+/* editorial section head — measured pattern: section headings start at
+   column-line 2 (not the page edge), leaving column 1 as a deliberate
+   empty/meta margin -- e.g. "Projects" heading starts at x=381 (column 2)
+   while column 1 sits empty beside it. Nested grid reuses the same 4-col
+   module as .wrap, not an independent 200px/1fr split. */
+.section-head {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  align-items: end;
+  padding-top: var(--space-5);
+  margin-bottom: var(--space-14);
+  border-top: 1px solid var(--hairline);
+}
+.section-head-meta { grid-column: 1; display: flex; flex-direction: column; gap: var(--space-2); }
+.section-head .reveal-words { grid-column: 2 / -1; }
+.section-index { font-size: 0.8rem; font-weight: 600; color: var(--text-faint); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.section-head .eyebrow { margin-bottom: 0; }
+.section-head h2 { margin: 0; }
+@media (max-width: 809.98px) {
+  .section-head { grid-template-columns: 1fr; gap: var(--space-3); }
+  .section-head-meta, .section-head .reveal-words { grid-column: 1; }
+}
+
+/* same running-head language for headings set inline rather than through
+   SectionHead (case study / team / contact each sit beside other content) */
+.eyebrow-row {
+  display: flex; align-items: baseline; gap: var(--space-3);
+  padding-top: var(--space-5); margin-bottom: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+.eyebrow-row .eyebrow { margin-bottom: 0; }
+
+/* intro — measured pattern: the reference's intro heading right-edges
+   exactly onto column-line 3 (spans columns 1-2), and its 3-stat row spans
+   columns 1-3 as three equal columns, both leaving column 4 as a
+   deliberate empty margin rather than stretching to fill it. */
+.intro-lead {
+  grid-column: 1 / 3;
+  font-size: clamp(1.3rem, 1.05rem + 1vw, 1.8rem); max-width: 42ch; letter-spacing: normal; line-height: 1.35;
+}
+.intro-metrics {
+  grid-column: 1 / 4;
+  display: grid; gap: var(--space-8);
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: var(--space-16);
+  padding-top: var(--space-12);
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 809.98px) {
+  .intro-lead, .intro-metrics { grid-column: 1 / -1; }
+  .intro-metrics { grid-template-columns: 1fr; }
+}
+.metric p { color: var(--text-dim); margin-top: var(--space-1); font-size: var(--fs-body); }
+
+/* homepage service wheel — same light panel as the hero directly above it
+   (var(--bg)/var(--text), not a new panel), so the two sections read as
+   one continuous surface. Curved draggable option list on the left,
+   a detail readout on the right that swaps copy as the wheel selection
+   changes. No new accent color: the wheel's "active" tone is a plain
+   near-black, same restraint as the rest of the palette. */
+.wheel-section { background: var(--bg); color: var(--text); }
+.wheel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  padding-block: var(--space-16);
+}
+.wheel-col, .wheel-detail { grid-column: 1 / -1; }
+@media (min-width: 810px) {
+  .wheel-grid { grid-template-columns: 1.1fr 1fr; align-items: center; gap: var(--space-12); }
+  .wheel-col { grid-column: 1 / 2; }
+  .wheel-detail { grid-column: 2 / 3; }
+}
+
+.wheel-col { position: relative; height: 560px; }
+@media (min-width: 810px) {
+  .wheel-col { height: 720px; }
+}
+/* the wheel's font-size/inset are set as inline custom properties by the
+   OptionWheel component (its own props aren't breakpoint-aware) -- the
+   !important here is the only way to retune them per-viewport without
+   forking the component itself. Narrower inset + smaller type keeps the
+   longest service titles ("Search Engine Optimization") from running
+   past the column's left edge on phone widths. */
+@media (max-width: 809.98px) {
+  .wheel-col .option-wheel { --ow-font-size: 1.4rem !important; --ow-inset: 16px !important; }
+}
+
+.wheel-detail { max-width: 46ch; border-top: 1px solid var(--border); padding-top: var(--space-8); }
+@media (min-width: 810px) {
+  .wheel-detail { border-top: none; padding-top: 0; }
+}
+
+.wheel-detail-eyebrow {
+  display: block;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: var(--space-4);
+}
+.wheel-detail-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
+  line-height: 1.2;
+  margin: 0 0 var(--space-4);
+  color: var(--text);
+}
+.wheel-detail-body { color: var(--text-dim); line-height: 1.65; font-size: var(--fs-body); margin-bottom: var(--space-6); }
+
+.wheel-detail-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 600; color: var(--text);
+  border-bottom: 1px solid var(--text-faint);
+  padding-bottom: 2px;
+  transition: gap var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.wheel-detail-link:hover { gap: 10px; border-color: var(--text); }
+
+
+/* work grid (Projects) — each row is a real 4-column grid: col1 name,
+   cols2-3 image (flush, no inset), col4 meta. .work-col-name/.work-col-detail
+   exist ONLY to place their children in the right grid column -- they
+   never carry an opacity/transform rule themselves. The project name
+   (.work-name-block) and the hover-reveal elements (.work-jump,
+   .work-meta) are independent siblings within those wrappers, each with
+   its OWN hover rule, so the reveal opacity can never cascade onto the
+   name. The name only ever translates, never fades. */
+.work-grid { display: flex; flex-direction: column; }
+.work-grid > *, .footer-nav > * { min-width: 0; }
+.work-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  padding-block: var(--space-7);
+  border-top: 1px solid var(--border);
+}
+.work-grid > .work-card:last-child { border-bottom: 1px solid var(--border); }
+
+.work-col-name, .work-media, .work-col-detail { grid-column: 1 / -1; }
+.work-media { position: relative; overflow: hidden; aspect-ratio: 16/9; }
+.work-media-fill {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.25);
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.work-name-block h3 { font-size: 24px; font-weight: 500; color: #111; margin-bottom: 2px; }
+.work-name-block p { font-size: 15px; font-weight: 400; color: #8a8a85; }
+.work-jump { font-size: 15px; font-weight: 400; color: #111; margin-top: var(--space-3); }
+.work-arrow { font-size: 20px; line-height: 1; display: block; }
+
+.work-col-detail { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-3); }
+.work-meta { display: flex; gap: var(--space-6); }
+.work-meta-label { display: block; font-size: 12px; font-weight: 400; color: #8a8a85; }
+.work-meta-value { display: block; font-size: 12px; font-weight: 600; color: #111; margin-top: 2px; }
+
+/* >=810px: fixed-height real grid row. Name/jump stack top->bottom and
+   arrow/meta stack top->bottom via flex space-between -- correct, fully
+   visible layout for ANY desktop-width device (including a touch tablet
+   that can't hover) before the hover-only tier below repositions things. */
+@media (min-width: 810px) {
+  .work-card { grid-template-columns: repeat(var(--grid-cols), 1fr); gap: 0; height: 500px; }
+  .work-col-name {
+    grid-column: 1 / 2; position: relative; height: 100%; padding: var(--space-6);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .work-media { grid-column: 2 / 4; aspect-ratio: auto; height: 100%; }
+  .work-col-detail {
+    grid-column: 4 / 5; position: relative; height: 100%; padding: var(--space-6);
+    display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;
+    margin-top: 0; text-align: right;
+  }
+  .work-jump { margin-top: 0; }
+  .work-meta-pair + .work-meta-pair { margin-top: var(--space-2); }
+}
+
+/* fine-pointer hover only: the full choreography. Gated behind
+   (hover:hover) and (pointer:fine) on top of the tier above so a
+   desktop-width touch device keeps the always-visible flex layout --
+   it has no way to trigger :hover, so hiding jump/meta there would be a
+   dead end, same reasoning the rest of this file uses for hover-only UI. */
+@media (min-width: 810px) and (hover: hover) and (pointer: fine) {
+  .work-name-block {
+    position: absolute; left: var(--space-6); right: var(--space-6); top: 50%;
+    transform: translateY(-50%);
+    transition: top 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .work-jump {
+    margin-top: auto;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 300ms ease, transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .work-arrow {
+    position: absolute; top: 50%; right: var(--space-6);
+    transform: translateY(-50%);
+    transition: top 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .work-meta {
+    margin-top: auto;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 300ms ease, transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .work-card:hover .work-name-block { top: var(--space-6); transform: translateY(0); }
+  .work-card:hover .work-jump { opacity: 1; transform: translateY(0); transition-delay: 60ms; }
+  .work-card:hover .work-arrow { top: var(--space-6); transform: translateY(0); }
+  .work-card:hover .work-meta { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
+  .work-card:hover .work-media-fill { transform: scale(1); }
+}
+
+/* case study — full-bleed 4-col ledger, gap 0. Hairlines reuse the same
+   sitewide column-guide pattern every section already paints behind its
+   content (see section::before near the top of this file) -- overriding
+   --grid-line-color locally is enough to recolor those verticals to this
+   section's #2A2A2A on dark, no need to hand-draw them. Horizontal lines
+   (between the 3 result rows) aren't part of that pattern and are drawn
+   directly. Literal hex throughout, not theme tokens -- this section is
+   spec'd as permanently dark regardless of root theme, same reasoning as
+   the Contact/FAQ/Testimonial ledgers. */
+.case-study {
+  background: #0f0f0f; color: #fff;
+  --grid-line-color: #2a2a2a;
+}
+.case-grid { display: grid; gap: 0; grid-template-columns: 1fr; }
+.case-copy, .case-right { grid-column: 1 / -1; }
+@media (min-width: 810px) {
+  .case-grid { grid-template-columns: repeat(var(--grid-cols), 1fr); align-items: stretch; }
+  .case-copy { grid-column: 1 / 3; }
+  .case-right { grid-column: 3 / 5; }
+}
+
+.case-copy {
+  display: flex; flex-direction: column;
+  padding: var(--space-10) var(--space-6) 48px;
+}
+.case-copy .eyebrow-row { border-top: none; padding-top: 0; margin-bottom: var(--space-5); }
+.case-copy .section-index { color: #6b6b6b; }
+.case-copy .eyebrow { color: #fff; font-size: 13px; font-weight: 600; margin-bottom: 0; }
+
+/* max-width is deliberately just 100% of .case-copy's own box (already
+   bounded to cols 1-2 by the grid placement above) rather than a ch-based
+   guess -- so the headline wraps inside the real column edge exactly,
+   never crossing into col 3, at any font-size. Literal 72px only at
+   desktop widths; a ch-based clamp would fight the "reduce until it fits
+   the span" instruction, but 72px alone would overflow narrow phones. */
+.case-heading {
+  margin-top: 0;
+  font-size: 40px; font-weight: 600; line-height: 0.95; color: #fff;
+  max-width: 100%;
+}
+@media (min-width: 810px) {
+  .case-heading { font-size: 72px; }
+}
+
+.case-body {
+  margin-top: var(--space-6);
+  font-size: 17px; font-weight: 400; line-height: 1.55; color: #8a8a85;
+  max-width: 48ch;
+}
+/* the 3-line clamp is tuned for desktop's wide two-column span, where it
+   still shows nearly the whole paragraph -- .case-copy is full-width
+   below 810px, so the same 3 lines fits roughly a third as many
+   characters and clamping there cut most of the text down to one
+   sentence fragment. Full text, natural wrap, on narrow viewports. */
+@media (min-width: 810px) {
+  .case-body { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+}
+
+/* pinned to the bottom of the section via margin-top:auto in the flex
+   column above, not space-between -- so it holds its natural position
+   when the quote is short instead of floating mid-gap. Upright, no bar,
+   no accent -- just larger/brighter type is what marks it as a quote. */
+.case-quote {
+  margin: auto 0 0; padding-top: var(--space-8);
+  font-size: 20px; font-weight: 500; line-height: 1.4; font-style: normal;
+  color: #fff; max-width: 48ch;
+}
+.case-quote cite { display: block; margin-top: var(--space-3); font-style: normal; font-size: 14px; font-weight: 400; color: #6b6b6b; }
+
+.case-right { display: flex; flex-direction: column; }
+.case-visual {
+  position: relative;
+  aspect-ratio: 2 / 1; border-radius: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--space-4);
+  overflow: hidden;
+  background: #2a2a2a;
+}
+.case-visual-label { font-size: 13px; font-weight: 500; letter-spacing: 0.02em; color: #6b6b6b; text-align: center; }
+.case-visual-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.case-results { display: flex; flex-direction: column; }
+.case-result-row {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+  min-height: 120px; padding-inline: var(--space-6);
+  border-top: 1px solid #2a2a2a;
+}
+.case-result-label { font-size: 14px; font-weight: 400; color: #8a8a85; }
+.case-result-value {
+  display: inline-flex; align-items: baseline; white-space: nowrap;
+  font-family: var(--font-display); font-size: 48px; font-weight: 500; line-height: 1; color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.case-result-value .stat-suffix { font-size: 48px; font-weight: 500; color: #fff; vertical-align: baseline; }
+
+@media (max-width: 809.98px) {
+  .case-visual { aspect-ratio: 4 / 3; }
+  .case-result-row { min-height: 88px; }
+  .case-result-value { font-size: 36px; }
+  .case-result-value .stat-suffix { font-size: 36px; }
+}
+
+/* homepage "How we work" -- copy on the left, the four process steps as
+   a swapping card stack (CardSwap, React Bits) on the right, so "four
+   steps, every time" is shown happening rather than just listed in a
+   static grid. */
+.process-wrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  padding-block: var(--space-16);
+}
+.process-intro, .process-stage { grid-column: 1 / -1; }
+@media (min-width: 810px) {
+  .process-wrap { grid-template-columns: 1.1fr 1fr; align-items: center; gap: var(--space-12); }
+  .process-intro { grid-column: 1 / 2; }
+  .process-stage { grid-column: 2 / 3; }
+}
+
+.process-lead { margin-top: var(--space-5); max-width: 42ch; color: var(--text-dim); font-size: var(--fs-body); line-height: 1.6; }
+
+/* CardSwap.css positions its own container as position:relative (not
+   corner-anchored), so all this box has to do is give it room and
+   center it -- same pattern as the React Bits reference demo. */
+.process-stage { display: flex; align-items: center; justify-content: center; height: 320px; }
+@media (min-width: 810px) {
+  .process-stage { height: 380px; }
+}
+
+/* Accordion rows -- 01/02/03, title, "+"/"x" icon. Animation exactly per
+   spec: grid-template-rows 0fr->1fr on the panel (cubic-bezier(0.16,1,0.3,1),
+   0.5s) so the container height itself animates smoothly (the well-known
+   fr-unit technique -- .pillar-panel-inner needs overflow:hidden for the
+   0fr track to actually collapse to zero); inner content starts
+   opacity:0 + translateY(30px) and slides up with a 0.1s delay so the
+   container is already opening before content starts arriving; the icon
+   rotates 45deg (+ -> x) over 0.4s on the same easing. */
+.pillar-accordion { margin-top: var(--space-4); }
+.pillar-row { border-top: 1px solid var(--border); }
+.pillar-row:last-child { border-bottom: 1px solid var(--border); }
+.pillar-summary {
+  display: grid; grid-template-columns: repeat(var(--grid-cols), 1fr);
+  align-items: center; width: 100%; min-height: 176px; text-align: left;
+  padding-block: var(--space-6); background: none; border: 0; color: inherit; cursor: pointer;
+}
+.pillar-number { grid-column: 1 / 2; font-size: 13px; font-weight: 400; color: #8a8a85; opacity: 0.6; font-variant-numeric: tabular-nums; }
+
+/* title slide: both strings are stacked in the same box (inset:0) and
+   swap via transform, not opacity -- collapsed sits at rest (0), expanded
+   sits parked one box-height below (100%) invisible under overflow:hidden.
+   Opening drives collapsed up and out the top (-100%) while expanded rides
+   up into place (0). Since both rules just hang off .is-open, removing the
+   class runs the same transition backwards -- collapsed slides back down
+   into view, expanded slides back down and out. Narrowed to just col 2
+   (was col 2-4) so col 3 is a real, distinct column the panel below can
+   use for the service list instead of col 2 being a 2-wide span with
+   nothing in col 3 at all. */
+.pillar-title { grid-column: 2 / 3; position: relative; overflow: hidden; min-height: 40px; font-size: 28px; line-height: 1.2; font-weight: 500; font-family: var(--font-display); }
+.pillar-title-collapsed, .pillar-title-expanded {
+  display: block; position: absolute; inset: 0;
+  color: #111;
+  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pillar-title-collapsed { transform: translateY(0); }
+.pillar-title-expanded { transform: translateY(100%); }
+.pillar-row.is-open .pillar-title-collapsed { transform: translateY(-100%); }
+.pillar-row.is-open .pillar-title-expanded { transform: translateY(0); }
+
+.pillar-icon {
+  grid-column: 4 / 5; justify-self: end; font-size: 18px; line-height: 1; font-weight: 400; color: #111;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pillar-row.is-open .pillar-icon { transform: rotate(45deg); }
+
+.pillar-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pillar-row.is-open .pillar-panel { grid-template-rows: 1fr; }
+.pillar-panel-inner { overflow: hidden; }
+.pillar-panel-content {
+  display: grid; grid-template-columns: repeat(var(--grid-cols), 1fr);
+  padding: 40px 0;
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pillar-row.is-open .pillar-panel-content { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+
+/* col 2: just the link, sitting directly under the (fixed-position,
+   crossfading) title above it. col 3: the service list -- its own real
+   column now, not sharing col 2-4 with the link. col 4: the count. */
+.pillar-panel-content .text-link {
+  grid-column: 2 / 3; grid-row: 1; align-self: start;
+  border-bottom: none; padding-bottom: 0;
+  font-size: 15px; font-weight: 600; color: #111;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.pillar-panel-content .text-link:hover { border-color: transparent; gap: 6px; }
+.pillar-panel-content .text-link span[aria-hidden] { display: inline-block; transition: transform 200ms ease; }
+.pillar-panel-content .text-link:hover span[aria-hidden] { transform: translateX(4px); }
+
+/* list rhythm comes purely from each item's own line-height, not a
+   separate flex gap stacked on top -- that's what keeps the spacing
+   uniform regardless of how many items wrap to a second line. */
+.pillar-service-list { grid-column: 3 / 4; grid-row: 1; display: flex; flex-direction: column; }
+.pillar-service-list li {
+  font-size: 16px; font-weight: 400; line-height: 1.7; color: #8a8a85;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pillar-row.is-open .pillar-service-list li {
+  opacity: 1; transform: translateY(0);
+  transition-duration: 0.45s; transition-delay: 0.15s;
+}
+.pillar-row.is-open .pillar-service-list li:nth-child(2) { transition-delay: 0.2s; }
+.pillar-row.is-open .pillar-service-list li:nth-child(3) { transition-delay: 0.25s; }
+.pillar-row.is-open .pillar-service-list li:nth-child(4) { transition-delay: 0.3s; }
+
+/* col 4 stat -- a real derived number (services-per-pillar, not
+   invented). Distinct "pop" entrance (scale + overshoot easing) instead
+   of the list's plain slide-fade, delayed slightly after it so it
+   arrives second. */
+.pillar-stat {
+  grid-column: 4 / 5; grid-row: 1;
+  display: flex; flex-direction: column; align-items: flex-end; text-align: right;
+  opacity: 0; transform: scale(0.7) translateY(8px);
+  transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: 0.2s;
+}
+.pillar-row.is-open .pillar-stat { opacity: 1; transform: scale(1) translateY(0); }
+.pillar-stat-value { font-size: 48px; font-weight: 600; line-height: 1; color: #111; font-family: var(--font-display); }
+.pillar-stat-label { margin-top: 4px; font-size: 13px; font-weight: 400; color: #8a8a85; }
+
+@media (max-width: 809.98px) {
+  .pillar-panel-content { grid-template-columns: 1fr; }
+  .pillar-service-list, .pillar-stat, .pillar-panel-content .text-link { grid-column: 1 / -1; grid-row: auto; }
+  .pillar-panel-content .text-link { margin-top: var(--space-5); }
+  .pillar-stat { align-items: flex-start; text-align: left; margin-top: var(--space-5); }
+  .pillar-stat-value { font-size: 36px; }
+
+  /* The collapsed row's 4 equal columns give the title ~25% of the row's
+     width -- fine at desktop container widths, but "Marketing"/"Branding"
+     at 28px font in a ~90px-wide column just clips under .pillar-title's
+     overflow:hidden. auto/1fr/auto gives number and icon only the width
+     their own content needs and lets the title use the rest. */
+  .pillar-summary { grid-template-columns: auto 1fr auto; column-gap: var(--space-4); min-height: 0; padding-block: var(--space-5); }
+  .pillar-number { grid-column: 1 / 2; }
+  .pillar-title { grid-column: 2 / 3; font-size: 22px; min-height: 28px; }
+  .pillar-icon { grid-column: 3 / 4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar-icon, .pillar-panel, .pillar-panel-content, .pillar-stat,
+  .pillar-title-collapsed, .pillar-title-expanded, .pillar-service-list li { transition: none; }
+}
+
+/* team ----------------------------------------------------------- */
+/* studio / stats — a 4-column ledger like the FAQ/testimonial/contact
+   sections: cols 1-2 editorial (heading, avatar cluster, label/value
+   pairs, body), cols 3-4 stacked full-width stat ROWS (not an inline
+   triplet) so column 4 is never empty -- the big number lives there.
+   Literal hex per spec rather than theme tokens, same reasoning as the
+   other ledger sections. */
+.team { background: #f6f6f6; color: #0f0f0f; }
+.team::before { display: none; }
+.team-ledger {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  gap: 0;
+  border-top: 1px solid #e5e4e1;
+}
+.team-left, .team-stats { grid-column: 1 / -1; }
+.team-left { padding-block: var(--space-8); }
+@media (min-width: 810px) {
+  .team-left { grid-column: 1 / 3; border-right: 1px solid #e5e4e1; padding: var(--space-8) var(--space-8) var(--space-16) 0; }
+  .team-stats { grid-column: 3 / 5; }
+}
+
+.team-left .eyebrow-row { border-top: none; }
+
+.team-heading {
+  margin-top: var(--space-5);
+  font-family: var(--font-display); font-weight: 600; line-height: 0.95;
+  font-size: clamp(2.5rem, 1rem + 6vw, 5.625rem);
+}
+.team-heading .tone-dark { color: #111; }
+.team-heading .tone-dim { color: #8a8a85; }
+
+/* homepage roster preview -- real seats from ROSTER (data/site.ts), not
+   decorative color-only circles: named seats show initials, open seats
+   show a dashed ring (same "honest gap" language as .founder-card--open
+   on /about), and hovering either reveals who/what it actually is via
+   AnimatedTooltip (React Bits, ported without its stock-photo avatars --
+   this site doesn't put real names on fabricated faces). */
+.team-avatars { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: var(--space-8); max-width: 420px; }
+.avatar-tooltip-row { display: flex; }
+.avatar-tooltip-item { position: relative; margin-right: -14px; }
+.avatar-tooltip-item:hover { z-index: 30; }
+
+.avatar-tooltip-circle {
+  position: relative;
+  width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #e5e4e1; color: #111; font-size: 14px; font-weight: 600;
+  border: 2px solid var(--bg);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.avatar-tooltip-item:hover .avatar-tooltip-circle { transform: scale(1.06); }
+.avatar-tooltip-circle--open { background: transparent; border: 1px dashed var(--border); color: var(--text-faint); }
+.avatar-tooltip-pill { background: #111; color: #fff; font-weight: 500; margin-left: 6px; }
+
+.avatar-tooltip-card-wrap { position: absolute; top: -64px; left: 50%; z-index: 50; transform: translateX(-50%); }
+.avatar-tooltip-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  background: var(--ink); color: var(--paper);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: 0 12px 28px -10px rgb(0 0 0 / 45%);
+}
+.avatar-tooltip-name { position: relative; font-size: 0.9rem; font-weight: 700; color: var(--paper); }
+.avatar-tooltip-role { font-size: 0.75rem; color: rgb(255 255 255 / 65%); }
+
+.team-pairs { margin-top: var(--space-6); display: flex; flex-direction: column; gap: 4px; }
+.team-pairs p { font-size: 16px; }
+.team-pairs strong { font-weight: 500; color: #111; }
+.team-pairs span { font-weight: 400; color: #8a8a85; }
+
+.team-body {
+  margin-top: var(--space-6); max-width: 34ch;
+  font-size: 17px; font-weight: 400; line-height: 1.5; color: #8a8a85;
+}
+/* same fixed-line-clamp-on-a-narrower-column issue as .case-body above --
+   see that rule's comment. */
+@media (min-width: 810px) {
+  .team-body { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+}
+
+.team-stats { display: flex; flex-direction: column; }
+.team-stat-row {
+  position: relative;
+  display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;
+  min-height: 140px; border-top: 1px solid #e5e4e1; padding-inline: var(--space-6);
+}
+@media (min-width: 810px) {
+  .team-stat-row { min-height: 190px; }
+}
+.team-stat-dots { position: absolute; top: 24px; left: var(--space-6); display: flex; gap: 8px; }
+.team-stat-dots span { width: 5px; height: 5px; border-radius: 50%; background: #c9c9c4; }
+.team-stat-dots span.active { background: #111; }
+.team-stat-label { font-size: 24px; font-weight: 400; line-height: 1.15; color: #111; padding-right: var(--space-4); }
+.team-stat-number { font-size: clamp(2.5rem, 1.5rem + 4vw, 4rem); font-weight: 500; line-height: 1; color: #111; text-align: right; }
+
+/* The Open Roster -- extends the exact coverage-dot mechanic already used
+   on /work (filled dot = has a case study, open = doesn't) to the team
+   roster itself: 5 real seats, 2 filled, 3 honestly open. Same filled/
+   open logic and color tokens as .coverage-dot, just a larger dot since
+   each one here pairs with a name rather than only feeding an aggregate
+   count. */
+.roster-ledger { margin-top: var(--space-10); padding-top: var(--space-8); border-top: 1px solid #e5e4e1; }
+.roster-ledger-label { font-size: 0.85rem; color: #8a8a85; font-variant-numeric: tabular-nums; margin-bottom: var(--space-6); }
+.roster-seats { display: flex; flex-wrap: wrap; gap: var(--space-8) var(--space-7); list-style: none; margin: 0; padding: 0; }
+.roster-seat { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 96px; }
+.roster-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: transparent; border: 1px dashed #c9c9c4;
+}
+.roster-dot.is-filled { background: #111; border-style: solid; border-color: #111; }
+.roster-seat-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: #111; }
+.roster-seat-sub { font-size: 0.8rem; color: #8a8a85; }
+
+/* testimonials + trust — merged into one 4-column layout per an
+   explicit design spec (exact colors/sizes given directly, not measured
+   off the reference). Nested inside .wrap so its grid lines/borders land
+   at the same gutter-inset x-positions as every other section's grid --
+   only the section background bleeds full-width. It still opts out of
+   the site-wide decorative grid overlay below, since this section draws
+   its own real (bordered) grid and a second overlay would double up. */
+.testimonials-section::before { display: none; }
+
+.testimonials-section { background: #f5f4f2; color: #0f0f0f; }
+.testimonial-fullbleed {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid #e5e4e1;
+  border-left: 1px solid #e5e4e1;
+}
+@media (min-width: 810px) {
+  .testimonial-fullbleed { grid-auto-rows: 640px; align-items: stretch; }
+}
+@media (max-width: 809.98px) {
+  .testimonial-fullbleed { grid-template-columns: 1fr; }
+}
+
+.testimonial-card, .testimonial-heading-col {
+  position: relative; z-index: 1;
+  margin: 0;
+  border-right: 1px solid #e5e4e1;
+  border-bottom: 1px solid #e5e4e1;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 28px;
+  overflow: hidden;
+}
+
+/* columns 1-3: testimonial cards -- person/rating slots swap top<->bottom
+   via the .rating-first modifier. Top meta stays in normal flow, quote
+   follows it directly (not centered), and margin-top:auto on whichever
+   meta block lands in the trailing `order` slot pins it to the shared
+   bottom edge -- that's what keeps all three cards' bottom meta on one
+   baseline regardless of how tall the quote above it is. */
+.testimonial-card {
+  display: flex; flex-direction: column;
+  background: #fff;
+}
+.testimonial-person { order: 0; margin-top: 0; display: flex; align-items: center; gap: 8px; }
+.testimonial-quote { order: 1; margin: 20px 0 0; }
+.testimonial-rating { order: 2; margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 20px; }
+.testimonial-card.rating-first .testimonial-rating { order: 0; margin-top: 0; padding-top: 0; }
+.testimonial-card.rating-first .testimonial-person { order: 2; margin-top: auto; padding-top: 20px; }
+
+.testimonial-avatar {
+  width: 30px; height: 30px; border-radius: 50%; background: #e5e4e1; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: #111;
+}
+.testimonial-name { font-size: 13px; font-weight: 500; color: #111; }
+.testimonial-company { font-size: 13px; font-weight: 400; color: #8a8a85; margin-top: 2px; }
+.testimonial-quote {
+  font-size: 18px; font-weight: 500; line-height: 1.25; color: #111;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+.testimonial-stars { font-size: 12px; color: #111; letter-spacing: 3px; }
+.testimonial-score { font-size: 13px; font-weight: 500; color: #111; }
+
+/* column 4: heading block, not a card -- transparent, shows the section
+   background through. Heading top, sub-line mid, trust block pinned to
+   the bottom via margin-top:auto on a flex column. Sub-line two-tone is
+   REVERSED from the skillset section's (grey first, dark second here vs
+   dark first, grey after there) -- both per spec, not a copy-paste slip. */
+.testimonial-heading-col { display: flex; flex-direction: column; }
+.testimonial-heading-col .eyebrow-row { border-top: none; padding-top: 0; margin-bottom: var(--space-4); }
+.testimonial-heading { font-size: 30px; font-weight: 500; line-height: 1.1; color: #111; max-width: 11ch; }
+.testimonial-subline { margin-top: 16px; font-size: 14px; font-weight: 400; line-height: 1.25; display: flex; flex-direction: column; color: #111; }
+.testimonial-subline .dim { color: #8a8a85; }
+
+/* trust block pinned to the shared bottom edge (margin-top:auto, same
+   technique as the cards' bottom meta) -- avatar stack and copy sit on
+   one row, not stacked, so the block stays compact and never clips
+   against the cell's own bottom padding. */
+.testimonial-trust { margin-top: auto; display: flex; align-items: center; gap: var(--space-3); }
+.trust-avatar-stack { display: flex; flex-shrink: 0; }
+.trust-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: hsl(var(--tint) / 0.45);
+  border: 2px solid #fff;
+  margin-left: -8px;
+}
+.trust-avatar:first-child { margin-left: 0; }
+.trust-avatar-pill {
+  background: #111; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500;
+}
+.trust-copy { text-align: left; }
+.trust-label { font-size: 13px; font-weight: 500; color: #111; }
+.trust-rating { margin-top: 4px; font-size: 13px; font-weight: 500; color: #111; display: flex; align-items: center; gap: 8px; }
+.trust-rating span { font-size: 12px; letter-spacing: 3px; }
+
+/* faq + social proof — a self-contained 4-column ledger box per an exact
+   design spec (exact colors/sizes/container width given directly, not
+   measured off the reference), independent of the site-wide .wrap module:
+   cols 1-2 = editorial (statement + heading), cols 3-4 = functional (logo
+   marquee, CTA pills, FAQ accordion). Literal hex values below match the
+   spec exactly rather than the theme tokens where they differ slightly. */
+.faq-social::before { display: none; }
+.faq-social { background: #f6f6f6; color: #0f0f0f; }
+.faq-social-box {
+  width: 91.4vw;
+  max-width: 1316px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid #e5e5e5;
+}
+@media (max-width: 809.98px) {
+  .faq-social-box { grid-template-columns: 1fr; width: 100%; }
+}
+
+.faq-editorial { grid-column: 1 / 3; min-width: 0; border-right: 1px solid #e5e5e5; padding: var(--space-8); }
+.faq-functional { grid-column: 3 / 5; min-width: 0; display: flex; flex-direction: column; }
+@media (max-width: 809.98px) {
+  .faq-editorial { grid-column: 1 / -1; border-right: none; border-bottom: 1px solid #e5e5e5; }
+  .faq-functional { grid-column: 1 / -1; }
+}
+
+.faq-statement {
+  font-family: var(--font-display);
+  font-size: 30px; font-weight: 600; line-height: 1;
+}
+.faq-statement .tone-dark { color: #0f0f0f; }
+.faq-statement .tone-dim { color: #8a8a85; }
+.faq-social-heading {
+  margin-top: clamp(60px, 14vw, 200px);
+  font-size: 40px; font-weight: 600; line-height: 1.05; color: #0f0f0f;
+}
+
+.faq-marquee-row {
+  overflow: hidden;
+  border-bottom: 1px solid #e5e5e5;
+  padding-block: var(--space-5);
+}
+.faq-marquee-track {
+  display: flex; gap: var(--space-8); white-space: nowrap; width: max-content;
+  font-family: var(--font-display); font-weight: 600; font-size: 24px; color: #b5b5b5;
+  animation: marquee 26s linear infinite;
+}
+.faq-marquee-row:hover .faq-marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .faq-marquee-track { animation: none; } }
+
+.faq-pill-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #e5e5e5; }
+.faq-pill {
+  display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: 52px; margin: var(--space-5); border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 600;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.faq-pill:hover { opacity: 0.75; }
+.faq-pill span { font-size: 14px; }
+.faq-pill-ghost { background: transparent; border: 1px solid #d5d5d5; color: #0f0f0f; }
+.faq-pill-solid { background: #0f0f0f; color: #fff; margin-left: 0; }
+
+.faq-ledger { display: flex; flex-direction: column; }
+.faq-row-summary {
+  width: 100%; min-height: 62px; display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4); padding-inline: var(--space-6); border-top: 1px solid #e5e5e5;
+  cursor: pointer; transition: background var(--dur-fast) var(--ease-out);
+}
+.faq-row-summary:hover { background: rgb(0 0 0 / 3%); }
+.faq-row-question { font-size: 18px; font-weight: 400; color: #0f0f0f; }
+.faq-row-icon {
+  font-size: 18px; font-weight: 400; line-height: 1; color: #0f0f0f; flex-shrink: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq-row.is-open .faq-row-icon { transform: rotate(45deg); }
+.faq-row-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 300ms ease; }
+.faq-row.is-open .faq-row-panel { grid-template-rows: 1fr; }
+.faq-row-panel-inner { overflow: hidden; }
+.faq-row-answer { padding: 0 var(--space-6) var(--space-5); font-size: 14px; font-weight: 400; line-height: 1.5; color: #666; max-width: var(--measure); }
+
+/* contact — a structural 4-column ledger per an exact design spec, same
+   family as the FAQ/testimonial ledgers: the form is not a card sitting
+   on the grid, its fields ARE grid cells, so the column divider between
+   the copy half and the form half (and the one bisecting the form's own
+   two columns, via `subgrid` so it's the literal same track, not a
+   re-approximated one) has to run uninterrupted through everything.
+   Literal hex per spec rather than theme tokens -- this section's palette
+   (bg #0F0F0F / text #FFF / #8A8A85 / #6B6B6B / border #2A2A2A) is fixed
+   regardless of the surrounding panel-light/dark alternation. */
+.contact { background: #0f0f0f; color: #fff; padding-top: 120px; }
+.contact-ledger {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  gap: 0;
+  border-top: 1px solid #2a2a2a;
+}
+.contact-left, .contact-form-ledger { grid-column: 1 / -1; }
+.contact-left { padding-block: var(--space-8); }
+.contact-form-ledger { display: grid; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 810px) {
+  .contact-left { grid-column: 1 / 3; border-right: 1px solid #2a2a2a; padding: var(--space-8) var(--space-8) var(--space-16) 0; }
+  .contact-form-ledger { grid-column: 3 / 5; grid-template-columns: subgrid; }
+}
+
+.contact-left .eyebrow-row { border-top: none; }
+.contact-left .section-index { color: #6b6b6b; font-size: 13px; }
+.contact-left .eyebrow { color: #fff; font-size: 13px; font-weight: 600; }
+
+/* heading -- text-wrap:balance alone can't rescue a 2-word phrase from
+   an orphan (there's nowhere else to break "CONTACT US" but before "US"),
+   so the copy itself was changed to three words that give balance real
+   material to distribute. Line-by-line mask reveal is built at runtime
+   (same technique as the homepage statement section) since there's no
+   way to know the real line breaks without measuring post-wrap. */
+.contact-heading {
+  font-family: var(--font-display); font-weight: 700; color: #fff;
+  font-size: 40px; line-height: 0.95; text-transform: uppercase;
+  text-wrap: balance;
+  margin: var(--space-5) 0 0;
+}
+@media (min-width: 810px) {
+  .contact-heading { font-size: 64px; }
+}
+.contact-heading-line-mask { display: block; overflow: hidden; }
+.contact-heading-line-inner {
+  display: block; transform: translateY(100%);
+  transition: transform 700ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.contact-body {
+  margin-top: var(--space-5); max-width: 32ch;
+  font-size: 16px; font-weight: 400; line-height: 1.5; color: #8a8a85;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.contact-tier { display: flex; align-items: baseline; gap: var(--space-4); margin-top: var(--space-7); }
+.contact-tier-label { flex: 0 0 48px; font-size: 12px; font-weight: 400; color: #6b6b6b; }
+.contact-tier > a { min-width: 0; }
+/* fixed 36px ceiling, never wraps -- if it's still too wide at very
+   narrow viewports it shrinks (the clamp's lower bound), it does not
+   fall back to wrapping like the previous version did */
+.contact-email {
+  font-size: clamp(1.35rem, 0.9rem + 1.6vw, 2.25rem); font-weight: 500; line-height: 1.15; color: #fff;
+  position: relative; display: inline-block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+/* the clamp's own 1.35rem floor was still wider than a real address
+   ("hello@insightsmarketers.com") fits in the space left after
+   .contact-tier-label at real phone widths -- text-overflow: ellipsis
+   was silently eating the back half of the address instead of shrinking
+   further, which is actively harmful for a contact detail someone needs
+   to read or copy correctly. */
+@media (max-width: 480px) {
+  .contact-tier-label { flex-basis: 40px; }
+  .contact-email { font-size: clamp(0.95rem, 5.2vw, 1.35rem); }
+}
+.contact-email::after {
+  /* bottom:0, not a small negative offset -- .contact-email has
+     overflow:hidden (for the ellipsis fallback), which would clip any
+     part of this pseudo-element sitting outside its own box */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: currentColor;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 300ms ease;
+}
+.contact-email:hover::after { transform: scaleX(1); transform-origin: left; }
+.contact-email:hover { color: #8a8a85; }
+.contact-phone { font-size: 22px; font-weight: 400; color: #8a8a85; transition: color var(--dur-fast) var(--ease-out); }
+.contact-phone:hover { color: #fff; }
+/* /contact (the dedicated page, not the homepage teaser) lists every
+   phone number under one shared "(Phone)" label rather than repeating
+   the label per number -- same .contact-phone link styling, just stacked. */
+.contact-phone-list { display: flex; flex-direction: column; gap: 4px; }
+
+/* the form is a subgrid of the outer ledger's own col3/col4 tracks, so
+   this divider sits on the exact same line as every other grid boundary
+   on the page -- not a second, independently-computed approximation. */
+.contact-form-ledger { position: relative; }
+@media (min-width: 810px) {
+  .contact-form-ledger::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+    background: #2a2a2a; pointer-events: none;
+  }
+}
+
+/* each field is now .contact-field-wrap (grid cell + position:relative
+   anchor) containing the real input/textarea plus a floating <label>
+   standing in for the old placeholder text. A native placeholder can't
+   be transformed/repositioned via CSS -- only its color -- so "the
+   placeholder lifts into a label on focus" has to be a real, separately
+   positioned element, toggled via the classic
+   :focus + :not(:placeholder-shown) sibling pattern (no JS needed for
+   this part). Two stacked pseudo-elements handle the two different
+   hairline behaviours: ::before is the static row divider that draws in
+   once on section-enter (staggered per row below); ::after is the white
+   focus indicator that draws in/out independently on focus/blur. Neither
+   can be the input's own border, since a border can't be scaleX'd
+   without distorting the input box itself. */
+.contact-field-wrap { grid-column: 1 / -1; position: relative; }
+.contact-field-wrap::before,
+.contact-field-wrap::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  pointer-events: none;
+}
+.contact-field-wrap::before {
+  background: #2a2a2a;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.contact-form-ledger.is-visible .contact-field-wrap::before { transform: scaleX(1); }
+.contact-field-wrap:nth-of-type(1)::before { transition-delay: 0ms; }
+.contact-field-wrap:nth-of-type(2)::before { transition-delay: 60ms; }
+.contact-field-wrap:nth-of-type(3)::before { transition-delay: 120ms; }
+.contact-field-wrap::after {
+  background: #fff;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.contact-field-wrap:focus-within::after { transform: scaleX(1); transform-origin: left; }
+
+.contact-field {
+  display: block; width: 100%; height: 72px;
+  background: transparent; border: none; border-radius: 0;
+  padding-inline: var(--space-6); color: #fff; font: inherit; font-size: 16px;
+}
+.contact-field::placeholder { color: transparent; }
+.contact-field:focus { outline: none; }
+.contact-field-message { height: 180px; padding-top: var(--space-5); resize: vertical; }
+
+.contact-field-label {
+  position: absolute; left: var(--space-6); top: 50%;
+  transform: translateY(-50%) scale(1); transform-origin: left center;
+  font-size: 16px; font-weight: 400; color: #7a7a7a;
+  pointer-events: none;
+  transition: transform 250ms ease, color 250ms ease;
+}
+.contact-field:focus + .contact-field-label,
+.contact-field:not(:placeholder-shown) + .contact-field-label {
+  transform: translateY(calc(-50% - 14px)) scale(0.6875);
+  color: #8a8a85;
+}
+.contact-field-label-message { top: var(--space-5); transform: translateY(0) scale(1); }
+.contact-field-message:focus + .contact-field-label-message,
+.contact-field-message:not(:placeholder-shown) + .contact-field-label-message {
+  transform: translateY(-14px) scale(0.6875);
+}
+
+.contact-submit-row { grid-column: 1 / -1; padding-block: var(--space-6); }
+@media (min-width: 810px) {
+  .contact-submit-row { grid-column: 1 / 2; }
+}
+.contact-submit {
+  position: relative; overflow: hidden;
+  width: 100%; height: 72px; border-radius: var(--radius-pill);
+  background: #f6f6f6; color: #0f0f0f; font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.contact-submit::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: #0f0f0f;
+  transform: scaleY(0); transform-origin: bottom;
+  transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.contact-submit:hover::before { transform: scaleY(1); }
+.contact-submit:active { transform: scale(0.98); }
+.contact-submit span {
+  position: relative; z-index: 1;
+  transition: color 1ms 175ms;
+}
+.contact-submit:hover span { color: #fff; }
+
+/* col 4, sitting beside the submit pill (col 3) on the same row --
+   status dot reuses the header nav-badge's exact lime accent so the
+   "available for projects" signal reads as one consistent site-wide
+   token, not a one-off green. */
+.contact-status-block { grid-column: 1 / -1; margin-top: var(--space-8); align-self: end; }
+@media (min-width: 810px) {
+  .contact-status-block { grid-column: 2 / 3; margin-top: 0; }
+}
+.contact-status-line { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #fff; }
+.contact-status-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent-lime); flex-shrink: 0;
+  animation: contactStatusPulse 2s infinite ease-out;
+}
+@keyframes contactStatusPulse {
+  0% { box-shadow: 0 0 0 0 rgb(179 255 0 / 20%); }
+  100% { box-shadow: 0 0 0 6px rgb(179 255 0 / 0%); }
+}
+.contact-status-reply { margin-top: 6px; font-size: 13px; font-weight: 400; color: #8a8a85; }
+.contact-socials { margin-top: var(--space-5); display: flex; flex-direction: column; gap: 6px; }
+.contact-socials a { font-size: 13px; font-weight: 400; color: #8a8a85; transition: color var(--dur-fast) var(--ease-out); }
+.contact-socials a:hover { color: #fff; }
+
+.form-status { grid-column: 1 / -1; font-size: 0.85rem; color: #8a8a85; min-height: 1.2em; padding-bottom: var(--space-4); }
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-heading-line-inner { transform: none; transition: none; }
+  .contact-field-wrap::before { transform: scaleX(1); transition: none; }
+  .contact-field-wrap::after { transition: none; }
+  .contact-field-label { transition: none; }
+  .contact-email::after { transition: none; }
+  .contact-submit::before, .contact-submit span { transition: none; }
+  .contact-status-dot { animation: none; }
+}
+
+/* founders / about ------------------------------------------------------ */
+.founder-grid { display: grid; gap: var(--space-8); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: var(--space-12); }
+.founder-card { padding: var(--space-7) 0; border-top: 1px solid var(--border); }
+.founder-avatar { display: block; width: 64px; height: 64px; border-radius: 50%; background: var(--surface-2); margin-bottom: var(--space-5); }
+.founder-card h3 { margin-bottom: 4px; }
+.founder-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+/* /team -- not-yet-individually-named specialist slots. Same dashed-border
+   "open" language as .discipline-open-note on /work (a real, honestly
+   labeled gap, not a broken card or a fabricated name/photo standing in
+   for one). */
+.team-open-note-lead { max-width: 56ch; margin-top: var(--space-5); color: var(--text-dim); font-size: 0.95rem; }
+.founder-card--open { border-top-style: dashed; }
+.founder-avatar--open { background: transparent; border: 1px dashed var(--border); }
+
+/* process (about page) --------------------------------------------------- */
+.process-grid { display: grid; gap: var(--space-8); grid-template-columns: repeat(2, 1fr); margin-top: var(--space-12); }
+@media (max-width: 809.98px) { .process-grid { grid-template-columns: 1fr; } }
+.process-step { padding: var(--space-7) 0; border-top: 1px solid var(--border); }
+.process-num { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--text-faint); }
+.process-step h3 { margin: var(--space-3) 0 var(--space-2); }
+.process-step p { color: var(--text-dim); font-size: 0.95rem; }
+
+/* services / work index pages -------------------------------------------- */
+.pillar-block { padding: var(--space-12) 0; border-top: 1px solid var(--border); }
+.pillar-block:first-of-type { border-top: none; }
+.pillar-head { display: flex; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-8); }
+.pillar-head h3 { font-size: 2rem; }
+.pillar-count { color: var(--text-faint); font-size: 0.9rem; }
+
+/* /work -- coverage indicator. Turns the honest fact that a young studio
+   doesn't have proof for every discipline yet into legible information
+   instead of something to paper over: a dot per discipline in the
+   pillar, filled once that discipline has a real case study, plus the
+   fraction spelled out. Theme-adaptive tokens (not literal hex) since
+   .pillar-block sits in a plain dark section here, unlike the hardcoded
+   light ledgers elsewhere in this file. */
+.coverage { display: flex; align-items: center; gap: var(--space-3); }
+.coverage-dots { display: flex; gap: 6px; }
+.coverage-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); transition: background var(--dur-fast) var(--ease-out); }
+.coverage-dot.is-filled { background: var(--text); }
+.coverage-label { font-size: 0.85rem; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* /work index, broken down one level further than the pillar: each of the
+   nine disciplines gets its own titled sub-block inside its pillar, with
+   its own work-grid (or its own open note) -- rather than pooling every
+   pillar's case studies into one undifferentiated grid, per discipline. */
+.discipline-block { margin-top: var(--space-8); }
+.discipline-block:first-of-type { margin-top: 0; }
+.discipline-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+.discipline-title {
+  font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--text);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.discipline-title:hover { border-color: var(--text); }
+.discipline-open-tag { font-size: 0.8rem; color: var(--text-faint); white-space: nowrap; }
+
+/* the disciplines with no case study yet -- named plainly, not hidden,
+   with a dashed border so it reads as "open" rather than as a broken
+   version of a filled work-card row. */
+.discipline-open-note {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.discipline-open-note:hover { border-color: var(--text-dim); color: var(--text); }
+.discipline-open-note span:last-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+
+/* /work/[service] empty state */
+.service-empty { display: flex; flex-direction: column; align-items: flex-start; padding-block: var(--space-8); }
+
+/* services accordion -- 4-col row (number|title|content|icon), same
+   grid-template-rows 0fr/1fr technique as the homepage skillset
+   accordion. The row surface never changes color -- only its height and
+   content change. Content fade-in on open is delayed (visibly slides up
+   after the row starts growing, description before results); fade-out
+   on close is fast and undelayed so it finishes well before the row
+   finishes shrinking, which is what avoids any visible clipping. */
+.service-rows { display: flex; flex-direction: column; }
+.service-row { border-top: 1px solid var(--border); }
+.service-row:last-child { border-bottom: 1px solid var(--border); }
+
+.service-row-summary {
+  display: grid; grid-template-columns: repeat(var(--grid-cols), 1fr);
+  align-items: center; width: 100%; min-height: 90px; text-align: left;
+  background: none; border: 0; color: inherit; cursor: pointer;
+}
+.service-row-number { grid-column: 1 / 2; font-size: 14px; font-weight: 400; color: #8a8a85; font-variant-numeric: tabular-nums; }
+
+/* title crossfade: both strings sit in the DOM at all times (the
+   expanded one absolutely positioned over the collapsed one) so opening
+   a row swaps the TEXT via opacity, not the position -- .service-row-title
+   itself just reserves the box via the collapsed string's normal-flow
+   height, sized generously enough that a longer headline can wrap
+   without clipping. */
+.service-row-title {
+  grid-column: 2 / 4; position: relative; min-height: 66px;
+  font-size: 30px; font-weight: 600; line-height: 1.1; color: #fff; font-family: var(--font-display);
+}
+.service-row-title-collapsed, .service-row-title-expanded {
+  display: block; transition: opacity 200ms ease;
+}
+.service-row-title-expanded { position: absolute; inset: 0; opacity: 0; }
+.service-row.is-open .service-row-title-collapsed { opacity: 0; }
+.service-row.is-open .service-row-title-expanded { opacity: 1; }
+
+.service-row-icon { grid-column: 4 / 5; justify-self: end; position: relative; width: 20px; height: 20px; flex-shrink: 0; }
+.service-row-icon .bar-h, .service-row-icon .bar-v {
+  content: ""; position: absolute; background: #fff;
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.service-row-icon .bar-h { width: 100%; height: 2px; top: 50%; left: 0; translate: 0 -50%; }
+.service-row-icon .bar-v { width: 2px; height: 100%; left: 50%; top: 0; translate: -50% 0; }
+.service-row.is-open .service-row-icon .bar-v { transform: rotate(90deg); opacity: 0; }
+
+.service-row-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.service-row.is-open .service-row-panel { grid-template-rows: 1fr; }
+.service-row-panel-inner { overflow: hidden; }
+.service-row-panel-content {
+  display: grid; grid-template-columns: repeat(var(--grid-cols), 1fr);
+  align-items: start;
+  min-height: 170px; padding-bottom: var(--space-8);
+}
+
+.service-row-desc {
+  grid-column: 2 / 4;
+  font-size: 16px; font-weight: 400; line-height: 1.5; color: #8a8a85;
+  max-width: 48ch;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.service-row.is-open .service-row-desc {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 300ms ease 100ms, transform 300ms ease 100ms;
+}
+
+.service-row-results {
+  grid-column: 4 / 5;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.service-row.is-open .service-row-results {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 300ms ease 150ms, transform 300ms ease 150ms;
+}
+.service-row-results-label { font-size: 13px; font-weight: 400; color: #8a8a85; }
+.service-row-results ul { margin-top: var(--space-3); display: flex; flex-direction: column; gap: 6px; }
+.service-row-results li { font-size: 20px; font-weight: 500; line-height: 1.4; color: #fff; }
+
+.service-row-link {
+  grid-column: 2 / 4; margin-top: var(--space-5);
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.service-row.is-open .service-row-link {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 300ms ease 150ms, transform 300ms ease 150ms;
+}
+
+@media (max-width: 809.98px) {
+  .service-row-summary { grid-template-columns: auto 1fr auto; min-height: 72px; gap: var(--space-3); }
+  .service-row-number, .service-row-title, .service-row-icon { grid-column: auto; }
+  .service-row-title { font-size: 22px; min-height: 50px; }
+  .service-row-panel-content { grid-template-columns: 1fr; gap: var(--space-5); min-height: 0; }
+  .service-row-desc, .service-row-results, .service-row-link { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-row-icon .bar-v, .service-row-panel, .service-row-desc, .service-row-results, .service-row-link,
+  .service-row-title-collapsed, .service-row-title-expanded { transition: none; }
+}
+
+/* service detail page ----------------------------------------------------
+   "Also in {pillar}" related-services list -- was referenced in markup
+   already but had no rules backing it (rendered as unstyled links). Same
+   hairline-row + arrow-hover idiom used everywhere else on the site
+   (.text-link, .work-jump, .statement-cta), not a new visual language. */
+.service-list { display: flex; flex-direction: column; margin-top: var(--space-8); }
+.service-list-item {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+  padding-block: var(--space-6); border-top: 1px solid var(--border);
+}
+.service-list-item:last-child { border-bottom: 1px solid var(--border); }
+.service-list-item h4 { font-size: 1.4rem; font-weight: 500; }
+.service-list-item span {
+  font-size: 1.2rem; color: var(--text-dim);
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.service-list-item:hover span { transform: translateX(4px); color: var(--text); }
+
+/* "What's included" -- a running sentence with a floating detail card.
+   Same literal-hex ledger family as .approach-section below (and
+   .team/.testimonials-section further up): exact spec colors, not theme
+   tokens. The signature move here is THE DIM, not the card -- opening
+   any term drops every other term to a flat grey and leaves only the
+   active one at full contrast, so the sentence visibly points at itself. */
+.included-section { background: #f6f6f6; color: #0f0f0f; }
+.included-section::before { display: none; }
+
+.included-stage { position: relative; }
+
+.included-sentence {
+  max-width: 100%;
+  font-size: 40px; font-weight: 500; line-height: 1.22; letter-spacing: -0.02em;
+  color: #8a8a85;
+}
+@media (min-width: 1200px) { .included-sentence { font-size: 52px; } }
+
+.term {
+  position: relative;
+  display: inline; padding: 0; margin: 0;
+  background: none; border: 0;
+  font: inherit; font-weight: 500; color: #0f0f0f;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.term::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px;
+  background: currentColor;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.term:hover::after, .term[aria-expanded="true"]::after { transform: scaleX(1); }
+
+/* the dim: every term drops to the same grey as the sentence around it
+   the moment one opens; only the open one stays dark. Color only. */
+.included-stage[data-open="true"] .term { color: #c9c9c4; transition: color 260ms cubic-bezier(0.4, 0, 0.2, 1); }
+.included-stage[data-open="true"] .term[aria-expanded="true"] { color: #0f0f0f; }
+
+/* the card: one element, reused and repositioned/repopulated by JS --
+   never six stacked. pointer-events:none is required, not decorative --
+   without it the card would steal the pointerleave that's supposed to
+   close it the moment the cursor crosses the gap between word and card. */
+.included-card {
+  position: absolute; z-index: 5; width: 280px;
+  pointer-events: none;
+  background: #f6f6f6; border: 1px solid #e5e4e1; padding: 24px;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 260ms cubic-bezier(0.4, 0, 0.2, 1), transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.included-card.is-visible { opacity: 1; transform: translateY(0); }
+.included-card-num { font-size: 12px; font-weight: 400; color: #8a8a85; font-variant-numeric: tabular-nums; }
+.included-card-title { margin-top: 6px; font-size: 17px; font-weight: 600; color: #0f0f0f; }
+.included-card-desc {
+  margin-top: 8px;
+  font-size: 14px; font-weight: 400; line-height: 1.45; color: #8a8a85;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* touch / below 900px: no hover, no floating math -- the script skips
+   the positioning entirely at this width (see the script's own check),
+   and this just becomes a static block under the sentence, shown only
+   once its term is tapped. */
+@media (max-width: 899.98px) {
+  .included-sentence { font-size: 26px; }
+  .included-card {
+    position: static; display: none; width: 100%;
+    pointer-events: auto;
+    border: 0; border-top: 1px solid #e5e4e1; border-radius: 0;
+    padding: var(--space-6) 0 0; margin-top: var(--space-3);
+    opacity: 1; transform: none;
+  }
+  .included-card.is-visible { display: block; }
+}
+
+/* "How it works" -- horizontal reading-line scroll treatment. A
+   self-contained, literal-hex ledger section (same family as
+   .team/.testimonials-section/.faq-social: exact spec colors, not theme
+   tokens). Shared by every service detail page via [slug].astro.
+
+   Structure: .approach-stage sticks inside a 300vh .approach-track, so it
+   stays pinned on screen for the length of that scroll runway (a plain
+   CSS position:sticky "scrollytelling" pin -- the user can still fling
+   past it at any speed; nothing intercepts the scroll itself). ONE
+   signature move drives everything else: a single continuous scroll
+   progress value. The rail's fill and each marker's filled/unfilled state
+   read that value directly (continuous); which column is "active" reads
+   a quantized floor(progress * steps) of the same value, so the column
+   focus advances in five discrete beats instead of drifting.
+
+   Progressive enhancement, not reveal-then-hide: the base CSS below
+   already shows every column at full contrast with its detail visible --
+   that's what a no-JS browser, a crawler, or reduced-motion gets. The
+   script only ADDS .is-enhanced (see the bottom of this block) once it
+   confirms motion is allowed and the viewport is wide enough for the
+   sticky treatment to make sense; only then does the single-active-column
+   focus apply. */
+.approach-section { background: #f6f6f6; color: #0f0f0f; }
+.approach-section::before { display: none; }
+
+.approach-track { position: relative; height: 300vh; }
+.approach-stage {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-6));
+  /* fills most of the viewport while pinned, not just its own content
+     height -- otherwise .approach-columns has nothing to flex:1 into and
+     the lower half of the stage sits empty. 48px bottom clearance keeps
+     it off the viewport edge. */
+  min-height: calc(100vh - var(--nav-height) - var(--space-6) - 48px);
+  display: flex;
+  flex-direction: column;
+  padding-top: 32px;
+  padding-bottom: 48px;
+  border-top: 1px solid #e5e4e1;
+}
+
+.approach-stage-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.approach-eyebrow-row { display: flex; align-items: center; gap: 8px; }
+.approach-index { font-size: 13px; font-weight: 600; color: #8a8a85; font-variant-numeric: tabular-nums; }
+.approach-eyebrow { font-size: 13px; font-weight: 600; color: #111; }
+.approach-counter { font-size: 13px; font-weight: 400; color: #8a8a85; font-variant-numeric: tabular-nums; }
+.approach-counter strong { color: #111; font-weight: 600; }
+.approach-heading { margin-top: 12px; font-size: 44px; font-weight: 600; line-height: 1.05; color: #111; }
+
+/* the rail: a full-width track, a fill that scales from the left with
+   raw scroll progress (scaleX only, never width, for 60fps), and 4
+   markers -- one ON the left edge of every column (0/25/50/75%), placed
+   by the SAME 4-column grid the columns below use, not hand-positioned,
+   so they can never drift out of alignment. A marker fills in once
+   progress has reached its own position -- independent of, and usually
+   ahead of, the quantized "active column" state -- so it reads as a
+   record of how far you've come, not a spotlight that moves on. */
+.approach-rail { position: relative; height: 2px; margin-top: 32px; }
+.approach-rail-track { position: absolute; inset: 0; background: #e5e4e1; }
+.approach-rail-fill {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: #111; transform: scaleX(0); transform-origin: left;
+  will-change: transform;
+}
+.approach-rail-markers { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
+.approach-rail-marker {
+  width: 3.5px; height: 3.5px; border-radius: 50%; background: #c9c9c4;
+  margin-left: -4px; margin-top: -5px;
+  transition: width 300ms ease, height 300ms ease, background 300ms ease;
+}
+.approach-rail-marker.is-filled { width: 6px; height: 6px; background: #111; }
+
+/* the columns: flex:1 so they take the rest of the pinned stage's height
+   (see .approach-stage above), not just their own content height -- that
+   spare height is what lets .approach-column-detail sit pinned to the
+   true bottom of the stage via margin-top:auto below, and what makes the
+   divider between columns actually run floor to ceiling instead of just
+   hugging the text. Full-bleed bordered-grid pattern (gap:0, dividers as
+   each cell's own border) matches the .testimonial-fullbleed ledger
+   elsewhere in this file, not a fresh technique. */
+.approach-columns { flex: 1; margin-top: 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.approach-column {
+  display: flex; flex-direction: column;
+  padding-right: 24px;
+  border-right: 1px solid #e5e4e1;
+}
+.approach-column:not(:first-child) { padding-left: 24px; }
+.approach-columns > .approach-column:last-child { border-right: none; padding-right: 0; }
+
+.approach-column-num {
+  display: block; font-family: var(--font-display); font-weight: 500; font-size: 14px; color: #8a8a85;
+  font-variant-numeric: tabular-nums;
+  transition: color 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.approach-column-title {
+  margin-top: 24px;
+  font-size: 24px; font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; color: #8a8a85;
+  transition: color 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.approach-column-desc {
+  margin-top: 12px; max-width: 100%;
+  font-size: 15px; font-weight: 400; line-height: 1.55; color: #8a8a85;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  transition: opacity 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* the "you get" block: pinned to the true bottom of the column (not
+   parked under the title) so it reads as the column's conclusion. */
+.approach-column-detail {
+  margin-top: auto; padding-top: 24px;
+  border-top: 1px solid #e5e4e1;
+  opacity: 1; transform: translateY(0);
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 60ms, transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 60ms;
+}
+.approach-detail-label { font-size: 12px; font-weight: 400; color: #8a8a85; }
+.approach-detail-value { margin-top: 4px; font-size: 18px; font-weight: 500; color: #111; }
+
+/* the enhancement itself: dim everything but the active column, and hide
+   (not remove -- layout stays put) every detail except its own. Reuses
+   the exact enter/exit asymmetry already established by .service-row-desc
+   elsewhere in this file -- fast (150ms), undelayed exit vs. a slower
+   (300ms), slightly delayed entrance, so the outgoing step's detail is
+   gone before the incoming one arrives instead of the two crossfading. */
+.approach-stage.is-enhanced .approach-column-num,
+.approach-stage.is-enhanced .approach-column-title,
+.approach-stage.is-enhanced .approach-column-desc { color: #8a8a85; }
+.approach-stage.is-enhanced .approach-column.is-active .approach-column-num,
+.approach-stage.is-enhanced .approach-column.is-active .approach-column-title,
+.approach-stage.is-enhanced .approach-column.is-active .approach-column-desc { color: #111; }
+.approach-stage.is-enhanced .approach-column-detail {
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.approach-stage.is-enhanced .approach-column.is-active .approach-column-detail {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 60ms, transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 60ms;
+}
+
+/* below 900px the sticky/rail treatment isn't attempted at all (see the
+   script's own width check) -- this is a plain, always-fully-visible
+   stacked list, not a cramped 4-up version of the desktop stage. */
+@media (max-width: 899.98px) {
+  .approach-track { height: auto; }
+  .approach-stage { position: static; min-height: 0; padding-top: var(--space-8); padding-bottom: 0; }
+  .approach-stage-head { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .approach-counter { display: none; }
+  .approach-rail { display: none; }
+  .approach-columns { flex: none; grid-template-columns: 1fr; gap: 0; margin-top: var(--space-8); }
+  .approach-column { padding-inline: 0; border-right: none; padding-block: var(--space-6); border-top: 1px solid #e5e4e1; }
+  .approach-columns > .approach-column:last-child { border-bottom: 1px solid #e5e4e1; }
+  .approach-column-title { margin-top: 4px; }
+  .approach-column-detail { margin-top: var(--space-4); padding-top: var(--space-4); }
+}
+
+/* closing CTA band -- a small hardcoded-dark anchor right before the
+   light footer, same family as .case-study/.contact (a deliberate dark
+   beat late in the page), just without a form since /contact owns that.
+   Built entirely from existing primitives (.eyebrow, RevealHeading,
+   .btn, .hero-actions) -- no new visual language, just a new place to
+   use it. */
+.service-cta { background: #0f0f0f; color: #fff; text-align: center; }
+.service-cta .wrap { display: flex; flex-direction: column; align-items: center; }
+.service-cta .eyebrow-row { justify-content: center; border-top-color: #2a2a2a; }
+.service-cta .eyebrow { color: #8a8a85; }
+.service-cta-heading { font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem); font-weight: 600; line-height: 1.05; max-width: 20ch; color: #fff; }
+.service-cta .hero-actions { justify-content: center; margin-top: var(--space-8); }
+
+.category-filters { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-10) 0; }
+.category-filters a {
+  padding: var(--space-2) var(--space-5); border-radius: var(--radius-pill); border: 1px solid var(--border);
+  font-size: 0.88rem; font-weight: 600; color: var(--text-dim);
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.category-filters a:hover, .category-filters a.active { color: var(--text); border-color: var(--text); }
+
+.legal-content { max-width: var(--measure); }
+.legal-content h2 { font-size: 1.6rem; margin-top: var(--space-10); }
+.legal-content h2:first-child { margin-top: 0; }
+.legal-content p { color: var(--text-dim); margin-top: var(--space-4); line-height: 1.65; }
+.legal-content ul { margin-top: var(--space-4); padding-left: 1.2em; color: var(--text-dim); line-height: 1.65; }
+.legal-content li + li { margin-top: var(--space-2); }
+.legal-content strong { color: var(--text); font-weight: 600; }
+
+.coming-soon { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding-block: var(--space-20); }
+
+/* footer (measured: light panel, 100px top padding, 60px gap) ----------- */
+.site-footer { padding-top: var(--space-16); background: var(--bg); color: var(--text); }
+.footer-inner { display: grid; gap: var(--space-10); grid-template-columns: 1fr; padding-bottom: var(--space-16); }
+@media (min-width: 810px) { .footer-inner { grid-template-columns: 1.2fr 2fr; } }
+.footer-brand p { color: var(--text-dim); margin-top: var(--space-4); max-width: 32ch; font-size: 0.92rem; }
+.footer-nav { display: grid; gap: var(--space-8); grid-template-columns: repeat(3, 1fr); }
+.footer-nav h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); margin-bottom: var(--space-4); font-weight: 600; }
+.footer-nav a { display: block; padding-block: 6px; color: var(--text-dim); font-size: 0.92rem; transition: color var(--dur-fast); }
+.footer-nav a:hover { color: var(--text); }
+
+.footer-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem; color: var(--text-faint);
+}
+.to-top {
+  width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 50%;
+  display: grid; place-items: center; color: var(--text-dim);
+  transition: border-color var(--dur-fast), color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+}
+.to-top:hover { border-color: var(--text); color: var(--text); transform: translateY(-3px); }
+
+/* reveal-on-scroll — measured: fade in + rise, 0.8s cubic-bezier(.75,0,.25,1).
+   Only the INITIAL hidden state lives in CSS now; the timed animation runs
+   through the `motion` library (see BaseLayout's script) via the Web
+   Animations API, not a CSS transition -- this is a no-FOUC fallback and,
+   if JS never runs, a static hidden state the reduced-motion query below
+   overrides back to fully visible. */
+.reveal { opacity: 0; transform: translateY(var(--reveal-rise)); }
+.reveal-line span { transform: translateY(110%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-line span { opacity: 1; transform: none; }
+}
+
+/* TEMP DIAGNOSTIC -- remove after confirming whether this is a losing
+   cascade vs. the element being absent from the render tree */
+@media (min-width: 901px) {
+  .site-header { display: block !important; position: sticky !important; top: 0 !important; z-index: 100 !important; }
+  .nav-desktop { display: block !important; }
+}
+
+/* RevealHeading word masks -- only the initial hidden state lives here --
+   the timed, staggered animation runs through the `motion` library (see
+   SiteChrome), which finds every .reveal-words group and animates its own
+   .word-mask spans with a per-group stagger. This is the no-FOUC/no-JS
+   fallback. Ported from RevealHeading.astro's component-scoped <style>,
+   which has no equivalent in Next.js, so it lives in the global sheet. */
+.word-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.word-mask > span {
+  display: inline-block;
+  transform: translateY(110%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .word-mask > span { transform: none; }
+}

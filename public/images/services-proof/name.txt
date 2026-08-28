@@ -1,0 +1,15 @@
+public/images/services-proof/
+
+
+  social-media-marketing.jpg
+  search-engine-optimization.jpg
+  search-engine-marketing.jpg
+  content-marketing.jpg
+  branding.jpg
+  package-designing.jpg
+  graphic-designing.jpg
+  website-development.jpg
+  video-production.jpg
+  app-development.jpg
+  automations.jpg
+  custom-software.jpg

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook-admin.mjs\" --help)",
+      "Bash(node \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook-admin.mjs\" ignore-value design-system-font-size 1.25rem --shared --reason \"test\")"
+    ]
+  }
+}
