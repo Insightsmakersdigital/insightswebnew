@@ -22,8 +22,7 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
       <nav className="nav-desktop" aria-label="Primary">
         <div className="wrap nav-desktop-inner">
           <Link href="/" className="brand">
-            <span className="brand-mark" aria-hidden="true"></span>
-            {SITE_SHORT}
+            <img src="/logo.png" alt={SITE_SHORT} className="brand-logo" />
           </Link>
           <div className="nav-desktop-links">
             {navItems.map((item) =>
@@ -84,8 +83,7 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
       <div className="nav-mobile">
         <div className="wrap nav-mobile-bar">
           <Link href="/" className="brand nav-mobile-brand">
-            <span className="brand-mark" aria-hidden="true"></span>
-            {SITE_SHORT}
+            <img src="/logo.png" alt={SITE_SHORT} className="brand-logo" />
           </Link>
           <button
             className="nav-mobile-toggle"

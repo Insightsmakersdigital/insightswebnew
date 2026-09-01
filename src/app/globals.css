@@ -264,6 +264,9 @@ main { position: relative; z-index: 0; }
   width: 18px; height: 18px; border-radius: var(--radius-pill);
   background: var(--ink);
 }
+.brand-logo {
+  height: 120px; width: auto; display: block;
+}
 
 /* ===== desktop nav (>=901px) ===================================== */
 .nav-desktop {
