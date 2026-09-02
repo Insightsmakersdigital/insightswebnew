@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SpecularButton from "./SpecularButton";
 import { SITE_SHORT, SERVICES, PILLARS, servicesByPillar } from "../data/site";
 
 interface NavItem {
@@ -64,15 +65,28 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
             )}
           </div>
           <div className="header-actions">
-            <span className="nav-badge">
-              <span className="badge-dot" aria-hidden="true"></span>Available for projects
-            </span>
             <Link href="/contact" className="btn btn-ghost">
               Book a call
             </Link>
-            <Link href="/contact" className="btn btn-primary magnetic">
-              <span>Start a project</span>
-            </Link>
+            <SpecularButton
+              href="/contact"
+              size="md"
+              radius={100}
+              tint="#0f0f0f"
+              tintOpacity={1}
+              textColor="#f6f6f6"
+              lineColor="#1F7E7A"
+              baseColor="#00c951"
+              intensity={2}
+              shineSize={24}
+              shineFade={45}
+              thickness={1.5}
+              proximity={220}
+              autoAnimate
+              className="nav-cta-specular"
+            >
+              Start a project
+            </SpecularButton>
           </div>
         </div>
       </nav>
@@ -106,9 +120,6 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
             ))}
           </div>
           <div className="nav-mobile-footer">
-            <span className="nav-badge">
-              <span className="badge-dot" aria-hidden="true"></span>Available for projects
-            </span>
             <Link href="/contact" className="btn btn-primary nav-mobile-cta">
               Start a project
             </Link>

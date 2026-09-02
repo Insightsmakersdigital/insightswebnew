@@ -369,13 +369,11 @@ main { position: relative; z-index: 0; }
 .header-actions .btn-ghost:hover { color: var(--ink); }
 @media (min-width: 901px) { .header-actions { display: flex; } }
 
-/* the page's one deliberate accent -- a small lime status dot on the nav's
-   availability badge. Everything else stays monochrome. Base rule is
-   display:none since the desktop badge only shows >=901px; the mobile
-   panel's own copy of this badge overrides that further down. */
-.nav-badge { display: none; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500; color: rgb(15 15 15 / 70%); }
-.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-lime); flex-shrink: 0; }
-@media (min-width: 901px) { .nav-badge { display: inline-flex; } }
+/* the "Start a project" nav CTA -- matches .btn/.btn-primary's weight and
+   pill radius so swapping to SpecularButton's WebGL shine doesn't also
+   shift the rest of its type/shape off the site's button system. */
+.nav-cta-specular { font-weight: 600; font-size: 0.95rem; }
+
 
 /* ===== mobile nav (<901px) ========================================
    Closed bar: persistent, logo + toggle only -- nothing else lives
@@ -448,7 +446,6 @@ main { position: relative; z-index: 0; }
   border-top: 1px solid #e5e4e1;
   display: flex; flex-direction: column; gap: 16px;
 }
-.nav-mobile-footer .nav-badge { display: flex; font-size: 14px; color: rgb(15 15 15 / 70%); }
 .nav-mobile-cta { width: 100%; height: 56px; border-radius: 999px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1479,7 +1476,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   transition: color var(--dur-fast) var(--ease-out);
 }
 /* the clamp's own 1.35rem floor was still wider than a real address
-   ("hello@insightsmarketers.com") fits in the space left after
+   ("info@insightsmarketers.com") fits in the space left after
    .contact-tier-label at real phone widths -- text-overflow: ellipsis
    was silently eating the back half of the address instead of shrinking
    further, which is actively harmful for a contact detail someone needs
@@ -1603,10 +1600,8 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 }
 .contact-submit:hover span { color: #fff; }
 
-/* col 4, sitting beside the submit pill (col 3) on the same row --
-   status dot reuses the header nav-badge's exact lime accent so the
-   "available for projects" signal reads as one consistent site-wide
-   token, not a one-off green. */
+/* col 4, sitting beside the submit pill (col 3) on the same row -- status
+   dot uses the site's one lime accent token, not a one-off green. */
 .contact-status-block { grid-column: 1 / -1; margin-top: var(--space-8); align-self: end; }
 @media (min-width: 810px) {
   .contact-status-block { grid-column: 2 / 3; margin-top: 0; }
@@ -1660,58 +1655,50 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .process-step h3 { margin: var(--space-3) 0 var(--space-2); }
 .process-step p { color: var(--text-dim); font-size: 0.95rem; }
 
-/* services / work index pages -------------------------------------------- */
-.pillar-block { padding: var(--space-12) 0; border-top: 1px solid var(--border); }
-.pillar-block:first-of-type { border-top: none; }
-.pillar-head { display: flex; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-8); }
-.pillar-head h3 { font-size: 2rem; }
-.pillar-count { color: var(--text-faint); font-size: 0.9rem; }
+/* /work -- flat case-study grid + modal. No per-discipline grouping: a
+   young studio doesn't have proof for every category yet, and a grid with
+   visible empty categories just invites the question of why they're on
+   the site at all. Every card here is real, clickable work. */
+.work-card-clickable { cursor: pointer; }
 
-/* /work -- coverage indicator. Turns the honest fact that a young studio
-   doesn't have proof for every discipline yet into legible information
-   instead of something to paper over: a dot per discipline in the
-   pillar, filled once that discipline has a real case study, plus the
-   fraction spelled out. Theme-adaptive tokens (not literal hex) since
-   .pillar-block sits in a plain dark section here, unlike the hardcoded
-   light ledgers elsewhere in this file. */
-.coverage { display: flex; align-items: center; gap: var(--space-3); }
-.coverage-dots { display: flex; gap: 6px; }
-.coverage-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); transition: background var(--dur-fast) var(--ease-out); }
-.coverage-dot.is-filled { background: var(--text); }
-.coverage-label { font-size: 0.85rem; color: var(--text-faint); font-variant-numeric: tabular-nums; }
-
-/* /work index, broken down one level further than the pillar: each of the
-   nine disciplines gets its own titled sub-block inside its pillar, with
-   its own work-grid (or its own open note) -- rather than pooling every
-   pillar's case studies into one undifferentiated grid, per discipline. */
-.discipline-block { margin-top: var(--space-8); }
-.discipline-block:first-of-type { margin-top: 0; }
-.discipline-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
-.discipline-title {
-  font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--text);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--dur-fast) var(--ease-out);
+.case-modal-backdrop {
+  position: fixed; inset: 0; z-index: 300;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: var(--space-8) var(--space-5);
+  overflow-y: auto;
+  background: rgb(15 15 15 / 70%);
+  backdrop-filter: blur(4px);
+  animation: case-modal-fade var(--dur-fast) var(--ease-out);
 }
-.discipline-title:hover { border-color: var(--text); }
-.discipline-open-tag { font-size: 0.8rem; color: var(--text-faint); white-space: nowrap; }
+@keyframes case-modal-fade { from { opacity: 0; } to { opacity: 1; } }
 
-/* the disciplines with no case study yet -- named plainly, not hidden,
-   with a dashed border so it reads as "open" rather than as a broken
-   version of a filled work-card row. */
-.discipline-open-note {
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);
-  padding: var(--space-5) var(--space-6);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-dim);
-  font-size: 0.92rem;
-  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+.case-modal {
+  position: relative;
+  width: 100%; max-width: 720px;
+  margin: auto 0;
+  background: var(--paper); color: var(--ink);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
-.discipline-open-note:hover { border-color: var(--text-dim); color: var(--text); }
-.discipline-open-note span:last-child { font-weight: 600; color: var(--text); white-space: nowrap; }
-
-/* /work/[service] empty state */
-.service-empty { display: flex; flex-direction: column; align-items: flex-start; padding-block: var(--space-8); }
+.case-modal-close {
+  position: absolute; top: var(--space-4); right: var(--space-4); z-index: 1;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; line-height: 1; color: rgb(255 255 255 / 100%);
+  background: rgb(0 0 0 / 45%);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.case-modal-close:hover { background: rgb(0 0 0 / 65%); }
+.case-modal-media { aspect-ratio: 16/9; overflow: hidden; }
+.case-modal-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.case-modal-body { padding: var(--space-8) var(--space-7); }
+.case-modal-body .eyebrow { color: var(--text-faint); margin-bottom: var(--space-2); }
+.case-modal-heading { font-size: 1.75rem; }
+.case-modal-services { color: var(--text-dim); font-size: 0.92rem; margin-top: var(--space-2); }
+.case-modal-section { margin-top: var(--space-6); }
+.case-modal-section h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); margin-bottom: var(--space-2); }
+.case-modal-section p { color: var(--text-dim); font-size: 0.98rem; line-height: 1.55; }
+.case-modal-cta { margin-top: var(--space-7); }
 
 /* services accordion -- 4-col row (number|title|content|icon), same
    grid-template-rows 0fr/1fr technique as the homepage skillset
@@ -2078,14 +2065,6 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .service-cta .eyebrow { color: #8a8a85; }
 .service-cta-heading { font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem); font-weight: 600; line-height: 1.05; max-width: 20ch; color: #fff; }
 .service-cta .hero-actions { justify-content: center; margin-top: var(--space-8); }
-
-.category-filters { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: var(--space-10) 0; }
-.category-filters a {
-  padding: var(--space-2) var(--space-5); border-radius: var(--radius-pill); border: 1px solid var(--border);
-  font-size: 0.88rem; font-weight: 600; color: var(--text-dim);
-  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
-}
-.category-filters a:hover, .category-filters a.active { color: var(--text); border-color: var(--text); }
 
 .legal-content { max-width: var(--measure); }
 .legal-content h2 { font-size: 1.6rem; margin-top: var(--space-10); }

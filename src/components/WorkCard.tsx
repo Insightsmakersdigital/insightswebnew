@@ -6,17 +6,34 @@ interface Props {
   services: string; // joined service titles, e.g. "Branding + Website Development"
   result: string; // the outcome
   tint: string;
+  onClick?: () => void; // opens the case study when provided
 }
 
-export default function WorkCard({ title, client, services, result, tint }: Props) {
+export default function WorkCard({ title, client, services, result, tint, onClick }: Props) {
   return (
-    <article className="work-card reveal" style={{ "--tint": tint } as React.CSSProperties}>
+    <article
+      className={["work-card reveal", onClick && "work-card-clickable"].filter(Boolean).join(" ")}
+      style={{ "--tint": tint } as React.CSSProperties}
+      {...(onClick
+        ? {
+            role: "button",
+            tabIndex: 0,
+            onClick,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            },
+          }
+        : {})}
+    >
       <div className="work-col-name">
         <div className="work-name-block">
           <h3>{title}</h3>
           <p>{client}</p>
         </div>
-        <p className="work-jump">Jump to project</p>
+        <p className="work-jump">{onClick ? "View case study" : "Jump to project"}</p>
       </div>
 
       <div className="work-media">

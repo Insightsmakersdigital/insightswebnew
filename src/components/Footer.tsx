@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE_SHORT, SITE_NAME } from "../data/site";
+import { SITE_SHORT, SITE_NAME, SOCIAL_LINKS } from "../data/site";
 
 export default function Footer() {
   return (
@@ -23,10 +23,12 @@ export default function Footer() {
             <Link href="/contact">Contact</Link>
           </div>
           <div>
-            <h4>Elsewhere</h4>
-            <a href="#" rel="noopener">LinkedIn</a>
-            <a href="#" rel="noopener">Instagram</a>
-            <a href="#" rel="noopener">YouTube</a>
+            <h4>Socials</h4>
+            {SOCIAL_LINKS.map((social) => (
+              <a href={social.href} target="_blank" rel="noopener noreferrer" key={social.href}>
+                {social.label}
+              </a>
+            ))}
           </div>
           <div>
             <h4>Legal</h4>

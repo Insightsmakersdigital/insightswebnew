@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { SOCIAL_LINKS } from "../data/site";
 
 // The contact form ledger, shared between the homepage's #contact section
 // and the dedicated /contact page. Row hairlines arm once the form scrolls
@@ -85,15 +86,11 @@ export default function ContactForm() {
         </div>
         <p className="contact-status-reply">Replies within one business day</p>
         <div className="contact-socials">
-          <a href="#" rel="noopener">
-            LinkedIn
-          </a>
-          <a href="#" rel="noopener">
-            Instagram
-          </a>
-          <a href="#" rel="noopener">
-            YouTube
-          </a>
+          {SOCIAL_LINKS.map((social) => (
+            <a href={social.href} target="_blank" rel="noopener noreferrer" key={social.href}>
+              {social.label}
+            </a>
+          ))}
         </div>
       </div>
       <p className="form-status" id="formStatus" role="status" aria-live="polite">

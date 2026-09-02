@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/work",
   ];
 
-  const serviceRoutes = SERVICES.flatMap((s) => [`/services/${s.slug}`, `/work/${s.slug}`]);
+  const serviceRoutes = SERVICES.map((s) => `/services/${s.slug}`);
 
   return [...staticRoutes, ...serviceRoutes].map((path) => ({
     url: `${SITE_URL}${path}`,
