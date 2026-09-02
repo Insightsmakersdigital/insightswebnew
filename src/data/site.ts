@@ -14,10 +14,16 @@ export const FOUNDERS = [
 ];
 
 export const CONTACT = {
-  email: "hello@insightsmarketers.com",
-  phones: ["+91 00000 00001", "+91 00000 00002", "+91 00000 00003"],
+  email: "info@insightsmarketers.com",
+  phones: ["+91 70121 51014", "+91 97466 55279", "+91 73069 83081"],
   whatsapp: "https://wa.me/910000000001",
 };
+
+export const SOCIAL_LINKS = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/insights-marketers/home/" },
+  { label: "Facebook", href: "https://www.facebook.com/insights.marketers/" },
+  { label: "Instagram", href: "https://www.instagram.com/insightsmarketers/" },
+];
 
 // The roster's real facts (who's named, who isn't) -- the single source
 // both /team's roster wall and /about's ledger read from, so "3 of 13
@@ -753,62 +759,119 @@ export function servicesByPillar(pillar: (typeof PILLARS)[number]) {
 // engagement (e.g. Arena Animation) can be real proof for both its
 // branding work and its website build, so it's shown under both.
 export interface WorkItem {
+  slug: string; // stable id for the case study, e.g. deep-linking or a modal
   name: string; // client name -- now the byline, not the headline
   project: string; // what was actually done, framed as the headline
   services: string[]; // slugs into SERVICES; an item can span pillars
   result: string; // the outcome, in the client's or the work's own terms
   tint: string;
+  caseStudy: {
+    challenge: string; // the situation before Insights got involved
+    approach: string; // what was actually done
+    outcome: string; // the result, expanded past the one-line teaser
+  };
 }
 
+// Deliberately not grouped by discipline: a young studio doesn't have proof
+// for every service yet, and a grid with visible gaps ("no case study yet")
+// just invites the question of why an empty category is on the site at
+// all. These seven are the real, citable work -- shown flat, in no
+// particular order, each opening its own case study. More get added here
+// as they're signed off; nothing needs to wait for a whole category to
+// fill up first.
 export const WORK_ITEMS: WorkItem[] = [
   {
+    slug: "arena-animation",
     name: "Arena Animation",
     project: "Brand relaunch across three campuses",
     services: ["branding", "website-development"],
     result: "60% more enquiries",
     tint: "262 90% 62%",
+    caseStudy: {
+      challenge:
+        "Three campuses, three slightly different logos, and a website that hadn't been touched since the first one opened. Nothing said this was one brand.",
+      approach:
+        "One identity system built to work across all three locations, paired with a website rebuilt around the actual enquiry flow prospective students go through.",
+      outcome: "60% more enquiries within the first full term after launch, with all three campuses now reading as one brand.",
+    },
   },
   {
+    slug: "beyond-borders",
     name: "Beyond Borders",
     project: "A social-first relaunch for a travel brand",
     services: ["social-media-marketing", "content-marketing"],
     result: "Consistent, on-brand content every week",
     tint: "158 64% 45%",
+    caseStudy: {
+      challenge: "Posting was sporadic, the visual language changed every month, and there was no content pipeline to speak of.",
+      approach: "A content calendar and visual system built around what the brand actually is, plus a weekly production rhythm that doesn't depend on last-minute scrambling.",
+      outcome: "Consistent, on-brand content every week, with a system the client can keep running without us in the room.",
+    },
   },
   {
+    slug: "educ-kshetra",
     name: "Educ Kshetra",
     project: "SEO and a website built to convert enquiries",
     services: ["website-development", "search-engine-optimization"],
     result: "Ranking for searches they didn't know they had",
     tint: "28 92% 58%",
+    caseStudy: {
+      challenge: "A site that existed but wasn't findable, and no clear idea of what prospective students were actually searching for.",
+      approach: "Keyword and intent research first, then a site rebuilt around those terms with an enquiry path that doesn't get lost in the navigation.",
+      outcome: "Ranking for searches the client didn't know they had, turning organic search into an actual enquiry source instead of dead weight.",
+    },
   },
   {
+    slug: "la-via-deux",
     name: "La Via Deux",
     project: "One visual identity, every touchpoint",
     services: ["branding", "graphic-designing"],
     result: "Menus, signage, and socials, finally consistent",
     tint: "339 82% 60%",
+    caseStudy: {
+      challenge: "Menus, signage, packaging, and social posts all looked like they belonged to different businesses.",
+      approach: "A single identity system with clear rules for every touchpoint, so nothing gets designed from scratch each time it's needed.",
+      outcome: "Menus, signage, and socials finally consistent, with a system the team can apply themselves to new material.",
+    },
   },
   {
+    slug: "kannur-events",
     name: "Kannur Events",
     project: "Event coverage that outlived the event",
     services: ["video-production"],
     result: "Highlight reels that kept driving ticket sales",
     tint: "199 89% 55%",
+    caseStudy: {
+      challenge: "Events were being shot, but the footage sat unused after the event ended instead of doing any work for the next one.",
+      approach: "Coverage shot and edited specifically to be reused: highlight reels built for the next event's promotion, not just a memory of the last one.",
+      outcome: "Highlight reels that kept driving ticket sales well after the event they were shot at had wrapped.",
+    },
   },
   {
+    slug: "bougain-kayak",
     name: "Bougain Kayak",
     project: "Building a community, not just a follower count",
     services: ["social-media-marketing", "branding"],
     result: "A following that shows up season after season",
     tint: "84 70% 45%",
+    caseStudy: {
+      challenge: "Growing a following was easy in theory, but a seasonal, location-bound business needed people who'd actually show up, not just scroll past.",
+      approach: "Content built around the community and the place, not generic engagement bait, plus a brand identity that matched the experience on the ground.",
+      outcome: "A following that shows up season after season, not just a follower count that looks good in a screenshot.",
+    },
   },
   {
+    slug: "zica-calicut",
     name: "Zica Calicut",
     project: "A website built to turn visits into enquiries",
     services: ["website-development"],
     result: "The kind of site that treats every visitor like a lead",
     tint: "31 95% 56%",
+    caseStudy: {
+      challenge: "The old site described the courses but gave visitors no clear next step, so most of them just left.",
+      approach: "A rebuild focused on one job: get every visitor to an enquiry form that's actually easy to find and fill out.",
+      outcome: "The kind of site that treats every visitor like a lead, not just a page for them to read and leave.",
+    },
   },
 ];
 
