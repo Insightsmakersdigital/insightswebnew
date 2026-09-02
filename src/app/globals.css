@@ -265,7 +265,7 @@ main { position: relative; z-index: 0; }
   background: var(--ink);
 }
 .brand-logo {
-  height: 120px; width: auto; display: block;
+  height: 42px; width: auto; display: block;
 }
 
 /* ===== desktop nav (>=901px) ===================================== */
