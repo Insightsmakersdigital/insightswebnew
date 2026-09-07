@@ -12,9 +12,18 @@ export const metadata: Metadata = {
 };
 
 const driftItems = WORK_ITEMS.map((w) => ({
-  image: seededImage(w.name),
+  image: seededImage(w.slug, w.category),
   title: w.project,
 }));
+
+// Only items explicitly placed in one of these 3 buckets (WorkItem.category)
+// show on /work -- the rest of WORK_ITEMS stays in the data file, unlisted,
+// until it's deliberately categorized.
+const workSections = [
+  { index: "01", heading: "Social Media Marketing", items: WORK_ITEMS.filter((w) => w.category === "smm") },
+  { index: "02", heading: "Branding", items: WORK_ITEMS.filter((w) => w.category === "branding"), pendingNote: "More on the way" },
+  { index: "03", heading: "Web + App Development", items: WORK_ITEMS.filter((w) => w.category === "web-app") },
+].filter((section) => section.items.length > 0 || section.pendingNote);
 
 export default function WorkPage() {
   return (
@@ -53,11 +62,7 @@ export default function WorkPage() {
           </div>
         </section>
 
-        <section>
-          <div className="wrap">
-            <WorkGrid items={WORK_ITEMS} />
-          </div>
-        </section>
+        <WorkGrid sections={workSections} />
       </main>
 
       <Footer />

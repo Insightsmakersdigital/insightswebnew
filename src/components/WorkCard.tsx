@@ -1,6 +1,8 @@
-import { seededImage } from "../data/site";
+import { seededImage, type WorkItem } from "../data/site";
 
 interface Props {
+  slug: string; // the WorkItem's own slug -- keys the photo, since a client can have multiple entries
+  category?: WorkItem["category"]; // picks the /work section subfolder the photo lives in
   title: string; // the project -- what was done, leads the card
   client: string; // who it was for -- byline, not headline
   services: string; // joined service titles, e.g. "Branding + Website Development"
@@ -9,7 +11,7 @@ interface Props {
   onClick?: () => void; // opens the case study when provided
 }
 
-export default function WorkCard({ title, client, services, result, tint, onClick }: Props) {
+export default function WorkCard({ slug, category, title, client, services, result, tint, onClick }: Props) {
   return (
     <article
       className={["work-card reveal", onClick && "work-card-clickable"].filter(Boolean).join(" ")}
@@ -32,13 +34,17 @@ export default function WorkCard({ title, client, services, result, tint, onClic
         <div className="work-name-block">
           <h3>{title}</h3>
           <p>{client}</p>
+          {/* Always visible (not hover-gated): a client name can repeat
+              across multiple work items, so the service is what tells
+              two cards apart at rest, before any hover reveal. */}
+          <p className="work-card-service">{services}</p>
         </div>
         <p className="work-jump">{onClick ? "View case study" : "Jump to project"}</p>
       </div>
 
       <div className="work-media">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="work-media-fill" src={seededImage(client)} alt={`${title} — ${client}`} loading="lazy" />
+        <img className="work-media-fill" src={seededImage(slug, category)} alt={`${title} — ${client}`} loading="lazy" />
       </div>
 
       <div className="work-col-detail">

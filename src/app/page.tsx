@@ -22,8 +22,10 @@ export const metadata: Metadata = {
 const logoTrack = [...WORK_ITEMS, ...WORK_ITEMS];
 
 const featuredWork = WORK_ITEMS.slice(0, 3).map((w) => ({
+  slug: w.slug,
+  category: w.category,
   title: w.project,
-  client: w.name,
+  client: w.cardName ?? w.name,
   services: w.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + "),
   result: w.result,
   tint: w.tint,

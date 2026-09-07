@@ -1,0 +1,54 @@
+Instagram folder filenames (public/images/instagram/)
+=========================================================
+
+One folder PER CASE STUDY (not per client) -- Arena Animation's 4
+campuses each run their own real Instagram account, so each gets its own
+logo + posts, no sharing. Folder name = the case study's slug, same as
+the URL-safe id used everywhere else on the site.
+
+Each folder holds exactly:
+  logo.png            that entry's actual Instagram profile picture
+                       -> square, ~300x300px, transparent background if possible
+  post-1.jpg .. post-12.jpg   12 grid post images
+                       -> 4:5 portrait (Instagram's native post ratio),
+                          e.g. 1080x1350px
+
+Any file you haven't added yet just shows a plain placeholder tile on the
+site -- nothing breaks, so you can fill these in gradually.
+
+Folders already created, waiting for files:
+
+public/images/instagram/arena-animation-thrissur/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/arena-animation-thiruvananthapuram/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/arena-animation-koramangala/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/arena-animation-kannur/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/zica-calicut-smm/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/beyond-borders/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/la-via-deux-smm/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/dhub/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/clear-2-start/
+  logo.png, post-1.jpg .. post-12.jpg
+
+public/images/instagram/educ-kshetra-smm/
+  logo.png, post-1.jpg .. post-12.jpg
+
+
+If a new SMM case study gets added later, its folder name is just its
+slug (same one used in the URL / codebase) -- ask if you're not sure what
+slug a new entry got.

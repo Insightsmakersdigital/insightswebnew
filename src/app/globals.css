@@ -254,6 +254,12 @@ main { position: relative; z-index: 0; }
    panel-light/dark cascade underneath it. */
 #siteHeader { position: sticky; top: 0; z-index: 100; }
 
+/* Hidden while the Instagram-replica case study is open (see WorkGrid's
+   "ig-modal-open" body class) -- the IG chrome has its own top bar, so
+   the site nav showing through the dimmed backdrop above it read as two
+   stacked navbars. */
+body.ig-modal-open #siteHeader { display: none; }
+
 .brand {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-display); font-weight: 900; letter-spacing: normal;
@@ -790,12 +796,11 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  transform: scale(1.25);
-  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .work-name-block h3 { font-size: 24px; font-weight: 500; color: #111; margin-bottom: 2px; }
 .work-name-block p { font-size: 15px; font-weight: 400; color: #8a8a85; }
+.work-name-block .work-card-service { font-size: 12px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; margin-top: var(--space-2); }
 .work-jump { font-size: 15px; font-weight: 400; color: #111; margin-top: var(--space-3); }
 .work-arrow { font-size: 20px; line-height: 1; display: block; }
 
@@ -855,7 +860,6 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   .work-card:hover .work-jump { opacity: 1; transform: translateY(0); transition-delay: 60ms; }
   .work-card:hover .work-arrow { top: var(--space-6); transform: translateY(0); }
   .work-card:hover .work-meta { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
-  .work-card:hover .work-media-fill { transform: scale(1); }
 }
 
 /* case study — full-bleed 4-col ledger, gap 0. Hairlines reuse the same
@@ -1655,11 +1659,51 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .process-step h3 { margin: var(--space-3) 0 var(--space-2); }
 .process-step p { color: var(--text-dim); font-size: 0.95rem; }
 
-/* /work -- flat case-study grid + modal. No per-discipline grouping: a
-   young studio doesn't have proof for every category yet, and a grid with
-   visible empty categories just invites the question of why they're on
-   the site at all. Every card here is real, clickable work. */
+/* /work -- 3 curated sections (Social Media Marketing, Branding, Web +
+   App Development), each its own case-study grid + one shared modal. A
+   section with no items placed in it yet simply doesn't render (see
+   workSections filter in work/page.tsx) rather than showing an empty
+   category. Every real card is clickable work. */
 .work-card-clickable { cursor: pointer; }
+
+.work-section + .work-section { margin-top: var(--space-12); }
+.work-section .section-head { margin-bottom: var(--space-8); }
+
+/* Static 3-column case-study grid, one per /work section. Deliberately
+   NO hover transform/scale/zoom anywhere in this block -- interaction is
+   click-only, and cards stay completely still under the pointer. */
+.work-tile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-7) var(--space-6); }
+@media (max-width: 809.98px) { .work-tile-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 479.98px) { .work-tile-grid { gap: var(--space-4) var(--space-3); } }
+
+.work-tile { display: flex; flex-direction: column; cursor: pointer; }
+.work-tile-media { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--surface-2); }
+.work-tile-media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(1);
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.work-tile:hover .work-tile-media img { transform: scale(1.06); }
+.work-tile-info { padding-top: var(--space-4); }
+.work-tile-info h3 { font-size: 1.05rem; font-weight: 500; color: #111; margin-bottom: 2px; }
+.work-tile-client { font-size: 0.85rem; color: #8a8a85; }
+.work-tile-service { font-size: 12px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; margin-top: var(--space-2); }
+@media (max-width: 479.98px) {
+  .work-tile-info { padding-top: var(--space-3); }
+  .work-tile-info h3 { font-size: 0.92rem; line-height: 1.25; }
+  .work-tile-client { font-size: 0.78rem; }
+  .work-tile-service { font-size: 10px; margin-top: 3px; }
+}
+
+/* Pending slot -- an honestly labeled "more coming" placeholder, not a
+   fabricated card. Same media-aspect box as a real tile, dashed and
+   inert (no image, no click). */
+.work-tile--pending {
+  aspect-ratio: 1/1;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--border);
+}
+.work-tile-pending-note { color: var(--text-faint); font-size: 0.9rem; text-align: center; padding: 0 var(--space-4); }
 
 .case-modal-backdrop {
   position: fixed; inset: 0; z-index: 300;
@@ -1689,6 +1733,31 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   transition: background var(--dur-fast) var(--ease-out);
 }
 .case-modal-close:hover { background: rgb(0 0 0 / 65%); }
+
+/* SMM case studies swap the plain modal body for <InstagramCaseStudy>,
+   which brings its own black background and phone-width layout -- this
+   variant just lets that content paint edge-to-edge instead of sitting on
+   the modal's default paper background. The close button's dark scrim
+   is invisible on that same black background, so it gets a light one. */
+.case-modal--ig {
+  background: #000;
+  /* The Instagram chrome is a fixed phone-width layout (max 480px on web,
+     see InstagramCaseStudy's own >=640px media query) -- cap the modal to
+     match instead of inheriting the plain modal's 720px, which just left
+     black empty space on either side of the phone. */
+  max-width: 500px;
+  /* A full profile (avatar, stats, bio, tabs, a full grid of posts) runs
+     taller than the viewport -- give the modal its own bounded, scrollable
+     region instead of relying on it growing past the backdrop. */
+  max-height: calc(100vh - 2 * var(--space-8));
+  overflow-y: auto;
+}
+.case-modal--ig .case-modal-close { position: sticky; background: rgb(255 255 255 / 15%); }
+.case-modal--ig .case-modal-close:hover { background: rgb(255 255 255 / 25%); }
+/* Clears the close button so it doesn't sit on top of the Instagram
+   chrome's own top-right icons. */
+.case-modal--ig .ig-profile-root { padding-top: 44px; }
+
 .case-modal-media { aspect-ratio: 16/9; overflow: hidden; }
 .case-modal-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .case-modal-body { padding: var(--space-8) var(--space-7); }
@@ -2112,12 +2181,6 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   .reveal, .reveal-line span { opacity: 1; transform: none; }
 }
 
-/* TEMP DIAGNOSTIC -- remove after confirming whether this is a losing
-   cascade vs. the element being absent from the render tree */
-@media (min-width: 901px) {
-  .site-header { display: block !important; position: sticky !important; top: 0 !important; z-index: 100 !important; }
-  .nav-desktop { display: block !important; }
-}
 
 /* RevealHeading word masks -- only the initial hidden state lives here --
    the timed, staggered animation runs through the `motion` library (see
