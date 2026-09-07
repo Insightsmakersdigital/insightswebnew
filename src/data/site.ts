@@ -980,10 +980,10 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@beyond_borders_study",
-      bio: "Real bio text for this account goes here",
-      posts: "142",
-      followers: "3,204",
-      following: "180",
+      bio: "Trusted Career Guidance Since 2015",
+      posts: "82",
+      followers: "57.3k",
+      following: "3,399",
       reels: { 6: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761251/beyond_borders_study_dh7znc.mp4",
               11:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788766397/beyond-11_s4ckje.mp4",
               9:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788766398/beyond-9_ri00yd.mp4",
@@ -1235,8 +1235,11 @@ export function seededImage(slug: string, category?: WorkItem["category"]) {
 }
 
 // Every SMM WorkItem gets its own folder at public/images/instagram/{slug}/
-// holding logo.png (the DP) plus a fixed run of post-1.jpg..post-N.jpg
-// (see INSTAGRAM_POST_COUNT). Keyed by WorkItem.slug, not client name --
+// holding logo.png (the DP) plus a fixed run of Post-1.jpg..Post-N.jpg
+// (see INSTAGRAM_POST_COUNT) -- capital P to match the uploaded files;
+// this only matters on deploy, since case-sensitive Linux hosts (Vercel,
+// Netlify, ...) 404 a mismatched-case request that Windows silently
+// tolerates in dev. Keyed by WorkItem.slug, not client name --
 // each of a client's separate SMM engagements is a different real
 // Instagram account (e.g. Arena Animation's 4 campuses each run their
 // own page), so each needs its own logo + posts, not a shared folder.
@@ -1255,7 +1258,7 @@ export const INSTAGRAM_POST_COUNT = 12;
 
 export function seededInstagramPosts(slug: string) {
   const folder = instagramFolder(slug);
-  return Array.from({ length: INSTAGRAM_POST_COUNT }, (_, i) => `${folder}/post-${i + 1}.jpg`);
+  return Array.from({ length: INSTAGRAM_POST_COUNT }, (_, i) => `${folder}/Post-${i + 1}.jpg`);
 }
 
 // Fallback @handle when a WorkItem doesn't set instagram.handle -- just the
