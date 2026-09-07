@@ -1,0 +1,44 @@
+Work-card photo filenames (public/images/work/)
+==================================================
+
+Cards are now organized into 3 folders, one per /work section. Drop each
+photo at:  public/images/work/{folder}/{filename}
+Square-ish, ~1200x1200px (cards render 1:1).
+
+
+SOCIAL MEDIA MARKETING  ->  public/images/work/smm/
+------------------------------------------------------
+  arena-animation-thrissur.jpg              Arena Animation -- Thrissur campus
+  arena-animation-thiruvananthapuram.jpg    Arena Animation -- Thiruvananthapuram campus
+  arena-animation-koramangala.jpg           Arena Animation -- Koramangala campus
+  arena-animation-kannur.jpg                Arena Animation -- Kannur campus
+  zica-calicut-smm.jpg                      ZICA Calicut
+  beyond-borders.jpg                        Beyond Borders
+  la-via-deux-smm.jpg                       La Via Deux
+  dhub.jpg                                  D-Hub
+  clear-2-start.jpg                         Clear 2 Start
+  educ-kshetra-smm.jpg                      Educ Kshetra
+
+
+BRANDING  ->  public/images/work/branding/
+---------------------------------------------
+  bougain-kayak.jpg                         Bougain Kayak
+  vadakara-events.jpg                       Vadakara Events
+  slot-it.jpg                               Slot IT
+  kaicho.jpg                                Kaicho
+  (5th branding client -- no slug yet, tell me the name when ready)
+
+
+WEB + APP DEVELOPMENT  ->  public/images/work/web-app/
+-----------------------------------------------------------
+  arena-animation-thrissur-web-app.jpg      Arena Animation (Web + App)
+  beyond-borders-web-app.jpg                Beyond Borders (Web + App)
+
+
+NOTE: Arena Animation Thrissur and Beyond Borders each need TWO photos --
+one in smm/, one in web-app/ -- because they're two separate case studies
+for the same client. Different files, can be different images.
+
+For the Instagram avatar (logo) + post images per SMM client, see
+instagram-image-filenames.txt instead -- those live under a completely
+separate folder, public/images/instagram/, keyed by client not by card.

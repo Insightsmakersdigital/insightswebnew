@@ -760,7 +760,8 @@ export function servicesByPillar(pillar: (typeof PILLARS)[number]) {
 // branding work and its website build, so it's shown under both.
 export interface WorkItem {
   slug: string; // stable id for the case study, e.g. deep-linking or a modal
-  name: string; // client name -- now the byline, not the headline
+  name: string; // client name -- drives the logo/handle lookup (brand-level, shared across that client's entries)
+  cardName?: string; // what's actually shown as the byline/profile name, e.g. "Arena Animation Thrissur" when `name` is just the shared brand "Arena Animation"; falls back to `name`
   project: string; // what was actually done, framed as the headline
   services: string[]; // slugs into SERVICES; an item can span pillars
   result: string; // the outcome, in the client's or the work's own terms
@@ -770,6 +771,29 @@ export interface WorkItem {
     approach: string; // what was actually done
     outcome: string; // the result, expanded past the one-line teaser
   };
+  // Real Instagram numbers for the client's actual account, shown in the
+  // Instagram-replica case-study card (social-media-marketing items only).
+  // Left unset until real figures are supplied -- the card renders "—"
+  // rather than a fabricated count.
+  instagram?: {
+    handle?: string; // shown as the @username; falls back to a slug of `name` when unset
+    posts?: string;
+    followers?: string;
+    following?: string;
+    bio?: string;
+    // Turns a grid post into a reel: key is the post number (1-12, matches
+    // post-N.jpg's thumbnail), value is the video link -- a direct file
+    // (.mp4/.webm/...) plays inline, anything else (e.g. a hosted page
+    // like imgpile) opens in an embedded frame with a plain-link fallback.
+    reels?: Record<number, string>;
+  };
+  // Which of the 3 /work page sections this shows under. Separate from
+  // `services` on purpose: `services` stays an accurate record of what
+  // was actually done, while `category` is just page-layout curation
+  // (e.g. an SMM engagement can be shelved under the Web + App section
+  // while it's still filler content). Unset items render in none of the
+  // 3 sections until they're deliberately placed in one.
+  category?: "smm" | "branding" | "web-app";
 }
 
 // Deliberately not grouped by discipline: a young studio doesn't have proof
@@ -793,19 +817,6 @@ export const WORK_ITEMS: WorkItem[] = [
       approach:
         "One identity system built to work across all three locations, paired with a website rebuilt around the actual enquiry flow prospective students go through.",
       outcome: "60% more enquiries within the first full term after launch, with all three campuses now reading as one brand.",
-    },
-  },
-  {
-    slug: "beyond-borders",
-    name: "Beyond Borders",
-    project: "A social-first relaunch for a travel brand",
-    services: ["social-media-marketing", "content-marketing"],
-    result: "Consistent, on-brand content every week",
-    tint: "158 64% 45%",
-    caseStudy: {
-      challenge: "Posting was sporadic, the visual language changed every month, and there was no content pipeline to speak of.",
-      approach: "A content calendar and visual system built around what the brand actually is, plus a weekly production rhythm that doesn't depend on last-minute scrambling.",
-      outcome: "Consistent, on-brand content every week, with a system the client can keep running without us in the room.",
     },
   },
   {
@@ -848,19 +859,6 @@ export const WORK_ITEMS: WorkItem[] = [
     },
   },
   {
-    slug: "bougain-kayak",
-    name: "Bougain Kayak",
-    project: "Building a community, not just a follower count",
-    services: ["social-media-marketing", "branding"],
-    result: "A following that shows up season after season",
-    tint: "84 70% 45%",
-    caseStudy: {
-      challenge: "Growing a following was easy in theory, but a seasonal, location-bound business needed people who'd actually show up, not just scroll past.",
-      approach: "Content built around the community and the place, not generic engagement bait, plus a brand identity that matched the experience on the ground.",
-      outcome: "A following that shows up season after season, not just a follower count that looks good in a screenshot.",
-    },
-  },
-  {
     slug: "zica-calicut",
     name: "Zica Calicut",
     project: "A website built to turn visits into enquiries",
@@ -873,19 +871,415 @@ export const WORK_ITEMS: WorkItem[] = [
       outcome: "The kind of site that treats every visitor like a lead, not just a page for them to read and leave.",
     },
   },
+
+  // Branding engagements shown on /work under the Branding section.
+  // Slot IT and Kaicho are placeholders -- real mockups and case-study
+  // copy to follow; a 5th client is reserved via workSections' pendingNote
+  // in work/page.tsx rather than a fabricated card here.
+  {
+    slug: "bougain-kayak",
+    name: "Bougain Kayak",
+    project: "Building a community, not just a follower count",
+    services: ["social-media-marketing", "branding"],
+    result: "A following that shows up season after season",
+    tint: "84 70% 45%",
+    category: "branding",
+    caseStudy: {
+      challenge: "Growing a following was easy in theory, but a seasonal, location-bound business needed people who'd actually show up, not just scroll past.",
+      approach: "Content built around the community and the place, not generic engagement bait, plus a brand identity that matched the experience on the ground.",
+      outcome: "A following that shows up season after season, not just a follower count that looks good in a screenshot.",
+    },
+  },
+  {
+    slug: "vadakara-events",
+    name: "Vadakara Events",
+    project: "Brand identity for Vadakara Events",
+    services: ["branding"],
+    result: "Case study write-up coming soon",
+    tint: "355 78% 58%",
+    category: "branding",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+  },
+  {
+    slug: "slot-it",
+    name: "Slot IT",
+    project: "Brand identity for Slot IT",
+    services: ["branding"],
+    result: "Case study write-up coming soon",
+    tint: "225 70% 58%",
+    category: "branding",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+  },
+  {
+    slug: "kaicho",
+    name: "Kaicho",
+    project: "Brand identity for Kaicho",
+    services: ["branding"],
+    result: "Case study write-up coming soon",
+    tint: "38 75% 55%",
+    category: "branding",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+  },
+
+  // Social Media Marketing engagements, shown with the Instagram-replica
+  // case study (see InstagramCaseStudy.tsx). Several of these repeat a
+  // client name already above or below (Arena Animation, Beyond Borders)
+  // on purpose -- the same client with a separate SMM engagement, as its
+  // own case study rather than folded into a branding/web entry. That's
+  // exactly why WorkCard always shows the service line: two cards can
+  // share a client name and need the service to tell them apart.
+  // Case-study copy and Instagram numbers are placeholders pending real
+  // write-ups -- swap them in per entry rather than inventing figures.
+  {
+    slug: "arena-animation-thrissur",
+    name: "Arena Animation",
+    cardName: "Arena Animation Thrissur",
+    project: "Instagram growth — Thrissur campus",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "12 85% 58%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    instagram: {
+      handle: "@arenaanimationthrissur",
+      bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,Thrissur, Kerala,DM for Admissions",
+      posts: "542",
+      followers: "15.2K",
+      following: "12",
+      reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788524815/arenaanimationthrissur_otxjkd.mp4" }, // direct file -- plays inline, no Instagram chrome
+    },
+  },
+  {
+    slug: "beyond-borders",
+    name: "Beyond Borders",
+    project: "A social-first relaunch for a travel brand",
+    services: ["social-media-marketing", "content-marketing"],
+    result: "Consistent, on-brand content every week",
+    tint: "158 64% 45%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Posting was sporadic, the visual language changed every month, and there was no content pipeline to speak of.",
+      approach: "A content calendar and visual system built around what the brand actually is, plus a weekly production rhythm that doesn't depend on last-minute scrambling.",
+      outcome: "Consistent, on-brand content every week, with a system the client can keep running without us in the room.",
+    },
+    instagram: {
+      handle: "@beyond_borders_study",
+      bio: "Trusted Career Guidance Since 2015",
+      posts: "82",
+      followers: "57.3k",
+      following: "3,399",
+      reels: { 6: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761251/beyond_borders_study_dh7znc.mp4",
+              11:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788766397/beyond-11_s4ckje.mp4",
+              9:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788766398/beyond-9_ri00yd.mp4",
+              5:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788766399/beyond-5_jpi8vk.mp4",
+       }, // post 9 becomes a video/reel instead of an image
+    },
+  },
+  {
+    slug: "arena-animation-thiruvananthapuram",
+    name: "Arena Animation",
+    cardName: "Arena Animation Thiruvananthapuram",
+    project: "Instagram growth — Thiruvananthapuram campus",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "260 70% 65%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    instagram: {
+      handle: "@arenaanimationthiruvananthapuram",
+      bio: "Real bio text for this account goes here",
+      posts: "142",
+      followers: "3,204",
+      following: "180",
+      reels: {  2: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757117/Arena_Tvm_Post-2_vsbvi4.mp4",
+                10:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757111/Arena_Tvm_Post-10_dtc82w.mp4",
+                12:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757111/Arena_Tvm_Post-12_al1oo5.mp4", }, // post 9 becomes a video/reel instead of an image
+    },
+  },
+  {
+    slug: "arena-animation-koramangala",
+    name: "Arena Animation",
+    cardName: "Arena Animation Koramangala",
+    project: "Instagram growth — Koramangala campus",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "150 55% 45%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    instagram: {
+      handle: "@arena.animation.koramangala",
+      bio: "Real bio text for this account goes here",
+      posts: "142",
+      followers: "3,204",
+      following: "180",
+      reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761643/koramangala-9_hgmwsv.mp4",
+                6: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761642/koramangala-6_oezynm.mp4"
+       }, // post 9 becomes a video/reel instead of an image
+    },
+  },
+  {
+    slug: "arena-animation-kannur",
+    name: "Arena Animation",
+    cardName: "Arena Animation Kannur",
+    project: "Instagram growth — Kannur campus",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "45 90% 55%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    // instagram: {
+    //   handle: "@arenaanimationkannur",
+    //   bio: "Real bio text for this account goes here",
+    //   posts: "142",
+    //   followers: "3,204",
+    //   following: "180",
+    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
+    // },
+  },
+  {
+    slug: "zica-calicut-smm",
+    name: "Zica Calicut",
+    project: "Instagram growth for Zica Calicut",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "205 80% 55%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    instagram: {
+      handle: "@zicacalicut",
+      bio: "Real bio text for this account goes here",
+      posts: "142",
+      followers: "3,204",
+      following: "180",
+      reels: { 11: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757120/zicacalicut-11_wrbdsp.mp4",
+                4:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757125/zicacalicut-4_rekytk.mp4",
+                12:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757117/zicacalicut-12_rz1xny.mp4",
+       }, // post 9 becomes a video/reel instead of an image
+    },
+  },
+  {
+    slug: "la-via-deux-smm",
+    name: "La Via Deux",
+    project: "Instagram growth for La Via Deux",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "320 75% 60%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    // instagram: {
+    //   handle: "@laviadeux",
+    //   bio: "Real bio text for this account goes here",
+    //   posts: "142",
+    //   followers: "3,204",
+    //   following: "180",
+    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
+    // },
+  },
+  {
+    slug: "dhub",
+    name: "D-Hub",
+    project: "Instagram growth for D-Hub",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "175 60% 42%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    // instagram: {
+    //   handle: "@dhub",
+    //   bio: "Real bio text for this account goes here",
+    //   posts: "142",
+    //   followers: "3,204",
+    //   following: "180",
+    // },
+  },
+  {
+    slug: "clear-2-start",
+    name: "Clear 2 Start",
+    project: "Instagram growth for Clear 2 Start",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "95 60% 45%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    instagram: {
+      handle: "@clear2start_",
+      bio: "Kerala’s most trusted digital-final finance partner for Startups and NRI’s",
+      posts: "1070",
+      followers: "2,200",
+      following: "2",
+      reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788760937/clear2start-9_wgp2jd.mp4",
+              8:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788760943/clear2start-8_ujfzkd.mp4",
+              6:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788760950/clear2start-6_n2wlcq.mp4",
+       }, // post 9 becomes a video/reel instead of an image
+    },
+  },
+  {
+    slug: "educ-kshetra-smm",
+    name: "Educ Kshetra",
+    project: "Instagram growth for Educ Kshetra",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "18 80% 55%",
+    category: "smm",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    // instagram: {
+    //   handle: "@educkshetra",
+    //   bio: "Real bio text for this account goes here",
+    //   posts: "142",
+    //   followers: "3,204",
+    //   following: "180",
+    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
+    // },
+  },
+
+  // Web + App Development engagements. Arena Animation Thrissur and
+  // Beyond Borders each also have a separate SMM entry above -- same
+  // client, different engagement, different section.
+  {
+    slug: "arena-animation-thrissur-web-app",
+    name: "Arena Animation",
+    cardName: "Arena Animation Thrissur",
+    project: "Website & app work — Thrissur campus",
+    services: ["website-development", "app-development"],
+    result: "Case study write-up coming soon",
+    tint: "266 60% 55%",
+    category: "web-app",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+  },
+  {
+    slug: "beyond-borders-web-app",
+    name: "Beyond Borders",
+    project: "Website & app work for Beyond Borders",
+    services: ["website-development", "app-development"],
+    result: "Case study write-up coming soon",
+    tint: "168 55% 40%",
+    category: "web-app",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+  },
 ];
 
 export function workForService(slug: string) {
   return WORK_ITEMS.filter((w) => w.services.includes(slug));
 }
 
-// Real photography, one file per client slug, dropped in at
-// public/images/work/{slug}.jpg (landscape, ~3:2 to 16:9) -- shared by
-// WorkCard and the /work hero's DriftWall so every spot a client name
-// becomes a photo resolves to the same image.
-export function seededImage(client: string) {
-  const seed = client.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  return `/images/work/${seed}.jpg`;
+export function slugify(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+// Real photography, one file per WorkItem.slug, organized by /work
+// section folder: public/images/work/{smm|branding|web-app}/{slug}.jpg.
+// Uncategorized items (not shown on /work) fall back to the flat
+// public/images/work/{slug}.jpg root. Keyed by the item's own slug (not
+// the client name) because several clients now have more than one
+// WorkItem across categories (e.g. Arena Animation has an SMM entry and a
+// separate Web + App entry) -- each gets its own photo. ~1200x1200, 1:1.
+export function seededImage(slug: string, category?: WorkItem["category"]) {
+  const seed = slugify(slug);
+  return category ? `/images/work/${category}/${seed}.jpg` : `/images/work/${seed}.jpg`;
+}
+
+// Every SMM WorkItem gets its own folder at public/images/instagram/{slug}/
+// holding logo.png (the DP) plus a fixed run of Post-1.jpg..Post-N.jpg
+// (see INSTAGRAM_POST_COUNT) -- capital P to match the uploaded files;
+// this only matters on deploy, since case-sensitive Linux hosts (Vercel,
+// Netlify, ...) 404 a mismatched-case request that Windows silently
+// tolerates in dev. Keyed by WorkItem.slug, not client name --
+// each of a client's separate SMM engagements is a different real
+// Instagram account (e.g. Arena Animation's 4 campuses each run their
+// own page), so each needs its own logo + posts, not a shared folder.
+// Any file that isn't there yet just falls back to the tinted placeholder
+// cell (see InstagramCaseStudy) -- nothing 404s visibly, so folders can
+// fill in gradually.
+export function instagramFolder(slug: string) {
+  return `/images/instagram/${slugify(slug)}`;
+}
+
+export function seededLogo(slug: string) {
+  return `${instagramFolder(slug)}/logo.png`;
+}
+
+export const INSTAGRAM_POST_COUNT = 12;
+
+export function seededInstagramPosts(slug: string) {
+  const folder = instagramFolder(slug);
+  return Array.from({ length: INSTAGRAM_POST_COUNT }, (_, i) => `${folder}/Post-${i + 1}.jpg`);
+}
+
+// Fallback @handle when a WorkItem doesn't set instagram.handle -- just the
+// client name slugified, not a claim about their actual Instagram username.
+export function seededHandle(client: string) {
+  return client.toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+// Deterministic "no logo yet" fallback: a tinted circle with the client's
+// initials, rendered as an inline SVG data URI so it needs no network
+// request and never 404s.
+export function initialsAvatar(name: string, tint: string) {
+  const initials =
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((word) => word[0]?.toUpperCase() ?? "")
+      .join("") || "?";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="96" height="96" fill="hsl(${tint})"/><text x="48" y="50" font-family="Arial, sans-serif" font-size="34" font-weight="600" fill="#fff" text-anchor="middle" dominant-baseline="central">${initials}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
 export const PROCESS = [
