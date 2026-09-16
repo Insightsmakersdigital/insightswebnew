@@ -80,10 +80,21 @@ export default function IncludedSentence({ slug, sentence }: { slug: string; sen
         const onEnter = () => openTerm(term);
         term.addEventListener("pointerenter", onEnter);
         cleanups.push(() => term.removeEventListener("pointerenter", onEnter));
+
+        // Keyboard-Tab preview parity with hover -- desktop only. On a
+        // touch tap the browser fires `focus` immediately before `click`,
+        // and unconditionally opening here raced the click handler below
+        // (which reads `openIndex` to decide open vs. close): focus would
+        // open the card, then the click landed a beat later and read it
+        // as "already open," instantly closing it again. Net effect on
+        // mobile was the card visibly opening and closing within the same
+        // tap -- i.e. nothing appeared to happen. Activation via Enter/
+        // Space still works on any device since a <button> synthesizes a
+        // real `click` for both, so onClick alone covers keyboard actuation.
+        const onFocus = () => openTerm(term);
+        term.addEventListener("focus", onFocus);
+        cleanups.push(() => term.removeEventListener("focus", onFocus));
       }
-      const onFocus = () => openTerm(term);
-      term.addEventListener("focus", onFocus);
-      cleanups.push(() => term.removeEventListener("focus", onFocus));
 
       const onClick = (e: Event) => {
         e.preventDefault();

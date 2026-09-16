@@ -36,3 +36,18 @@
 .option-wheel__item--selected {
   font-weight: 500;
 }
+
+/* Horizontal orientation: items run left-to-right, anchored to the top
+   edge instead of a side edge. touch-action: pan-y is the actual fix for
+   mobile -- it tells the browser to keep handling vertical swipes as
+   normal page scroll natively, and only hand this element horizontal
+   drags, so the two gestures can never fight over the same touch. */
+.option-wheel--horizontal {
+  touch-action: pan-y;
+}
+.option-wheel--horizontal .option-wheel__item {
+  top: var(--ow-inset);
+  left: 50%;
+  right: auto;
+  transform-origin: center top;
+}

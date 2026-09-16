@@ -34,8 +34,7 @@ export default function WorkTile({ slug, category, title, client, tint, onClick 
         <img src={seededImage(slug, category)} alt={`${title} — ${client}`} loading="lazy" />
       </div>
       <div className="work-tile-info">
-        <h3>{title}</h3>
-        <p className="work-tile-client">{client}</p>
+        <h3>{client}</h3>
       </div>
     </article>
   );

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import RevealHeading from "../../components/RevealHeading";
-import WorkGrid from "../../components/WorkGrid";
+import FlowingMenu from "../../components/FlowingMenu";
 import DriftWall from "../../components/DriftWall";
-import { WORK_ITEMS, seededImage } from "../../data/site";
+import { WORK_ITEMS, WORK_CATEGORIES, seededImage } from "../../data/site";
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "Real work, for real clients: a handful of case studies, not a gap-filled grid of empty categories.",
+  description: "Real work, for real clients, organized by discipline -- pick one to see the case studies.",
 };
 
 const driftItems = WORK_ITEMS.map((w) => ({
@@ -16,14 +16,19 @@ const driftItems = WORK_ITEMS.map((w) => ({
   title: w.project,
 }));
 
-// Only items explicitly placed in one of these 3 buckets (WorkItem.category)
-// show on /work -- the rest of WORK_ITEMS stays in the data file, unlisted,
-// until it's deliberately categorized.
-const workSections = [
-  { index: "01", heading: "Social Media Marketing", items: WORK_ITEMS.filter((w) => w.category === "smm") },
-  { index: "02", heading: "Branding", items: WORK_ITEMS.filter((w) => w.category === "branding"), pendingNote: "More on the way" },
-  { index: "03", heading: "Web + App Development", items: WORK_ITEMS.filter((w) => w.category === "web-app") },
-].filter((section) => section.items.length > 0 || section.pendingNote);
+// Landing page is just the 4 discipline entry points (FlowingMenu), not
+// every case study at once -- see /work/[service] for the actual grids.
+// Each menu item's background is its own dedicated photo in
+// public/images/work-menu/{category.slug}.jpg -- deliberately NOT reused
+// from a WorkItem's own case-study photo, so this hover art can be picked
+// independently (a wide establishing shot reads better here than a
+// square case-study cover) and doesn't silently change if that WorkItem
+// is edited or reordered later.
+const menuItems = WORK_CATEGORIES.map((category) => ({
+  link: `/work/${category.slug}`,
+  text: category.label,
+  image: `/images/work-menu/${category.slug}.jpg`,
+}));
 
 export default function WorkPage() {
   return (
@@ -58,11 +63,13 @@ export default function WorkPage() {
               <p className="eyebrow reveal">Selected work</p>
               <RevealHeading as="h1" text="See the work, not the pitch." className="work-hero-heading" />
             </div>
-            <p className="work-hero-sub reveal">A handful of real case studies. Click any of them for the full story.</p>
+            <p className="work-hero-sub reveal">Pick a discipline. Every card behind it is a real, clickable case study.</p>
           </div>
         </section>
 
-        <WorkGrid sections={workSections} />
+        <section className="work-menu-section">
+          <FlowingMenu items={menuItems} bgColor="#0f0f0f" textColor="#ffffff" marqueeBgColor="#ffffff" marqueeTextColor="#0f0f0f" borderColor="rgb(255 255 255 / 18%)" />
+        </section>
       </main>
 
       <Footer />

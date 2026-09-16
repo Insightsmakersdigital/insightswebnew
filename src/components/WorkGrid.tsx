@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import WorkTile from "./WorkTile";
 import SectionHead from "./SectionHead";
@@ -35,6 +36,7 @@ export default function WorkGrid({ sections }: Props) {
 
   const active = sections.flatMap((s) => s.items).find((w) => w.slug === openSlug) ?? null;
   const isSmm = active?.category === "smm";
+  const hasGallery = !isSmm && !!active?.gallery && active.gallery.length > 0;
 
   useEffect(() => {
     if (!openSlug) return;
@@ -81,72 +83,114 @@ export default function WorkGrid({ sections }: Props) {
         </section>
       ))}
 
-      {active && (
-        <div className="case-modal-backdrop" onClick={() => setOpenSlug(null)}>
-          <div
-            className={`case-modal${isSmm ? " case-modal--ig" : ""}`}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={isSmm ? undefined : "case-modal-heading"}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className="case-modal-close" aria-label="Close case study" onClick={() => setOpenSlug(null)}>
-              &times;
-            </button>
+      {active &&
+        createPortal(
+          <div className="case-modal-backdrop" onClick={() => setOpenSlug(null)}>
+            <div
+              className={`case-modal${isSmm ? " case-modal--ig" : ""}${hasGallery ? " case-modal--gallery" : ""}`}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={isSmm ? undefined : "case-modal-heading"}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="case-modal-close" aria-label="Close case study" onClick={() => setOpenSlug(null)}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
 
-            {isSmm ? (
-              <InstagramCaseStudy
-                handle={active.instagram?.handle ?? `@${seededHandle(active.cardName ?? active.name)}`}
-                displayName={active.cardName ?? active.name}
-                bio={
-                  active.instagram?.bio ??
-                  active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" · ")
-                }
-                avatarSrc={seededLogo(active.slug)}
-                posts={active.instagram?.posts}
-                followers={active.instagram?.followers}
-                following={active.instagram?.following}
-                tint={active.tint}
-                gridImages={buildGridPosts(active)}
-              />
-            ) : (
-              <>
-                <div className="case-modal-media">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={seededImage(active.slug, active.category)} alt={`${active.project} — ${active.cardName ?? active.name}`} />
-                </div>
-
-                <div className="case-modal-body">
-                  <p className="eyebrow">{active.cardName ?? active.name}</p>
-                  <h2 id="case-modal-heading" className="case-modal-heading">
-                    {active.project}
-                  </h2>
-                  <p className="case-modal-services">
-                    {active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + ")}
-                  </p>
-
-                  <div className="case-modal-section">
-                    <h3>The challenge</h3>
-                    <p>{active.caseStudy.challenge}</p>
-                  </div>
-                  <div className="case-modal-section">
-                    <h3>What we did</h3>
-                    <p>{active.caseStudy.approach}</p>
-                  </div>
-                  <div className="case-modal-section">
-                    <h3>The outcome</h3>
-                    <p>{active.caseStudy.outcome}</p>
+              {isSmm ? (
+                <InstagramCaseStudy
+                  handle={active.instagram?.handle ?? `@${seededHandle(active.cardName ?? active.name)}`}
+                  displayName={active.cardName ?? active.name}
+                  bio={
+                    active.instagram?.bio ??
+                    active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" · ")
+                  }
+                  avatarSrc={seededLogo(active.slug)}
+                  posts={active.instagram?.posts}
+                  followers={active.instagram?.followers}
+                  following={active.instagram?.following}
+                  tint={active.tint}
+                  gridImages={buildGridPosts(active)}
+                />
+              ) : hasGallery ? (
+                <>
+                  <div className="case-modal-body case-modal-body--gallery-head">
+                    <p className="eyebrow">{active.cardName ?? active.name}</p>
+                    <h2 id="case-modal-heading" className="case-modal-heading">
+                      {active.project}
+                    </h2>
+                    <p className="case-modal-services">
+                      {active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + ")}
+                    </p>
                   </div>
 
-                  <Link href="/contact" className="text-link case-modal-cta">
-                    Start a project like this <span aria-hidden="true">→</span>
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+                  {/* The slide deck already carries the challenge/approach/
+                      outcome copy as baked-in text, so it's not repeated as
+                      page text here -- it's still present for screen readers
+                      and search, just moved onto the first slide's alt. */}
+                  <div className="case-modal-gallery">
+                    {active.gallery!.map((src, i) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={src}
+                        className="case-modal-gallery-item"
+                        src={src}
+                        alt={
+                          i === 0
+                            ? `${active.project} — ${active.caseStudy.challenge} ${active.caseStudy.approach} ${active.caseStudy.outcome}`
+                            : `${active.project} — slide ${i + 1}`
+                        }
+                      />
+                    ))}
+                  </div>
+
+                  <div className="case-modal-body">
+                    <Link href="/contact" className="text-link case-modal-cta">
+                      Start a project like this <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="case-modal-media">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={seededImage(active.slug, active.category)} alt={`${active.project} — ${active.cardName ?? active.name}`} />
+                  </div>
+
+                  <div className="case-modal-body">
+                    <p className="eyebrow">{active.cardName ?? active.name}</p>
+                    <h2 id="case-modal-heading" className="case-modal-heading">
+                      {active.project}
+                    </h2>
+                    <p className="case-modal-services">
+                      {active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + ")}
+                    </p>
+
+                    <div className="case-modal-section">
+                      <h3>The challenge</h3>
+                      <p>{active.caseStudy.challenge}</p>
+                    </div>
+                    <div className="case-modal-section">
+                      <h3>What we did</h3>
+                      <p>{active.caseStudy.approach}</p>
+                    </div>
+                    <div className="case-modal-section">
+                      <h3>The outcome</h3>
+                      <p>{active.caseStudy.outcome}</p>
+                    </div>
+
+                    <Link href="/contact" className="text-link case-modal-cta">
+                      Start a project like this <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
     </>
   );
 }

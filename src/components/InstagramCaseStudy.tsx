@@ -74,6 +74,7 @@ const styles = `
 .ig-cell--empty { display: flex; align-items: center; justify-content: center; color: #000; }
 .ig-cell--post { padding: 0; border: none; margin: 0; display: block; width: 100%; cursor: pointer; }
 .ig-cell-reel-badge { position: absolute; top: 6px; right: 6px; width: 15px; height: 15px; filter: drop-shadow(0 0 2px rgb(0 0 0 / 80%)); }
+.ig-cell-carousel-badge { position: absolute; top: 6px; right: 6px; width: 15px; height: 15px; filter: drop-shadow(0 0 2px rgb(0 0 0 / 80%)); }
 
 /* Reel/video posts: skip the image carousel entirely, one player. A
    generic hosted-page link (not a direct .mp4 etc.) goes in an iframe,
@@ -219,6 +220,15 @@ const MenuIcon = () => (
   </svg>
 );
 
+// Instagram's own "this post scrolls" badge -- shown on grid cells that
+// have more than one image, same idea as the reel play-icon badge.
+const CarouselIcon = ({ className }: { className?: string } = {}) => (
+  <svg aria-label="Carousel" className={className} fill="currentColor" height="15" viewBox="0 0 48 48" width="15">
+    <title>Carousel</title>
+    <path d="M34.8 29.7V11c0-2.9-2.3-5.2-5.2-5.2H11c-2.9 0-5.2 2.3-5.2 5.2v18.7c0 2.9 2.3 5.2 5.2 5.2h18.7c2.8-.1 5.1-2.4 5.1-5.2zM39.2 15v16.1c0 4.5-3.7 8.2-8.2 8.2H14.9c-.6 0-.9.7-.5 1.1 1 1.1 2.4 1.8 4.1 1.8h13.4c5.7 0 10.3-4.6 10.3-10.3V18.5c0-1.6-.7-3.1-1.8-4.1-.5-.4-1.2 0-1.2.6z" />
+  </svg>
+);
+
 const ImagePlaceholderIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.55">
     <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -311,6 +321,7 @@ export default function InstagramCaseStudy({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [slides, setSlides] = useState<string[]>([]);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [carouselCells, setCarouselCells] = useState<Set<number>>(new Set());
   const touchStartX = useRef<number | null>(null);
   // Empty image-holder cells until real post images are supplied per
   // client -- 12 (4 rows) so the grid reads as a full profile, not a
@@ -320,6 +331,30 @@ export default function InstagramCaseStudy({
   const activeCell = lightboxIndex !== null ? cells[lightboxIndex] : null;
   const activeVideo = activeCell && typeof activeCell === "object" ? activeCell.video : null;
   const lightboxSrc = typeof activeCell === "string" ? activeCell : null;
+
+  // Grid badge for multi-image posts: probe just the 2nd carousel
+  // candidate (post-N-2.jpg) for each image cell up front, so the "this
+  // post scrolls" icon shows before anyone clicks in -- the full slide
+  // list itself is only probed lazily once the lightbox actually opens
+  // (see the lightboxSrc effect below).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const found = new Set<number>();
+      await Promise.all(
+        cells.map(async (cell, i) => {
+          if (typeof cell !== "string") return;
+          const [, second] = carouselCandidates(cell);
+          if (await preload(second)) found.add(i);
+        })
+      );
+      if (!cancelled) setCarouselCells(found);
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gridImages]);
 
   // When an image post opens, probe for extra carousel slides
   // (post-N-2.jpg, post-N-3.jpg, ...) and swipe through whichever ones
@@ -463,6 +498,7 @@ export default function InstagramCaseStudy({
                   onError={() => setFailedCells((prev) => new Set(prev).add(i))}
                 />
                 {typeof cell === "object" && <ReelsIcon className="ig-cell-reel-badge" />}
+                {typeof cell === "string" && carouselCells.has(i) && <CarouselIcon className="ig-cell-carousel-badge" />}
               </button>
             );
           })}

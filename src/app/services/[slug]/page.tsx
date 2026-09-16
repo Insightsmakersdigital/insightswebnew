@@ -34,8 +34,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     <>
       <Header />
 
-      <main id="main">
-        <PageHero eyebrow={`${service.pillar} pillar`} heading={service.title} subhead={service.headline} light={false} />
+      <main id="main" className="service-detail-page">
+        <PageHero
+          eyebrow={`${service.pillar} pillar`}
+          heading={service.title}
+          subhead={service.headline}
+          light={false}
+          backHref="/services"
+          backLabel="Services"
+        />
 
         <section className="intro panel-light">
           <div className="wrap">
