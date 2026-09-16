@@ -771,6 +771,11 @@ export interface WorkItem {
     approach: string; // what was actually done
     outcome: string; // the result, expanded past the one-line teaser
   };
+  // Branded slide-deck graphics (Challenge/Strategy/Execution, etc.) shown
+  // as a horizontal gallery in the case-study modal instead of the plain
+  // single cover photo -- unset items just keep the regular seededImage
+  // cover. Paths, in display order.
+  gallery?: string[];
   // Real Instagram numbers for the client's actual account, shown in the
   // Instagram-replica case-study card (social-media-marketing items only).
   // Left unset until real figures are supplied -- the card renders "—"
@@ -793,8 +798,24 @@ export interface WorkItem {
   // (e.g. an SMM engagement can be shelved under the Web + App section
   // while it's still filler content). Unset items render in none of the
   // 3 sections until they're deliberately placed in one.
-  category?: "smm" | "branding" | "web-app";
+  category?: "smm" | "performance-marketing" | "branding" | "web-app";
 }
+
+// The 4 top-level /work categories, in display order. Both /work (the
+// FlowingMenu landing list) and /work/[service] (the per-category grid)
+// read from this single list, so adding a category is a one-place edit.
+export interface WorkCategory {
+  slug: "smm" | "performance-marketing" | "branding" | "web-app";
+  label: string;
+  index: string;
+}
+
+export const WORK_CATEGORIES: WorkCategory[] = [
+  { slug: "smm", label: "Social Media Marketing", index: "01" },
+  { slug: "performance-marketing", label: "Performance Marketing", index: "02" },
+  { slug: "branding", label: "Branding", index: "03" },
+  { slug: "web-app", label: "Web + App Development", index: "04" },
+];
 
 // Deliberately not grouped by discipline: a young studio doesn't have proof
 // for every service yet, and a grid with visible gaps ("no case study yet")
@@ -1180,6 +1201,114 @@ export const WORK_ITEMS: WorkItem[] = [
     // },
   },
 
+  // Performance Marketing engagements. Every one of these clients also
+  // has a separate SMM entry above -- same client, separate paid-media
+  // engagement, own section (see WORK_CATEGORIES). Case-study copy and
+  // results are placeholders pending real write-ups, same as the SMM
+  // entries were before theirs got filled in.
+  {
+    slug: "arena-animation-thrissur-performance-marketing",
+    name: "Arena Animation",
+    cardName: "Arena Animation Thrissur",
+    project: "Performance marketing — Thrissur campus",
+    services: ["social-media-marketing", "search-engine-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "12 85% 58%",
+    category: "performance-marketing",
+    caseStudy: {
+      challenge:
+        "Facing the classic \"marketing but nothing's converting\" problem — low quality leads, high CPL, zero awareness among students, and almost no social media presence to build trust on.",
+      approach:
+        "Hyperlocal targeting built specifically for the Thrissur audience, course-specific landing pages, and campaigns timed around admission cycles. Content leaned on student testimonials, student life, parent-trust content, and placement highlights to prove the course leads somewhere real. Ran Meta Ads (Lead Gen forms, retargeting, course-specific ad sets) and Google Ads targeting high-intent search traffic, structured across funnel stages from awareness to ready-to-enquire.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: performGallery("arena-animation-thrissur-performance-marketing", 7),
+  },
+  {
+    slug: "arena-animation-thiruvananthapuram-performance-marketing",
+    name: "Arena Animation",
+    cardName: "Arena Animation Thiruvananthapuram",
+    project: "Performance marketing — Thiruvananthapuram campus",
+    services: ["social-media-marketing", "search-engine-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "260 70% 65%",
+    category: "performance-marketing",
+    caseStudy: {
+      challenge:
+        "Same core problem as Thrissur — low quality leads, high CPL, zero awareness, minimal digital footprint — but requiring its own localized read on the audience rather than a copy-paste of the Thrissur approach.",
+      approach:
+        "A tailored version of the same playbook: hyperlocal targeting for Thiruvananthapuram specifically, course-specific landing pages, seasonal admission-cycle campaigns, and trust-building content (testimonials, student life, parent reassurance, placements). Meta Ads and Google Ads run in parallel with the Thrissur center, with content built around demo class promos, reels of student work, and testimonial videos to drive walk-ins.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: performGallery("arena-animation-thiruvananthapuram-performance-marketing", 7),
+  },
+  {
+    slug: "zica-calicut-performance-marketing",
+    name: "Zica Calicut",
+    project: "Performance marketing for Zica Calicut",
+    services: ["social-media-marketing", "search-engine-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "205 80% 55%",
+    category: "performance-marketing",
+    caseStudy: {
+      challenge:
+        "A strong pedigree (Zee Studios-backed) that nobody knew about — barely any brand recall, only 1 year in a crowded Calicut market, ~0 digital leads, and ~0 social presence.",
+      approach:
+        "Instead of building credibility from scratch, reveal the credibility already there — repositioned ZICA as \"Zee Animation Academy\" to make the Zee Studios connection instantly clear. Content moved from awareness (\"wait, this is a Zee brand?\") to trust-building to informative content built for organic reach. Meta Ads + Google Ads focused on awareness and traffic, plus ranking Google My Business in the top 3 to capture local search intent. Targeting centered on students and parents.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: performGallery("zica-calicut-performance-marketing", 8),
+  },
+  {
+    slug: "educ-kshetra-performance-marketing",
+    name: "Educ Kshetra",
+    project: "Performance marketing for Educ Kshetra",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "18 80% 55%",
+    category: "performance-marketing",
+    caseStudy: {
+      challenge:
+        "A 25+ year legacy IT institute that had been completely off the market for 5+ years post-COVID — zero students, zero online visibility, zero leads, no digital footprint to build from. A true blank slate.",
+      approach:
+        "Not optimization — brand building from scratch. Two-part focus: rebuild awareness (reintroducing a brand the market had moved on from) and build a lead funnel that simply didn't exist before. Content centered on founder-led videos, in-house robotics lab showcases, and legacy/trust-rebuilding content. Meta Ads structured around an awareness → traffic → engagement funnel to warm a fully cold audience before pushing for enquiries, with lean early spend scaled up once engagement signals showed traction.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: performGallery("educ-kshetra-performance-marketing", 8),
+  },
+  {
+    slug: "beyond-borders-performance-marketing",
+    name: "Beyond Borders",
+    project: "Performance marketing for Beyond Borders",
+    services: ["social-media-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "158 64% 45%",
+    category: "performance-marketing",
+    caseStudy: {
+      challenge:
+        "A crowded, high-CPL medical education consultancy category with no brand awareness and a trust gap — medical career decisions are family decisions with high scrutiny, not impulse enquiries.",
+      approach:
+        "Trust wasn't a nice-to-have, it was the entire strategy — dual-layer proof via student and parent testimonials, matching the dual audience actually making the decision. Built for a longer, considered-purchase nurture cycle rather than pushing immediate enquiries. Meta Ads with heavy focus on clear USP communication, paired with consistent brand-visibility campaigns to build recognition before people even started actively searching.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: performGallery("beyond-borders-performance-marketing", 7),
+  },
+  {
+    slug: "la-via-deux-performance-marketing",
+    name: "La Via Deux",
+    project: "Performance marketing for La Via Deux",
+    services: ["search-engine-marketing"],
+    result: "Case study write-up coming soon",
+    tint: "320 75% 60%",
+    category: "performance-marketing",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: performGallery("la-via-deux-performance-marketing", 11),
+  },
+
   // Web + App Development engagements. Arena Animation Thrissur and
   // Beyond Borders each also have a separate SMM entry above -- same
   // client, different engagement, different section.
@@ -1232,6 +1361,13 @@ export function slugify(s: string) {
 export function seededImage(slug: string, category?: WorkItem["category"]) {
   const seed = slugify(slug);
   return category ? `/images/work/${category}/${seed}.jpg` : `/images/work/${seed}.jpg`;
+}
+
+// Case-study slide-deck gallery, one folder per WorkItem.slug:
+// public/images/work-perform/{slug}/img-1.jpg..img-N.jpg. `count` is just
+// how many img-N.jpg files actually exist in that folder.
+export function performGallery(slug: string, count: number) {
+  return Array.from({ length: count }, (_, i) => `/images/work-perform/${slug}/img-${i + 1}.jpg`);
 }
 
 // Every SMM WorkItem gets its own folder at public/images/instagram/{slug}/

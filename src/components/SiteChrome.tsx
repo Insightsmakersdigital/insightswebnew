@@ -67,11 +67,24 @@ export default function SiteChrome() {
       cleanups.push(() => links.forEach((a) => a.removeEventListener("click", onLinkClick)));
     }
 
+    // Every one of these elements starts in a deliberately hidden CSS
+    // state (opacity:0 / translateY / clipped) and only becomes visible
+    // once its IntersectionObserver-driven reveal fires below -- that's
+    // the no-FOUC design. But it means a missed trigger doesn't just skip
+    // an animation, it leaves real page text permanently invisible. That
+    // can happen (Chrome DevTools' device-emulation toggle in particular
+    // doesn't always reliably re-fire scroll observers the way a real
+    // device load does). revealedEls tracks what the observer actually
+    // caught; the timeout below force-shows anything it didn't, so text
+    // can never get stuck hidden regardless of the cause.
+    const revealedEls = new WeakSet<Element>();
+
     if (!reduceMotion) {
       document.querySelectorAll<HTMLElement>(".reveal").forEach((el) => {
         inView(
           el,
           () => {
+            revealedEls.add(el);
             animate(el, { opacity: [0, 1], y: [56, 0] }, { duration: revealDuration, easing: easeReveal });
           },
           inViewOptions
@@ -86,6 +99,7 @@ export default function SiteChrome() {
         inView(
           line,
           () => {
+            revealedEls.add(line);
             animate(span, { y: ["110%", "0%"] }, { duration: revealDuration, easing: easeReveal, delay });
           },
           inViewOptions
@@ -98,12 +112,31 @@ export default function SiteChrome() {
         inView(
           group,
           () => {
+            revealedEls.add(group);
             animate(words, { y: ["110%", "0%"] }, { duration: revealDuration, easing: easeReveal, delay: stagger(0.055) });
           },
           { amount: 0.3 }
         );
       });
     }
+
+    const revealFallbackId = window.setTimeout(
+      () => {
+        document.querySelectorAll<HTMLElement>(".reveal").forEach((el) => {
+          if (!revealedEls.has(el)) animate(el, { opacity: 1, y: 0 }, { duration: 0 });
+        });
+        document.querySelectorAll<HTMLElement>(".reveal-line").forEach((line) => {
+          const span = line.querySelector<HTMLElement>("span");
+          if (span && !revealedEls.has(line)) animate(span, { y: "0%" }, { duration: 0 });
+        });
+        document.querySelectorAll<HTMLElement>(".reveal-words").forEach((group) => {
+          const words = group.querySelectorAll<HTMLElement>(".word-mask > span");
+          if (words.length && !revealedEls.has(group)) animate(words, { y: "0%" }, { duration: 0 });
+        });
+      },
+      reduceMotion ? 0 : 2500
+    );
+    cleanups.push(() => window.clearTimeout(revealFallbackId));
 
     function animateCount(el: Element) {
       const target = parseFloat((el as HTMLElement).dataset.count ?? "0");

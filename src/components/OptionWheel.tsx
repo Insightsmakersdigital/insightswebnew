@@ -1,7 +1,17 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect, forwardRef, useImperativeHandle } from "react";
 import "./OptionWheel.css";
+
+// Imperative handle so a parent (e.g. prev/next buttons that sit outside
+// this component) can move the wheel itself, not just read its selection
+// via onChange -- goTo drives the exact same animated applyTarget path a
+// drag or item click would, so the wheel visibly spins to the new
+// selection instead of the wheel and the parent's own state drifting
+// out of sync.
+export interface OptionWheelHandle {
+  goTo: (index: number) => void;
+}
 
 interface OptionWheelProps {
   items: string[];
@@ -10,6 +20,13 @@ interface OptionWheelProps {
   textColor?: string;
   activeColor?: string;
   side?: "left" | "right";
+  // "horizontal" arranges items left-to-right and drags on the X axis
+  // instead of Y -- built for touch screens, where a vertical drag gesture
+  // is indistinguishable from "scroll the page." Paired with CSS
+  // touch-action: pan-y (see OptionWheel.css), the browser keeps handling
+  // vertical swipes as normal page scroll natively; only horizontal drag
+  // gets captured by this component, so the two gestures can't collide.
+  orientation?: "vertical" | "horizontal";
   fontSize?: number;
   spacing?: number;
   curve?: number;
@@ -36,6 +53,7 @@ interface WheelConfig {
   fade: number;
   minOpacity: number;
   side: "left" | "right";
+  orientation: "vertical" | "horizontal";
   loop: boolean;
   smoothing: number;
   draggable: boolean;
@@ -43,7 +61,7 @@ interface WheelConfig {
   soundVolume: number;
 }
 
-export default function OptionWheel({
+const OptionWheel = forwardRef<OptionWheelHandle, OptionWheelProps>(function OptionWheel({
   items,
   defaultSelected = 0,
   onChange,
@@ -59,12 +77,13 @@ export default function OptionWheel({
   minOpacity = 0.05,
   smoothing = 200,
   inset = 80,
+  orientation = "vertical",
   loop = false,
   draggable = true,
   soundUrl = "",
   soundVolume = 0.5,
   className = "",
-}: OptionWheelProps) {
+}: OptionWheelProps, ref) {
   const rootRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const posRef = useRef(defaultSelected);
@@ -75,7 +94,7 @@ export default function OptionWheel({
   const onChangeRef = useRef(onChange);
   const selectedRef = useRef(defaultSelected);
   const wheelTimerRef = useRef<number | undefined>(undefined);
-  const dragRef = useRef<{ startY: number; startPos: number } | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number; startPos: number } | null>(null);
   const dragMovedRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef("");
@@ -102,6 +121,7 @@ export default function OptionWheel({
     fade,
     minOpacity,
     side,
+    orientation,
     loop,
     smoothing,
     draggable,
@@ -157,17 +177,20 @@ export default function OptionWheel({
           if (dist < -half) dist += cfg.count;
         }
 
-        const y = dist * cfg.rowH;
+        const along = dist * cfg.rowH;
         const angle = dist * (cfg.tilt * cfg.curve);
         const angleRad = (angle * Math.PI) / 180;
-        const x = Number.isFinite(R) ? R * (1 - Math.cos(angleRad)) * cfg.curve : 0;
+        const curveOffset = Number.isFinite(R) ? R * (1 - Math.cos(angleRad)) * cfg.curve : 0;
         const sign = cfg.side === "right" ? -1 : 1;
 
         const opacity = Math.max(cfg.minOpacity, 1 - Math.abs(dist) * cfg.fade);
         const blurPx = Math.abs(dist) * cfg.blur;
         const p = Math.max(0, 1 - Math.abs(dist));
 
-        el.style.transform = `translateY(calc(-50% + ${y}px)) translateX(${sign * x}px) rotate(${sign * -angle}deg)`;
+        el.style.transform =
+          cfg.orientation === "horizontal"
+            ? `translateX(calc(-50% + ${along}px)) translateY(${sign * curveOffset}px) rotate(${sign * angle}deg)`
+            : `translateY(calc(-50% + ${along}px)) translateX(${sign * curveOffset}px) rotate(${sign * -angle}deg)`;
         el.style.opacity = String(opacity);
         el.style.filter = blurPx > 0.05 ? `blur(${blurPx}px)` : "none";
         el.style.setProperty("--ow-p", String(p));
@@ -228,6 +251,24 @@ export default function OptionWheel({
     [playTick, startLoop]
   );
 
+  useImperativeHandle(
+    ref,
+    () => ({
+      goTo: (index: number) => {
+        const cfg = cfgRef.current;
+        if (!cfg) return;
+        let delta = index - targetRef.current;
+        if (cfg.loop) {
+          const half = cfg.count / 2;
+          delta = ((delta % cfg.count) + cfg.count) % cfg.count;
+          if (delta > half) delta -= cfg.count;
+        }
+        applyTarget(targetRef.current + delta, true);
+      },
+    }),
+    [applyTarget]
+  );
+
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -259,7 +300,7 @@ export default function OptionWheel({
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     const cfg = cfgRef.current;
     if (!cfg || !cfg.draggable) return;
-    dragRef.current = { startY: e.clientY, startPos: targetRef.current };
+    dragRef.current = { startX: e.clientX, startY: e.clientY, startPos: targetRef.current };
     dragMovedRef.current = false;
   }, []);
 
@@ -269,15 +310,18 @@ export default function OptionWheel({
       const drag = dragRef.current;
       if (!cfg || !drag) return;
 
-      const dy = e.clientY - drag.startY;
+      // Horizontal orientation drags on X only -- it never captures the
+      // pointer for a vertical move, so that gesture is left alone for
+      // the browser's own (touch-action: pan-y) native page scroll.
+      const delta = cfg.orientation === "horizontal" ? e.clientX - drag.startX : e.clientY - drag.startY;
       if (!dragMovedRef.current) {
-        if (Math.abs(dy) < 4) return;
+        if (Math.abs(delta) < 4) return;
         dragMovedRef.current = true;
         setIsDragging(true);
         (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
       }
 
-      applyTarget(drag.startPos - dy / cfg.rowH, false);
+      applyTarget(drag.startPos - delta / cfg.rowH, false);
     },
     [applyTarget]
   );
@@ -324,7 +368,7 @@ export default function OptionWheel({
   useEffect(() => {
     applyTarget(targetRef.current, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, fontSize, spacing, curve, tilt, blur, fade, minOpacity, side, loop, smoothing]);
+  }, [items, fontSize, spacing, curve, tilt, blur, fade, minOpacity, side, orientation, loop, smoothing]);
 
   useEffect(() => {
     return () => {
@@ -340,8 +384,8 @@ export default function OptionWheel({
       tabIndex={0}
       aria-label="Option wheel"
       className={`option-wheel${side === "right" ? " option-wheel--right" : ""}${
-        isDragging ? " option-wheel--dragging" : ""
-      }${className ? ` ${className}` : ""}`}
+        orientation === "horizontal" ? " option-wheel--horizontal" : ""
+      }${isDragging ? " option-wheel--dragging" : ""}${className ? ` ${className}` : ""}`}
       style={
         {
           "--ow-text-color": textColor,
@@ -372,4 +416,8 @@ export default function OptionWheel({
       ))}
     </div>
   );
-}
+});
+
+OptionWheel.displayName = "OptionWheel";
+
+export default OptionWheel;

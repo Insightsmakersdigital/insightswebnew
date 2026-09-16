@@ -609,12 +609,46 @@ section, footer { position: relative; }
 /* generic sections --------------------------------------------------- */
 section { padding-block: var(--space-16); background: var(--bg); color: var(--text); transition: background var(--dur-med) var(--ease-out); }
 
+/* /services/[slug] and the homepage -- the generic 100px section
+   padding-block above stacks into a lot of pure empty space (100px
+   bottom + 100px top = 200px of nothing per boundary) across either
+   page's run of back-to-back sections, on top of each section's own
+   internal padding. Tightened here rather than by touching the shared
+   `section` rule, so any other page still using the plain 100px spacing
+   isn't affected. Each page's hero keeps its own cinematic spacing --
+   excluded on purpose. */
+.service-detail-page section:not(.page-hero),
+.home-page section:not(.hero) {
+  padding-block: var(--space-12);
+}
+@media (max-width: 809.98px) {
+  .service-detail-page section:not(.page-hero),
+  .home-page section:not(.hero) {
+    padding-block: var(--space-8);
+  }
+}
+
 /* interior-page hero -- lighter-weight than the homepage Hero (no
    wordmark/loader/marquee), used to open /about, /services, /work, etc. */
 .page-hero { padding-block: var(--space-cinematic) var(--space-14); }
 .page-hero .eyebrow { margin-bottom: var(--space-5); }
 .page-hero-heading { font-size: var(--fs-h2-lg); line-height: var(--lh-h2-lg); font-weight: 600; letter-spacing: normal; max-width: 20ch; margin: 0; }
 .page-hero .hero-sub { margin-top: var(--space-6); }
+
+/* Explicit "back to the listing page" affordance -- an actual link to the
+   known parent route, not a call to the browser's back button (which can
+   land somewhere unrelated if the page was opened directly, e.g. from a
+   shared link or search). currentColor icon + inherited text color so it
+   reads correctly on both dark and .panel-light hero variants without a
+   separate theme branch. */
+.page-back-link {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  font-size: 0.85rem; font-weight: 600; color: var(--text-dim);
+  transition: color var(--dur-fast) var(--ease-out), gap var(--dur-fast) var(--ease-out);
+}
+.page-back-link:hover { color: var(--text); gap: var(--space-3); }
+.page-back-link svg { flex: none; }
 
 /* /work hero -- DriftWall (React Bits) as a full-bleed drifting photo
    wall behind the page title, replacing the plain .page-hero here only.
@@ -646,6 +680,16 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .work-hero-sub { display: block; max-width: 34ch; margin: 0; font-size: 1.1rem; color: rgb(255 255 255 / 75%); flex-shrink: 0; }
 @media (min-width: 810px) {
   .work-hero-sub { text-align: right; }
+}
+.work-hero-content .page-back-link { pointer-events: auto; color: rgb(255 255 255 / 70%); }
+.work-hero-content .page-back-link:hover { color: var(--paper); }
+
+/* /work landing -- the 4 discipline entry points (FlowingMenu), full-bleed
+   below the hero. Each category's own case studies live at
+   /work/[service] instead of stacking on this page. */
+.work-menu-section { height: 70vh; min-height: 420px; }
+@media (min-width: 810px) {
+  .work-menu-section { height: 80vh; min-height: 560px; }
 }
 
 /* editorial section head — measured pattern: section headings start at
@@ -712,10 +756,9 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .wheel-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-10);
-  padding-block: var(--space-16);
+  gap: var(--space-6);
 }
-.wheel-col, .wheel-detail { grid-column: 1 / -1; }
+.wheel-col, .wheel-detail, .wheel-mobile-block { grid-column: 1 / -1; }
 @media (min-width: 810px) {
   .wheel-grid { grid-template-columns: 1.1fr 1fr; align-items: center; gap: var(--space-12); }
   .wheel-col { grid-column: 1 / 2; }
@@ -726,19 +769,96 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 @media (min-width: 810px) {
   .wheel-col { height: 720px; }
 }
-/* the wheel's font-size/inset are set as inline custom properties by the
-   OptionWheel component (its own props aren't breakpoint-aware) -- the
-   !important here is the only way to retune them per-viewport without
-   forking the component itself. Narrower inset + smaller type keeps the
-   longest service titles ("Search Engine Optimization") from running
-   past the column's left edge on phone widths. */
-@media (max-width: 809.98px) {
-  .wheel-col .option-wheel { --ow-font-size: 1.4rem !important; --ow-inset: 16px !important; }
+
+/* Below 810px the vertical wheel is swapped for the same OptionWheel
+   turned horizontal (orientation="horizontal" -- drags on X, and its
+   own CSS sets touch-action: pan-y), not a different control. A vertical
+   drag on this element does nothing (OptionWheel only captures the
+   pointer past a horizontal-move threshold), so the browser is free to
+   keep handling vertical swipes as normal page scroll the whole time.
+   .wheel-col--desktop is hidden outright (not just visually), and
+   .wheel-mobile-block likewise on desktop, so neither's pointer
+   listeners receive input they're not meant to. (A tap-only pager and a
+   scroll-snap card row were both tried here first and dropped -- this
+   keeps the same interaction language as desktop instead of falling
+   back to something plainer.) Wheel + prev/next + CTA all live inside
+   one block with a tight gap, right under each other, so there's no
+   leftover vertical space between "the control" and "the thing it
+   controls" the way there was when the explanatory text column
+   (.wheel-detail) rendered its own empty, bordered, padded box on
+   mobile with nothing inside it. */
+.wheel-col--desktop { display: none; }
+@media (min-width: 810px) { .wheel-col--desktop { display: block; } }
+
+.wheel-mobile-block { display: block; }
+@media (min-width: 810px) { .wheel-mobile-block { display: none; } }
+
+/* Mobile/tablet service accordion (ServiceAccordionMobile) -- replaces
+   the horizontal drag wheel below 810px. Sits inside .wheel-mobile-block,
+   which CSS already hides at 810px+, so it never needs its own
+   breakpoint gating.
+
+   Deliberately NOT a new visual language: this mirrors .pillar-accordion
+   above (same 01/02/03 index, same collapsed-name/expanded-headline
+   title swap, same "+" -> "x" icon rotate, same grid-template-rows
+   0fr/1fr panel technique, same cubic-bezier(0.16, 1, 0.3, 1) easing,
+   same staggered slide-in on the revealed list) rather than the separate
+   artifact-derived styling this replaced, so it reads as a sibling of an
+   existing accordion instead of a pasted-in one. */
+.services-accordion-head { margin-bottom: var(--space-6); }
+.services-accordion-head .eyebrow { margin-bottom: var(--space-3); }
+.services-accordion-heading { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem); line-height: 1.2; font-weight: 700; }
+
+.services-accordion-row { border-top: 1px solid var(--border); }
+.services-accordion-row:last-child { border-bottom: 1px solid var(--border); }
+
+.services-accordion-toggle {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: var(--space-4);
+  width: 100%; min-height: 0; padding-block: var(--space-5);
+  text-align: left;
+}
+.services-accordion-index { font-size: 13px; font-weight: 400; color: var(--text-faint); opacity: 0.6; font-variant-numeric: tabular-nums; }
+
+.services-accordion-title { position: relative; overflow: hidden; min-height: 28px; font-size: 22px; line-height: 1.2; font-weight: 500; font-family: var(--font-display); }
+.services-accordion-title-collapsed, .services-accordion-title-expanded {
+  display: block; position: absolute; inset: 0;
+  color: var(--text);
+  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.services-accordion-title-collapsed { transform: translateY(0); }
+.services-accordion-title-expanded { transform: translateY(100%); }
+.services-accordion-row.is-open .services-accordion-title-collapsed { transform: translateY(-100%); }
+.services-accordion-row.is-open .services-accordion-title-expanded { transform: translateY(0); }
+
+.services-accordion-icon {
+  font-size: 18px; line-height: 1; font-weight: 400; color: var(--text);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.services-accordion-row.is-open .services-accordion-icon { transform: rotate(45deg); }
+
+.services-accordion-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.services-accordion-row.is-open .services-accordion-panel { grid-template-rows: 1fr; }
+.services-accordion-panel-inner { overflow: hidden; display: flex; flex-direction: column; padding-bottom: var(--space-5); }
+
+.services-accordion-service {
+  font-size: 16px; font-weight: 400; line-height: 1.7; color: var(--text-dim);
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color var(--dur-fast) var(--ease-out);
+}
+.services-accordion-row.is-open .services-accordion-service { opacity: 1; transform: translateY(0); transition-duration: 0.45s; }
+.services-accordion-service:hover { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .services-accordion-title-collapsed, .services-accordion-title-expanded,
+  .services-accordion-icon, .services-accordion-panel, .services-accordion-service { transition: none; }
 }
 
-.wheel-detail { max-width: 46ch; border-top: 1px solid var(--border); padding-top: var(--space-8); }
+/* Desktop-only explanatory column -- hidden outright on mobile (not just
+   its .wheel-detail-copy child) so it doesn't sit there as an empty,
+   bordered, padded box with nothing visible inside it. */
+.wheel-detail { display: none; }
 @media (min-width: 810px) {
-  .wheel-detail { border-top: none; padding-top: 0; }
+  .wheel-detail { display: block; max-width: 46ch; }
 }
 
 .wheel-detail-eyebrow {
@@ -958,7 +1078,10 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .case-result-value .stat-suffix { font-size: 48px; font-weight: 500; color: #fff; vertical-align: baseline; }
 
 @media (max-width: 809.98px) {
-  .case-visual { aspect-ratio: 4 / 3; }
+  /* Was 4/3 here, mismatched from the 2/1 services-proof source images
+     (see services-proof/name.txt) -- object-fit: cover cropped off a big
+     chunk of each graphic on mobile only. Keep the same 2/1 as desktop so
+     nothing gets cut. */
   .case-result-row { min-height: 88px; }
   .case-result-value { font-size: 36px; }
   .case-result-value .stat-suffix { font-size: 36px; }
@@ -1659,11 +1782,13 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .process-step h3 { margin: var(--space-3) 0 var(--space-2); }
 .process-step p { color: var(--text-dim); font-size: 0.95rem; }
 
-/* /work -- 3 curated sections (Social Media Marketing, Branding, Web +
-   App Development), each its own case-study grid + one shared modal. A
-   section with no items placed in it yet simply doesn't render (see
-   workSections filter in work/page.tsx) rather than showing an empty
-   category. Every real card is clickable work. */
+/* /work/[service] -- one curated section per discipline (Social Media
+   Marketing, Performance Marketing, Branding, Web + App Development,
+   see WORK_CATEGORIES), each its own case-study grid + shared modal. A
+   category with no items placed yet renders its pendingNote ("More on
+   the way") instead of an empty grid. Every real card is clickable work.
+   The /work landing page itself no longer stacks these grids -- it's
+   just the 4-item FlowingMenu list, see .work-menu-section above. */
 .work-card-clickable { cursor: pointer; }
 
 .work-section + .work-section { margin-top: var(--space-12); }
@@ -1685,13 +1810,11 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 }
 .work-tile:hover .work-tile-media img { transform: scale(1.06); }
 .work-tile-info { padding-top: var(--space-4); }
-.work-tile-info h3 { font-size: 1.05rem; font-weight: 500; color: #111; margin-bottom: 2px; }
-.work-tile-client { font-size: 0.85rem; color: #8a8a85; }
+.work-tile-info h3 { font-size: 1.05rem; font-weight: 500; color: #fff; margin-bottom: 2px; }
 .work-tile-service { font-size: 12px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; margin-top: var(--space-2); }
 @media (max-width: 479.98px) {
   .work-tile-info { padding-top: var(--space-3); }
   .work-tile-info h3 { font-size: 0.92rem; line-height: 1.25; }
-  .work-tile-client { font-size: 0.78rem; }
   .work-tile-service { font-size: 10px; margin-top: 3px; }
 }
 
@@ -1720,19 +1843,29 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   position: relative;
   width: 100%; max-width: 720px;
   margin: auto 0;
-  background: var(--paper); color: var(--ink);
+  background: var(--ink); color: var(--paper);
+  /* Re-declare the dark-panel text tokens locally -- the modal itself
+     sits outside any themed section (it's rendered at the bottom of
+     WorkGrid's own return, not nested in one), so without this its
+     heading/body text (which reference var(--text) etc., not a plain
+     inherited color) can end up mismatched with this card's own
+     background depending on where in the page it's portalled from. */
+  --text: var(--paper);
+  --text-dim: var(--muted-4);
+  --text-faint: var(--muted-5);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
 .case-modal-close {
   position: absolute; top: var(--space-4); right: var(--space-4); z-index: 1;
-  width: 36px; height: 36px; border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; line-height: 1; color: rgb(255 255 255 / 100%);
+  color: #fff;
   background: rgb(0 0 0 / 45%);
-  transition: background var(--dur-fast) var(--ease-out);
+  border: 1px solid rgb(255 255 255 / 15%);
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
-.case-modal-close:hover { background: rgb(0 0 0 / 65%); }
+.case-modal-close:hover { background: rgb(0 0 0 / 65%); border-color: rgb(255 255 255 / 30%); transform: rotate(90deg); }
 
 /* SMM case studies swap the plain modal body for <InstagramCaseStudy>,
    which brings its own black background and phone-width layout -- this
@@ -1760,6 +1893,23 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 
 .case-modal-media { aspect-ratio: 16/9; overflow: hidden; }
 .case-modal-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Slide-deck gallery (WorkItem.gallery) -- a sequence of branded
+   Challenge/Strategy/Execution graphics meant to be read top-to-bottom in
+   order, same direction as the modal's own backdrop scroll (see
+   .case-modal-backdrop's overflow-y), not cropped into a fixed box like
+   .case-modal-media -- each slide keeps its own natural size so none of
+   its baked-in text gets clipped. */
+.case-modal-gallery { display: flex; flex-direction: column; }
+.case-modal-gallery-item { display: block; width: 100%; height: auto; }
+
+/* Wider modal for the gallery variant -- these slides are natively
+   1600x900, so the plain 720px case-modal width was shrinking them more
+   than necessary. */
+@media (min-width: 810px) {
+  .case-modal--gallery { max-width: 900px; }
+}
+.case-modal-body--gallery-head { padding-bottom: 0; }
 .case-modal-body { padding: var(--space-8) var(--space-7); }
 .case-modal-body .eyebrow { color: var(--text-faint); margin-bottom: var(--space-2); }
 .case-modal-heading { font-size: 1.75rem; }
