@@ -13,13 +13,18 @@ import CardSwap, { Card } from "../components/CardSwap";
 import SplitLineHeading from "../components/SplitLineHeading";
 import ContactForm from "../components/ContactForm";
 import AnimatedTooltip from "../components/AnimatedTooltip";
-import { SITE_SHORT, WORK_ITEMS, SERVICES, CONTACT, FOUNDERS, PROCESS, ROSTER } from "../data/site";
+import { SITE_SHORT, WORK_ITEMS, SERVICES, CONTACT, FOUNDERS, PROCESS, ROSTER, seededLogo } from "../data/site";
 
 export const metadata: Metadata = {
   title: "Design, Branding & Marketing Studio",
 };
 
-const logoTrack = [...WORK_ITEMS, ...WORK_ITEMS];
+// Real client logos, not names -- only SMM WorkItems have a real
+// public/images/instagram/{slug}/logo.png (every other category has no
+// Instagram presence to source a logo from). Doubled for the seamless
+// translateX(-50%) loop -- see @keyframes marquee.
+const smmLogos = WORK_ITEMS.filter((w) => w.category === "smm");
+const logoTrack = [...smmLogos, ...smmLogos];
 
 const featuredWork = WORK_ITEMS.slice(0, 3).map((w) => ({
   slug: w.slug,
@@ -313,6 +318,10 @@ export default function HomePage() {
           <div className="wrap">
             <div className="faq-social-box">
               <div className="faq-editorial reveal">
+                <div className="eyebrow-row">
+                  <span className="section-index">06</span>
+                  <p className="eyebrow">FAQ</p>
+                </div>
                 <p className="faq-statement">
                   <span className="tone-dark">We partner with ambitious brands across</span>{" "}
                   <span className="tone-dim">education, hospitality, events, adventure and travel.</span>
@@ -328,7 +337,8 @@ export default function HomePage() {
                 <div className="faq-marquee-row reveal" aria-hidden="true">
                   <div className="faq-marquee-track">
                     {logoTrack.map((c, i) => (
-                      <span key={i}>{c.name}</span>
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img key={i} className="faq-marquee-logo" src={seededLogo(c.slug)} alt="" loading="lazy" />
                     ))}
                   </div>
                 </div>

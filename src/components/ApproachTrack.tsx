@@ -23,16 +23,17 @@ export default function ApproachTrack({ steps }: { steps: ServiceStep[] }) {
 
     const approachMarkers = Array.from(approachStage.querySelectorAll<HTMLElement>("[data-approach-marker]"));
     const approachColumns = Array.from(approachStage.querySelectorAll<HTMLElement>("[data-approach-column]"));
-
-    const approachCanEnhance =
-      approachColumns.length > 0 &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-      window.matchMedia("(min-width: 900px)").matches;
-
-    if (!approachCanEnhance) return;
-
-    approachStage.classList.add("is-enhanced");
     const total = approachColumns.length;
+
+    if (total === 0 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Same pinned-scroll mechanic at every width now -- .approach-stage
+    // sticks inside a 300vh .approach-track everywhere (see the CSS
+    // comment above .approach-track), and below 900px the columns
+    // overlap into one stacked panel (see .approach-columns in the same
+    // block) instead of sitting 4-across, so there's still just one
+    // active column showing at a time either way.
+    approachStage.classList.add("is-enhanced");
     const ACTIVE_INDEX_BIAS = 0.08;
 
     let ticking = false;

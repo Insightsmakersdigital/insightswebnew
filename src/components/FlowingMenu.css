@@ -35,7 +35,13 @@
   text-decoration: none;
   white-space: nowrap;
   font-weight: 600;
-  font-size: 4vh;
+  padding-inline: 4vw;
+  /* 4vh alone (the original spec) sizes off viewport HEIGHT, not width --
+     on a tall narrow phone that's ~34px, which "WEB + APP DEVELOPMENT" or
+     "PERFORMANCE MARKETING" can't fit inside a ~390px-wide screen at
+     white-space:nowrap, so it just ran off-screen instead of wrapping.
+     min() caps it to whatever the viewport WIDTH can actually hold too. */
+  font-size: min(4vh, 7vw);
 }
 
 .menu__item-link:hover {
@@ -82,7 +88,7 @@
   white-space: nowrap;
   text-transform: uppercase;
   font-weight: 400;
-  font-size: 4vh;
+  font-size: min(4vh, 7vw);
   line-height: 1;
   padding: 0 1vw;
 }

@@ -659,6 +659,15 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   .work-hero { height: 620px; }
 }
 .work-hero-wall { position: absolute; inset: 0; z-index: 0; }
+/* .page-back-link (inline-flex) and .eyebrow (inline-block) are both
+   inline-level boxes -- on /services/[slug] (PageHero) they stack cleanly
+   because they're direct children of .wrap, a CSS grid where `.wrap > *`
+   forces every child onto its own row regardless of its own display
+   value. .work-hero-left isn't a grid, so without an explicit column
+   flex here the two collapsed onto the same line and visibly overlapped
+   ("<- WorkCase studies" running together). */
+.work-hero-left { display: flex; flex-direction: column; }
+
 .work-hero-content {
   position: relative; z-index: 2;
   height: 100%;
@@ -728,9 +737,18 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
    exactly onto column-line 3 (spans columns 1-2), and its 3-stat row spans
    columns 1-3 as three equal columns, both leaving column 4 as a
    deliberate empty margin rather than stretching to fill it. */
+.intro-overview-heading {
+  grid-column: 1 / 3; max-width: 320px;
+  font-size: 2rem; font-weight: 700; color: var(--text);
+  padding-bottom: var(--space-3); margin-bottom: var(--space-6);
+  border-bottom: 2px solid var(--text);
+}
 .intro-lead {
-  grid-column: 1 / 3;
-  font-size: clamp(1.3rem, 1.05rem + 1vw, 1.8rem); max-width: 42ch; letter-spacing: normal; line-height: 1.35;
+  /* Widened from 1/3 (2 cols) to 1/4 (3 cols, matching .intro-metrics)
+     and from 42ch to 64ch -- at the narrower span this wrapped into a
+     lot of short ~5-word lines instead of reading as a real paragraph. */
+  grid-column: 1 / 4;
+  font-size: clamp(1.3rem, 1.05rem + 1vw, 1.8rem); max-width: 64ch; letter-spacing: normal; line-height: 1.35;
 }
 .intro-metrics {
   grid-column: 1 / 4;
@@ -741,7 +759,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   border-top: 1px solid var(--border);
 }
 @media (max-width: 809.98px) {
-  .intro-lead, .intro-metrics { grid-column: 1 / -1; }
+  .intro-overview-heading, .intro-lead, .intro-metrics { grid-column: 1 / -1; }
   .intro-metrics { grid-template-columns: 1fr; }
 }
 .metric p { color: var(--text-dim); margin-top: var(--space-1); font-size: var(--fs-body); }
@@ -1500,11 +1518,28 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   padding-block: var(--space-5);
 }
 .faq-marquee-track {
-  display: flex; gap: var(--space-8); white-space: nowrap; width: max-content;
-  font-family: var(--font-display); font-weight: 600; font-size: 24px; color: #b5b5b5;
+  /* --space-9 doesn't exist in the scale (it jumps 8 -> 10), so this was
+     an invalid custom property -- gap silently computed to 0, which is
+     why the logos looked crammed together with no breathing room. */
+  display: flex; align-items: center; gap: var(--space-16); width: max-content;
   animation: marquee 26s linear infinite;
 }
+/* Real client logos (public/images/instagram/{slug}/logo.png), not
+   names -- desaturated/dim like a plain "worked with" strip, full color
+   on hover. logoTrack is the SMM WorkItems list doubled (see page.tsx),
+   so -50% is exactly one full copy's width -- a seamless loop. */
+.faq-marquee-logo {
+  height: 32px; width: auto; flex: none;
+  border-radius: 50%;
+  filter: grayscale(1); opacity: 0.5;
+  transition: filter var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.faq-marquee-row:hover .faq-marquee-logo { filter: grayscale(0); opacity: 1; }
 .faq-marquee-row:hover .faq-marquee-track { animation-play-state: paused; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 @media (prefers-reduced-motion: reduce) { .faq-marquee-track { animation: none; } }
 
 .faq-pill-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #e5e5e5; }
@@ -2123,23 +2158,32 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
    .team/.testimonials-section/.faq-social: exact spec colors, not theme
    tokens). Shared by every service detail page via [slug].astro.
 
-   Structure: .approach-stage sticks inside a 300vh .approach-track, so it
-   stays pinned on screen for the length of that scroll runway (a plain
-   CSS position:sticky "scrollytelling" pin -- the user can still fling
-   past it at any speed; nothing intercepts the scroll itself). ONE
-   signature move drives everything else: a single continuous scroll
-   progress value. The rail's fill and each marker's filled/unfilled state
-   read that value directly (continuous); which column is "active" reads
-   a quantized floor(progress * steps) of the same value, so the column
-   focus advances in five discrete beats instead of drifting.
+   Structure, same at every width: .approach-stage sticks inside a 300vh
+   .approach-track, so it stays pinned on screen for the length of that
+   scroll runway (a plain CSS position:sticky "scrollytelling" pin -- the
+   user can still fling past it at any speed; nothing intercepts the
+   scroll itself). ONE signature move drives everything else: a single
+   continuous scroll progress value, computed in ApproachTrack.tsx. The
+   rail's fill and each marker's filled/unfilled state read that value
+   directly (continuous); which column is "active" reads a quantized
+   floor(progress * steps) of the same value, so the column focus
+   advances in discrete beats instead of drifting.
+
+   The only thing that changes below 900px (see the media query near the
+   bottom of this block) is how the columns occupy the pinned stage: at
+   full width there's room for all 4 side by side, so the active one is
+   just the bright one among four; below that there isn't, so the 4
+   columns overlap into the same grid cell and only the active one is
+   opacity:1 -- same single-active-column outcome, just stacked instead
+   of arrayed.
 
    Progressive enhancement, not reveal-then-hide: the base CSS below
-   already shows every column at full contrast with its detail visible --
-   that's what a no-JS browser, a crawler, or reduced-motion gets. The
-   script only ADDS .is-enhanced (see the bottom of this block) once it
-   confirms motion is allowed and the viewport is wide enough for the
-   sticky treatment to make sense; only then does the single-active-column
-   focus apply. */
+   already shows every column at full contrast with its detail visible,
+   in normal (non-overlapping) document flow -- that's what a no-JS
+   browser, a crawler, or reduced-motion gets, and it's also why the pin
+   and the column-overlap are both gated on .is-enhanced rather than a
+   bare viewport query: if the script never runs, nothing should ever
+   collapse into a stack with no JS left to swap it. */
 .approach-section { background: #f6f6f6; color: #0f0f0f; }
 .approach-section::before { display: none; }
 
@@ -2182,10 +2226,19 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   background: #111; transform: scaleX(0); transform-origin: left;
   will-change: transform;
 }
-.approach-rail-markers { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
+.approach-rail-markers { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 100%; align-items: center; }
 .approach-rail-marker {
   width: 3.5px; height: 3.5px; border-radius: 50%; background: #c9c9c4;
-  margin-left: -4px; margin-top: -5px;
+  justify-self: start;
+  /* Was margin-left:-4px; margin-top:-5px -- hardcoded pixel offsets
+     guessed for one specific size, off-center on the 2px track (should
+     have been ~-0.75px, not -5px, hence sitting well above the line) and
+     wrong again once .is-filled grows the dot to 6px. align-items:center
+     on the grid handles vertical centering for any size automatically;
+     this translateX(-50%) does the same horizontally, centering the dot
+     ON its column's left edge (not starting there) regardless of
+     whether it's the resting 3.5px or the filled 6px size. */
+  transform: translateX(-50%);
   transition: width 300ms ease, height 300ms ease, background 300ms ease;
 }
 .approach-rail-marker.is-filled { width: 6px; height: 6px; background: #111; }
@@ -2207,19 +2260,26 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .approach-column:not(:first-child) { padding-left: 24px; }
 .approach-columns > .approach-column:last-child { border-right: none; padding-right: 0; }
 
+/* Base color is the fully-legible one (#111), not the dim "not active
+   yet" grey -- that dimming only makes sense once .is-enhanced is
+   actually driving an active column (see below), which requires JS. A
+   dim base was the bug that left every mobile step permanently washed
+   out (mobile never got .is-enhanced) and would do the same for any
+   desktop reduced-motion visitor, since neither path ever adds the class
+   that was supposed to brighten it back up. */
 .approach-column-num {
-  display: block; font-family: var(--font-display); font-weight: 500; font-size: 14px; color: #8a8a85;
+  display: block; font-family: var(--font-display); font-weight: 500; font-size: 14px; color: #111;
   font-variant-numeric: tabular-nums;
   transition: color 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .approach-column-title {
   margin-top: 24px;
-  font-size: 24px; font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; color: #8a8a85;
+  font-size: 24px; font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; color: #111;
   transition: color 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .approach-column-desc {
   margin-top: 12px; max-width: 100%;
-  font-size: 15px; font-weight: 400; line-height: 1.55; color: #8a8a85;
+  font-size: 15px; font-weight: 400; line-height: 1.55; color: #111;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   transition: opacity 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2256,20 +2316,45 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 60ms, transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 60ms;
 }
 
-/* below 900px the sticky/rail treatment isn't attempted at all (see the
-   script's own width check) -- this is a plain, always-fully-visible
-   stacked list, not a cramped 4-up version of the desktop stage. */
+/* below 900px, structural layout only (spacing, stacking head/counter,
+   flush indentation) -- the safe base state for a no-JS browser, a
+   crawler, or reduced-motion, same as desktop's base state: every column
+   in normal document flow, fully legible, nothing hidden. */
 @media (max-width: 899.98px) {
-  .approach-track { height: auto; }
-  .approach-stage { position: static; min-height: 0; padding-top: var(--space-8); padding-bottom: 0; }
+  .approach-stage { padding-top: var(--space-8); }
   .approach-stage-head { align-items: flex-start; flex-direction: column; gap: 4px; }
-  .approach-counter { display: none; }
-  .approach-rail { display: none; }
-  .approach-columns { flex: none; grid-template-columns: 1fr; gap: 0; margin-top: var(--space-8); }
-  .approach-column { padding-inline: 0; border-right: none; padding-block: var(--space-6); border-top: 1px solid #e5e4e1; }
+  .approach-columns { grid-template-columns: 1fr; gap: 0; margin-top: var(--space-8); }
+  /* Repeats the :not(:first-child) compound so this beats
+     .approach-column:not(:first-child)'s desktop padding-left:24px on
+     specificity (0,1,0 alone loses to that rule's 0,2,0) -- without it,
+     every column except the first kept its desktop left-indent here,
+     which is exactly why "02"/"03" sat visibly offset from "01" on
+     mobile instead of lining up flush like the rest of the list. */
+  .approach-column, .approach-column:not(:first-child) { padding-inline: 0; border-right: none; padding-block: var(--space-6); border-top: 1px solid #e5e4e1; }
   .approach-columns > .approach-column:last-child { border-bottom: 1px solid #e5e4e1; }
   .approach-column-title { margin-top: 4px; }
-  .approach-column-detail { margin-top: var(--space-4); padding-top: var(--space-4); }
+}
+
+/* below 900px, ONCE ApproachTrack.tsx confirms it's actually running
+   (.is-enhanced -- see the top-of-block comment on why this is gated on
+   the class and not a bare media query): the 4 columns stop sitting in
+   normal flow and instead overlap into the same grid cell, borders and
+   all, so only the active one is visible at a time -- the same
+   single-active-column outcome as desktop's 4-across row, just stacked
+   instead of arrayed, since a phone-width stage has no room for 4 side
+   by side. Same pinned stage, same rail, same counter, same mechanism
+   driving "active" -- just a narrower shape for it to reveal into. */
+@media (max-width: 899.98px) {
+  .approach-stage.is-enhanced .approach-columns { display: grid; }
+  .approach-stage.is-enhanced .approach-column {
+    grid-column: 1; grid-row: 1;
+    opacity: 0; pointer-events: none;
+    transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .approach-stage.is-enhanced .approach-column.is-active { opacity: 1; pointer-events: auto; }
+  /* Detail hides until active here too, matching desktop, now that only
+     one column is ever on screen -- there's no "already read" step
+     sitting alongside it the way there was in the old flowing list. */
 }
 
 /* closing CTA band -- a small hardcoded-dark anchor right before the

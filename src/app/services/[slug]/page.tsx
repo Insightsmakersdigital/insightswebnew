@@ -46,6 +46,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
         <section className="intro panel-light">
           <div className="wrap">
+            <h2 className="intro-overview-heading reveal">Overview</h2>
             <p className="intro-lead reveal">{service.description}</p>
             <div className="intro-metrics">
               {service.quickFacts.map((fact) => (
