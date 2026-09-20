@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 const driftItems = WORK_ITEMS.map((w) => ({
   image: seededImage(w.slug, w.category),
+  fallbackImage: w.gallery?.[0],
   title: w.project,
 }));
 

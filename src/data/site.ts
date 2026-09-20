@@ -910,6 +910,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Content built around the community and the place, not generic engagement bait, plus a brand identity that matched the experience on the ground.",
       outcome: "A following that shows up season after season, not just a follower count that looks good in a screenshot.",
     },
+    gallery: brandingGallery("bougain-kayak", 10),
   },
   {
     slug: "vadakara-events",
@@ -938,6 +939,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+    gallery: brandingGallery("slot-it", 10),
   },
   {
     slug: "kaicho",
@@ -952,6 +954,21 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+  },
+  {
+    slug: "verde",
+    name: "Verdè",
+    project: "Brand identity for Verdè",
+    services: ["branding"],
+    result: "Case study write-up coming soon",
+    tint: "150 55% 42%",
+    category: "branding",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: brandingGallery("verde", 10),
   },
 
   // Social Media Marketing engagements, shown with the Instagram-replica
@@ -1363,11 +1380,21 @@ export function seededImage(slug: string, category?: WorkItem["category"]) {
   return category ? `/images/work/${category}/${seed}.jpg` : `/images/work/${seed}.jpg`;
 }
 
-// Case-study slide-deck gallery, one folder per WorkItem.slug:
-// public/images/work-perform/{slug}/img-1.jpg..img-N.jpg. `count` is just
-// how many img-N.jpg files actually exist in that folder.
+// Case-study gallery, one folder per WorkItem.slug under the given
+// category folder: public/images/{folder}/{slug}/img-1.jpg..img-N.jpg.
+// `count` is just how many img-N.jpg files actually exist in that folder.
+export function workGallery(folder: string, slug: string, count: number) {
+  return Array.from({ length: count }, (_, i) => `/images/${folder}/${slug}/img-${i + 1}.jpg`);
+}
+
+// public/images/work-perform/{slug}/ -- performance-marketing slide decks.
 export function performGallery(slug: string, count: number) {
-  return Array.from({ length: count }, (_, i) => `/images/work-perform/${slug}/img-${i + 1}.jpg`);
+  return workGallery("work-perform", slug, count);
+}
+
+// public/images/work-branding/{slug}/ -- branding case-study photos.
+export function brandingGallery(slug: string, count: number) {
+  return workGallery("work-branding", slug, count);
 }
 
 // Every SMM WorkItem gets its own folder at public/images/instagram/{slug}/

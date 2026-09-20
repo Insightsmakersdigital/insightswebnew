@@ -14,6 +14,7 @@ import "./DriftWall.css";
 
 export interface DriftWallItem {
   image: string;
+  fallbackImage?: string; // shown via onError if `image` 404s (e.g. no dedicated cover uploaded yet -- falls back to the item's own case-study gallery)
   title?: string;
   href?: string;
 }
@@ -289,7 +290,23 @@ const DriftWall = ({
     const inner = (
       <span className="drift-wall__inner">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.image} alt={item.title ?? ""} loading="lazy" decoding="async" draggable={false} />
+        <img
+          src={item.image}
+          alt={item.title ?? ""}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          onError={(e) => {
+            // Imperative, not state -- renderTile is a plain function
+            // called per tile, not a component, so there's no hook to
+            // hang per-tile state off. Guard against looping if the
+            // fallback itself 404s too.
+            const img = e.currentTarget;
+            if (item.fallbackImage && img.src !== item.fallbackImage) {
+              img.src = item.fallbackImage;
+            }
+          }}
+        />
         <span className="drift-wall__overlay" aria-hidden="true" />
       </span>
     );

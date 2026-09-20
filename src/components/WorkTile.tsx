@@ -1,8 +1,10 @@
-import { seededImage, type WorkItem } from "../data/site";
+"use client";
+
+import { useState } from "react";
 
 interface Props {
-  slug: string; // the WorkItem's own slug -- keys the photo, since a client can have multiple entries
-  category: WorkItem["category"]; // picks the /work section subfolder the photo lives in
+  image: string; // seededImage(slug, category) -- the dedicated cover, tried first
+  fallbackImage?: string; // the WorkItem's own gallery[0], used only if `image` fails to load
   title: string;
   client: string;
   tint: string;
@@ -14,7 +16,17 @@ interface Props {
 // services line either -- each card already sits under its section
 // heading (Social Media Marketing / Branding / Web + App Development),
 // so re-listing the service(s) here was just repeating that context.
-export default function WorkTile({ slug, category, title, client, tint, onClick }: Props) {
+//
+// image/fallbackImage exist because there's no way to know at render time
+// whether a dedicated public/images/work/{category}/{slug}.jpg has
+// actually been uploaded yet -- this file is shared by both the server
+// page and this client component, so a Node fs.existsSync check isn't an
+// option (fs doesn't exist in the browser bundle). onError is the
+// standard web-native way to do "try A, fall back to B" for an <img>
+// without needing to know in advance which one exists.
+export default function WorkTile({ image, fallbackImage, title, client, tint, onClick }: Props) {
+  const [src, setSrc] = useState(image);
+
   return (
     <article
       className="work-tile"
@@ -31,7 +43,14 @@ export default function WorkTile({ slug, category, title, client, tint, onClick 
     >
       <div className="work-tile-media">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={seededImage(slug, category)} alt={`${title} — ${client}`} loading="lazy" />
+        <img
+          src={src}
+          alt={`${title} — ${client}`}
+          loading="lazy"
+          onError={() => {
+            if (fallbackImage && src !== fallbackImage) setSrc(fallbackImage);
+          }}
+        />
       </div>
       <div className="work-tile-info">
         <h3>{client}</h3>

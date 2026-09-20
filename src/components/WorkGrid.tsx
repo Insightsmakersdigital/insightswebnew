@@ -65,8 +65,8 @@ export default function WorkGrid({ sections }: Props) {
               {section.items.map((item) => (
                 <WorkTile
                   key={item.slug}
-                  slug={item.slug}
-                  category={item.category}
+                  image={seededImage(item.slug, item.category)}
+                  fallbackImage={item.gallery?.[0]}
                   title={item.project}
                   client={item.cardName ?? item.name}
                   tint={item.tint}
@@ -154,12 +154,13 @@ export default function WorkGrid({ sections }: Props) {
                 </>
               ) : (
                 <>
-                  <div className="case-modal-media">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={seededImage(active.slug, active.category)} alt={`${active.project} — ${active.cardName ?? active.name}`} />
-                  </div>
-
-                  <div className="case-modal-body">
+                  {/* No image here on purpose -- the card thumbnail
+                      (seededImage) already shows this cover on the grid;
+                      cropping it again into .case-modal-media's own
+                      aspect ratio just duplicated it awkwardly. Items
+                      that want a real popup image use `gallery` instead
+                      (see the hasGallery branch above), not this cover. */}
+                  <div className="case-modal-body case-modal-body--no-media">
                     <p className="eyebrow">{active.cardName ?? active.name}</p>
                     <h2 id="case-modal-heading" className="case-modal-heading">
                       {active.project}

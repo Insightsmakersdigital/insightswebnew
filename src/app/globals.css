@@ -224,8 +224,6 @@ main { position: relative; z-index: 0; }
 .btn-invert:active { transform: scale(0.97); }
 .btn-outline { border: 1px solid var(--border); color: var(--text); }
 .btn-outline:hover { border-color: var(--text-dim); background: var(--surface-2); }
-.btn-ghost { color: var(--text-dim); padding-inline: var(--space-3); }
-.btn-ghost:hover { color: var(--text); }
 .btn-lg { padding: var(--space-5) var(--space-8); font-size: 1rem; }
 .btn-block { width: 100%; }
 
@@ -371,8 +369,6 @@ body.ig-modal-open #siteHeader { display: none; }
 }
 
 .header-actions { display: none; align-items: center; gap: var(--space-6); }
-.header-actions .btn-ghost { color: rgb(15 15 15 / 65%); }
-.header-actions .btn-ghost:hover { color: var(--ink); }
 @media (min-width: 901px) { .header-actions { display: flex; } }
 
 /* the "Start a project" nav CTA -- matches .btn/.btn-primary's weight and
@@ -764,148 +760,10 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 }
 .metric p { color: var(--text-dim); margin-top: var(--space-1); font-size: var(--fs-body); }
 
-/* homepage service wheel — same light panel as the hero directly above it
-   (var(--bg)/var(--text), not a new panel), so the two sections read as
-   one continuous surface. Curved draggable option list on the left,
-   a detail readout on the right that swaps copy as the wheel selection
-   changes. No new accent color: the wheel's "active" tone is a plain
-   near-black, same restraint as the rest of the palette. */
-.wheel-section { background: var(--bg); color: var(--text); }
-.wheel-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-6);
-}
-.wheel-col, .wheel-detail, .wheel-mobile-block { grid-column: 1 / -1; }
-@media (min-width: 810px) {
-  .wheel-grid { grid-template-columns: 1.1fr 1fr; align-items: center; gap: var(--space-12); }
-  .wheel-col { grid-column: 1 / 2; }
-  .wheel-detail { grid-column: 2 / 3; }
-}
-
-.wheel-col { position: relative; height: 560px; }
-@media (min-width: 810px) {
-  .wheel-col { height: 720px; }
-}
-
-/* Below 810px the vertical wheel is swapped for the same OptionWheel
-   turned horizontal (orientation="horizontal" -- drags on X, and its
-   own CSS sets touch-action: pan-y), not a different control. A vertical
-   drag on this element does nothing (OptionWheel only captures the
-   pointer past a horizontal-move threshold), so the browser is free to
-   keep handling vertical swipes as normal page scroll the whole time.
-   .wheel-col--desktop is hidden outright (not just visually), and
-   .wheel-mobile-block likewise on desktop, so neither's pointer
-   listeners receive input they're not meant to. (A tap-only pager and a
-   scroll-snap card row were both tried here first and dropped -- this
-   keeps the same interaction language as desktop instead of falling
-   back to something plainer.) Wheel + prev/next + CTA all live inside
-   one block with a tight gap, right under each other, so there's no
-   leftover vertical space between "the control" and "the thing it
-   controls" the way there was when the explanatory text column
-   (.wheel-detail) rendered its own empty, bordered, padded box on
-   mobile with nothing inside it. */
-.wheel-col--desktop { display: none; }
-@media (min-width: 810px) { .wheel-col--desktop { display: block; } }
-
-.wheel-mobile-block { display: block; }
-@media (min-width: 810px) { .wheel-mobile-block { display: none; } }
-
-/* Mobile/tablet service accordion (ServiceAccordionMobile) -- replaces
-   the horizontal drag wheel below 810px. Sits inside .wheel-mobile-block,
-   which CSS already hides at 810px+, so it never needs its own
-   breakpoint gating.
-
-   Deliberately NOT a new visual language: this mirrors .pillar-accordion
-   above (same 01/02/03 index, same collapsed-name/expanded-headline
-   title swap, same "+" -> "x" icon rotate, same grid-template-rows
-   0fr/1fr panel technique, same cubic-bezier(0.16, 1, 0.3, 1) easing,
-   same staggered slide-in on the revealed list) rather than the separate
-   artifact-derived styling this replaced, so it reads as a sibling of an
-   existing accordion instead of a pasted-in one. */
-.services-accordion-head { margin-bottom: var(--space-6); }
-.services-accordion-head .eyebrow { margin-bottom: var(--space-3); }
-.services-accordion-heading { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem); line-height: 1.2; font-weight: 700; }
-
-.services-accordion-row { border-top: 1px solid var(--border); }
-.services-accordion-row:last-child { border-bottom: 1px solid var(--border); }
-
-.services-accordion-toggle {
-  display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: var(--space-4);
-  width: 100%; min-height: 0; padding-block: var(--space-5);
-  text-align: left;
-}
-.services-accordion-index { font-size: 13px; font-weight: 400; color: var(--text-faint); opacity: 0.6; font-variant-numeric: tabular-nums; }
-
-.services-accordion-title { position: relative; overflow: hidden; min-height: 28px; font-size: 22px; line-height: 1.2; font-weight: 500; font-family: var(--font-display); }
-.services-accordion-title-collapsed, .services-accordion-title-expanded {
-  display: block; position: absolute; inset: 0;
-  color: var(--text);
-  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.services-accordion-title-collapsed { transform: translateY(0); }
-.services-accordion-title-expanded { transform: translateY(100%); }
-.services-accordion-row.is-open .services-accordion-title-collapsed { transform: translateY(-100%); }
-.services-accordion-row.is-open .services-accordion-title-expanded { transform: translateY(0); }
-
-.services-accordion-icon {
-  font-size: 18px; line-height: 1; font-weight: 400; color: var(--text);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.services-accordion-row.is-open .services-accordion-icon { transform: rotate(45deg); }
-
-.services-accordion-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-.services-accordion-row.is-open .services-accordion-panel { grid-template-rows: 1fr; }
-.services-accordion-panel-inner { overflow: hidden; display: flex; flex-direction: column; padding-bottom: var(--space-5); }
-
-.services-accordion-service {
-  font-size: 16px; font-weight: 400; line-height: 1.7; color: var(--text-dim);
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color var(--dur-fast) var(--ease-out);
-}
-.services-accordion-row.is-open .services-accordion-service { opacity: 1; transform: translateY(0); transition-duration: 0.45s; }
-.services-accordion-service:hover { color: var(--text); }
-
-@media (prefers-reduced-motion: reduce) {
-  .services-accordion-title-collapsed, .services-accordion-title-expanded,
-  .services-accordion-icon, .services-accordion-panel, .services-accordion-service { transition: none; }
-}
-
-/* Desktop-only explanatory column -- hidden outright on mobile (not just
-   its .wheel-detail-copy child) so it doesn't sit there as an empty,
-   bordered, padded box with nothing visible inside it. */
-.wheel-detail { display: none; }
-@media (min-width: 810px) {
-  .wheel-detail { display: block; max-width: 46ch; }
-}
-
-.wheel-detail-eyebrow {
-  display: block;
-  font-size: var(--fs-label);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-faint);
-  margin-bottom: var(--space-4);
-}
-.wheel-detail-heading {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
-  line-height: 1.2;
-  margin: 0 0 var(--space-4);
-  color: var(--text);
-}
-.wheel-detail-body { color: var(--text-dim); line-height: 1.65; font-size: var(--fs-body); margin-bottom: var(--space-6); }
-
-.wheel-detail-link {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 15px; font-weight: 600; color: var(--text);
-  border-bottom: 1px solid var(--text-faint);
-  padding-bottom: 2px;
-  transition: gap var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
-}
-.wheel-detail-link:hover { gap: 10px; border-color: var(--text); }
+/* homepage "What we do" -- was a draggable OptionWheel + separate mobile
+   accordion; now just PillarAccordion (the exact /about treatment) at
+   every width, so it needs no CSS of its own beyond what .pillar-accordion
+   and the standard .eyebrow-row/.wrap patterns already provide. */
 
 
 /* work grid (Projects) — each row is a real 4-column grid: col1 name,
@@ -1210,7 +1068,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
    uniform regardless of how many items wrap to a second line. */
 .pillar-service-list { grid-column: 3 / 4; grid-row: 1; display: flex; flex-direction: column; }
 .pillar-service-list li {
-  font-size: 16px; font-weight: 400; line-height: 1.7; color: #8a8a85;
+  font-size: 18px; font-weight: 700; line-height: 1.7; color: #111;
   opacity: 0; transform: translateY(16px);
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1945,6 +1803,10 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   .case-modal--gallery { max-width: 900px; }
 }
 .case-modal-body--gallery-head { padding-bottom: 0; }
+/* No .case-modal-media above this anymore (see WorkGrid's non-gallery
+   branch) -- a bit more top clearance so the heading doesn't sit flush
+   under the close button. */
+.case-modal-body--no-media { padding-top: var(--space-10); }
 .case-modal-body { padding: var(--space-8) var(--space-7); }
 .case-modal-body .eyebrow { color: var(--text-faint); margin-bottom: var(--space-2); }
 .case-modal-heading { font-size: 1.75rem; }
