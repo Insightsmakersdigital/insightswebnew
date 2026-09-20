@@ -126,11 +126,11 @@ export default function HomePage() {
           ]}
         />
 
-        <ServiceWheelSection services={SERVICES} />
+        <ServiceWheelSection />
 
         <section className="work panel-light" id="work">
           <div className="wrap">
-            <SectionHead index="01" eyebrow="Selected work" heading="Projects" />
+            <SectionHead index="02" eyebrow="Selected work" heading="Projects" />
             <div className="work-grid">
               {featuredWork.map((item) => (
                 <WorkCard key={item.title} {...item} />
@@ -146,7 +146,7 @@ export default function HomePage() {
           <div className="wrap case-grid">
             <div className="case-copy reveal">
               <div className="eyebrow-row">
-                <span className="section-index">02</span>
+                <span className="section-index">03</span>
                 <p className="eyebrow">Case study</p>
               </div>
               <RevealHeading as="h2" className="case-heading" text="How Arena Animation filled three campuses" />
@@ -200,7 +200,7 @@ export default function HomePage() {
           <div className="wrap process-wrap">
             <div className="process-intro reveal">
               <div className="eyebrow-row">
-                <span className="section-index">03</span>
+                <span className="section-index">04</span>
                 <p className="eyebrow">How we work</p>
               </div>
               <RevealHeading as="h2" text="Four steps, every time." />
@@ -234,7 +234,7 @@ export default function HomePage() {
             <div className="team-ledger">
               <div className="team-left reveal">
                 <div className="eyebrow-row">
-                  <span className="section-index">04</span>
+                  <span className="section-index">05</span>
                   <p className="eyebrow">The studio</p>
                 </div>
                 <h2 className="team-heading">
@@ -287,7 +287,7 @@ export default function HomePage() {
 
               <div className="testimonial-heading-col">
                 <div className="eyebrow-row">
-                  <span className="section-index">05</span>
+                  <span className="section-index">06</span>
                   <p className="eyebrow">Client feedback</p>
                 </div>
                 <RevealHeading as="h2" text="Why Brands Choose To Work With Us" className="testimonial-heading" />
@@ -319,7 +319,7 @@ export default function HomePage() {
             <div className="faq-social-box">
               <div className="faq-editorial reveal">
                 <div className="eyebrow-row">
-                  <span className="section-index">06</span>
+                  <span className="section-index">07</span>
                   <p className="eyebrow">FAQ</p>
                 </div>
                 <p className="faq-statement">
@@ -363,7 +363,7 @@ export default function HomePage() {
             <div className="contact-ledger" data-contact>
               <div className="contact-left reveal">
                 <div className="eyebrow-row">
-                  <span className="section-index">07</span>
+                  <span className="section-index">08</span>
                   <p className="eyebrow">Get in touch</p>
                 </div>
                 <SplitLineHeading text="CONTACT THE STUDIO" className="contact-heading" />

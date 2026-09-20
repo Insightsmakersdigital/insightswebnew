@@ -30,6 +30,7 @@ export default async function WorkServicePage({ params }: { params: Promise<{ se
   const items = WORK_ITEMS.filter((w) => w.category === category.slug);
   const driftItems = items.map((w) => ({
     image: seededImage(w.slug, w.category),
+    fallbackImage: w.gallery?.[0],
     title: w.project,
   }));
 

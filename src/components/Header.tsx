@@ -65,11 +65,10 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
             )}
           </div>
           <div className="header-actions">
-            <Link href="/contact" className="btn btn-ghost">
-              Book a call
-            </Link>
             <SpecularButton
-              href="/contact"
+              href="https://wa.me/917012151014?text=Hi%2C+I%27d+like+to+get+in+touch."
+              target="_blank"
+              rel="noopener noreferrer"
               size="md"
               radius={100}
               tint="#0f0f0f"

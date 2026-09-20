@@ -1,6 +1,6 @@
 "use client";
 
-import type { ButtonHTMLAttributes, CSSProperties, MouseEventHandler, ReactNode, Ref } from "react";
+import type { ButtonHTMLAttributes, CSSProperties, HTMLAttributeAnchorTarget, MouseEventHandler, ReactNode, Ref } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { Renderer, Program, Mesh, Triangle, Color } from "ogl";
@@ -86,6 +86,8 @@ interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color" | 
   autoAnimate?: boolean;
   type?: "button" | "submit" | "reset";
   href?: string; // renders as a Link instead of a <button> when set
+  target?: HTMLAttributeAnchorTarget; // only meaningful with href
+  rel?: string; // only meaningful with href
 }
 
 export default function SpecularButton({
@@ -111,6 +113,8 @@ export default function SpecularButton({
   className = "",
   type = "button",
   href,
+  target,
+  rel,
   ...rest
 }: Props) {
   const btnRef = useRef<HTMLElement>(null);
@@ -252,7 +256,15 @@ export default function SpecularButton({
 
   if (href) {
     return (
-      <Link href={href} ref={btnRef as Ref<HTMLAnchorElement>} className={rootClassName} style={rootStyle} onClick={onClick as unknown as MouseEventHandler<HTMLAnchorElement>}>
+      <Link
+        href={href}
+        ref={btnRef as Ref<HTMLAnchorElement>}
+        className={rootClassName}
+        style={rootStyle}
+        onClick={onClick as unknown as MouseEventHandler<HTMLAnchorElement>}
+        target={target}
+        rel={rel}
+      >
         {fx}
         {label}
       </Link>
