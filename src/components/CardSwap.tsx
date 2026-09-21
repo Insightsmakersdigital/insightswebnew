@@ -58,6 +58,7 @@ interface CardSwapProps {
   height?: number | string;
   cardDistance?: number;
   verticalDistance?: number;
+  dropDistance?: number;
   delay?: number;
   pauseOnHover?: boolean;
   onCardClick?: (idx: number) => void;
@@ -71,6 +72,7 @@ const CardSwap = ({
   height = 400,
   cardDistance = 60,
   verticalDistance = 70,
+  dropDistance = 500,
   delay = 5000,
   pauseOnHover = false,
   onCardClick,
@@ -126,7 +128,7 @@ const CardSwap = ({
       tlRef.current = tl;
 
       tl.to(elFront, {
-        y: "+=500",
+        y: `+=${dropDistance}`,
         duration: config.durDrop,
         ease: config.ease,
       });
@@ -199,7 +201,7 @@ const CardSwap = ({
     }
     return () => window.clearInterval(intervalRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing]);
+  }, [cardDistance, verticalDistance, dropDistance, delay, pauseOnHover, skewAmount, easing]);
 
   const rendered = childArr.map((child, i) =>
     isValidElement(child)

@@ -787,12 +787,14 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .work-grid > .work-card:last-child { border-bottom: 1px solid var(--border); }
 
 .work-col-name, .work-media, .work-col-detail { grid-column: 1 / -1; }
-.work-media { position: relative; overflow: hidden; aspect-ratio: 16/9; }
+.work-media { position: relative; overflow: hidden; aspect-ratio: 2/1; }
 .work-media-fill {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+.work-card:hover .work-media-fill { transform: scale(1.06); }
 
 .work-name-block h3 { font-size: 24px; font-weight: 500; color: #111; margin-bottom: 2px; }
 .work-name-block p { font-size: 15px; font-weight: 400; color: #8a8a85; }
@@ -805,56 +807,58 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .work-meta-label { display: block; font-size: 12px; font-weight: 400; color: #8a8a85; }
 .work-meta-value { display: block; font-size: 12px; font-weight: 600; color: #111; margin-top: 2px; }
 
-/* >=810px: fixed-height real grid row. Name/jump stack top->bottom and
-   arrow/meta stack top->bottom via flex space-between -- correct, fully
-   visible layout for ANY desktop-width device (including a touch tablet
-   that can't hover) before the hover-only tier below repositions things. */
+/* >=810px: full-bleed image row instead of a name|image|detail grid --
+   the image now fills the entire row edge-to-edge at its own 2:1-2.5:1
+   ratio (genuinely large, never cropped for being squeezed into a
+   narrower column). The image already carries the project's name/brand
+   visually, so on hover only the service label shows (top-left) -- the
+   title, client name, and "View case study" line are dropped entirely
+   here rather than just hidden, since the image already says all that. */
 @media (min-width: 810px) {
-  .work-card { grid-template-columns: repeat(var(--grid-cols), 1fr); gap: 0; height: 500px; }
-  .work-col-name {
-    grid-column: 1 / 2; position: relative; height: 100%; padding: var(--space-6);
-    display: flex; flex-direction: column; justify-content: space-between;
+  .work-card { display: block; position: relative; padding-block: 0; }
+  .work-media { aspect-ratio: 2.25 / 1; }
+  .work-col-name { position: absolute; z-index: 1; top: var(--space-6); left: var(--space-6); right: var(--space-6); }
+  .work-name-block h3, .work-name-block > p:not(.work-card-service), .work-jump { display: none; }
+  .work-name-block .work-card-service { color: #fff; font-size: 14px; }
+  /* always-visible click affordance -- gets its own small dark chip for
+     contrast since the scrim behind it is hover-only now, unlike the
+     name/meta text which only ever appears once the scrim is already in. */
+  .work-arrow {
+    position: absolute; z-index: 1; top: var(--space-6); right: var(--space-6); color: #fff;
+    width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, 0.45);
+    display: flex; align-items: center; justify-content: center;
   }
-  .work-media { grid-column: 2 / 4; aspect-ratio: auto; height: 100%; }
-  .work-col-detail {
-    grid-column: 4 / 5; position: relative; height: 100%; padding: var(--space-6);
-    display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;
-    margin-top: 0; text-align: right;
-  }
-  .work-jump { margin-top: 0; }
+  .work-col-detail { position: absolute; z-index: 1; bottom: var(--space-6); right: var(--space-6); margin-top: 0; text-align: right; }
+  .work-meta-label { color: rgba(255, 255, 255, 0.7); }
+  .work-meta-value { color: #fff; }
   .work-meta-pair + .work-meta-pair { margin-top: var(--space-2); }
 }
 
-/* fine-pointer hover only: the full choreography. Gated behind
-   (hover:hover) and (pointer:fine) on top of the tier above so a
-   desktop-width touch device keeps the always-visible flex layout --
-   it has no way to trigger :hover, so hiding jump/meta there would be a
-   dead end, same reasoning the rest of this file uses for hover-only UI. */
+/* fine-pointer hover only: service label + result/discipline fade in
+   over the photo, with the scrim gradient (dark top/bottom) only painted
+   in while hovered so the image reads clean the rest of the time. Gated
+   behind (hover:hover) and (pointer:fine) so a desktop-width touch
+   device -- no way to trigger :hover -- gets a tap straight through to
+   the case study instead of text it could never reveal. */
 @media (min-width: 810px) and (hover: hover) and (pointer: fine) {
-  .work-name-block {
-    position: absolute; left: var(--space-6); right: var(--space-6); top: 50%;
-    transform: translateY(-50%);
-    transition: top 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  .work-media::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 32%, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.6) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
   }
-  .work-jump {
-    margin-top: auto;
+  .work-col-name {
     opacity: 0; transform: translateY(8px);
     transition: opacity 300ms ease, transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .work-arrow {
-    position: absolute; top: 50%; right: var(--space-6);
-    transform: translateY(-50%);
-    transition: top 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   .work-meta {
-    margin-top: auto;
     opacity: 0; transform: translateY(8px);
     transition: opacity 300ms ease, transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .work-card:hover .work-name-block { top: var(--space-6); transform: translateY(0); }
-  .work-card:hover .work-jump { opacity: 1; transform: translateY(0); transition-delay: 60ms; }
-  .work-card:hover .work-arrow { top: var(--space-6); transform: translateY(0); }
+  .work-card:hover .work-media::after { opacity: 1; }
+  .work-card:hover .work-col-name { opacity: 1; transform: translateY(0); }
   .work-card:hover .work-meta { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
 }
 
@@ -1066,7 +1070,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 /* list rhythm comes purely from each item's own line-height, not a
    separate flex gap stacked on top -- that's what keeps the spacing
    uniform regardless of how many items wrap to a second line. */
-.pillar-service-list { grid-column: 3 / 4; grid-row: 1; display: flex; flex-direction: column; }
+.pillar-service-list { grid-column: 3 / 4; grid-row: 1; display: flex; flex-direction: column; padding-left: var(--space-5); }
 .pillar-service-list li {
   font-size: 18px; font-weight: 700; line-height: 1.7; color: #111;
   opacity: 0; transform: translateY(16px);

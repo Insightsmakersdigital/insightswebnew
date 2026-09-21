@@ -1,35 +1,24 @@
-import { seededImage, type WorkItem } from "../data/site";
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
 
 interface Props {
-  slug: string; // the WorkItem's own slug -- keys the photo, since a client can have multiple entries
-  category?: WorkItem["category"]; // picks the /work section subfolder the photo lives in
+  href: string; // where this card goes -- its /work/[service] category page
+  image: string; // dedicated cover, tried first
+  fallbackImage?: string; // gallery[0], used only if `image` fails to load
   title: string; // the project -- what was done, leads the card
   client: string; // who it was for -- byline, not headline
   services: string; // joined service titles, e.g. "Branding + Website Development"
   result: string; // the outcome
   tint: string;
-  onClick?: () => void; // opens the case study when provided
 }
 
-export default function WorkCard({ slug, category, title, client, services, result, tint, onClick }: Props) {
+export default function WorkCard({ href, image, fallbackImage, title, client, services, result, tint }: Props) {
+  const [src, setSrc] = useState(image);
+
   return (
-    <article
-      className={["work-card reveal", onClick && "work-card-clickable"].filter(Boolean).join(" ")}
-      style={{ "--tint": tint } as React.CSSProperties}
-      {...(onClick
-        ? {
-            role: "button",
-            tabIndex: 0,
-            onClick,
-            onKeyDown: (e: React.KeyboardEvent) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onClick();
-              }
-            },
-          }
-        : {})}
-    >
+    <Link href={href} className="work-card reveal work-card-clickable" style={{ "--tint": tint } as React.CSSProperties}>
       <div className="work-col-name">
         <div className="work-name-block">
           <h3>{title}</h3>
@@ -39,12 +28,20 @@ export default function WorkCard({ slug, category, title, client, services, resu
               two cards apart at rest, before any hover reveal. */}
           <p className="work-card-service">{services}</p>
         </div>
-        <p className="work-jump">{onClick ? "View case study" : "Jump to project"}</p>
+        <p className="work-jump">View case study</p>
       </div>
 
       <div className="work-media">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="work-media-fill" src={seededImage(slug, category)} alt={`${title} — ${client}`} loading="lazy" />
+        <img
+          className="work-media-fill"
+          src={src}
+          alt={`${title} — ${client}`}
+          loading="lazy"
+          onError={() => {
+            if (fallbackImage && src !== fallbackImage) setSrc(fallbackImage);
+          }}
+        />
       </div>
 
       <div className="work-col-detail">
@@ -62,6 +59,6 @@ export default function WorkCard({ slug, category, title, client, services, resu
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
