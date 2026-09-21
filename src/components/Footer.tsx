@@ -7,8 +7,7 @@ export default function Footer() {
       <div className="wrap footer-inner">
         <div className="footer-brand">
           <Link href="/" className="brand">
-            <span className="brand-mark" aria-hidden="true"></span>
-            {SITE_SHORT}
+            <img src="/logo.png" alt={SITE_SHORT} className="brand-logo" />
           </Link>
           <p>Digital marketing, branding & web development studio, based in Kerala.</p>
         </div>
