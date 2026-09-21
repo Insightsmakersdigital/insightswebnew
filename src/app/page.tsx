@@ -13,7 +13,7 @@ import CardSwap, { Card } from "../components/CardSwap";
 import SplitLineHeading from "../components/SplitLineHeading";
 import ContactForm from "../components/ContactForm";
 import AnimatedTooltip from "../components/AnimatedTooltip";
-import { SITE_SHORT, WORK_ITEMS, SERVICES, CONTACT, FOUNDERS, PROCESS, ROSTER, seededLogo } from "../data/site";
+import { SITE_SHORT, WORK_ITEMS, SERVICES, CONTACT, FOUNDERS, PROCESS, ROSTER, seededLogo, seededImage } from "../data/site";
 
 export const metadata: Metadata = {
   title: "Design, Branding & Marketing Studio",
@@ -26,15 +26,30 @@ export const metadata: Metadata = {
 const smmLogos = WORK_ITEMS.filter((w) => w.category === "smm");
 const logoTrack = [...smmLogos, ...smmLogos];
 
-const featuredWork = WORK_ITEMS.slice(0, 3).map((w) => ({
-  slug: w.slug,
-  category: w.category,
-  title: w.project,
-  client: w.cardName ?? w.name,
-  services: w.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + "),
-  result: w.result,
-  tint: w.tint,
-}));
+// Picked deliberately, not just the first 3 in WORK_ITEMS.
+const FEATURED_SLUGS = ["beyond-borders-performance-marketing", "slot-it", "arena-animation-thiruvananthapuram"];
+
+// Dedicated photos for this section specifically (public/images/home-projects/),
+// not the same crop used for the /work grid cards -- keyed by slug so a
+// featured pick without one just falls through to the usual seededImage cover.
+const HOME_PROJECT_IMAGES: Partial<Record<string, string>> = {
+  "beyond-borders-performance-marketing": "/images/home-projects/beyond-borders.jpg",
+  "slot-it": "/images/home-projects/slot-it.jpg",
+  "arena-animation-thiruvananthapuram": "/images/home-projects/arena-tvm.jpg",
+};
+
+const featuredWork = FEATURED_SLUGS.map((slug) => WORK_ITEMS.find((w) => w.slug === slug))
+  .filter((w): w is (typeof WORK_ITEMS)[number] => Boolean(w))
+  .map((w) => ({
+    href: `/work/${w.category}`,
+    image: HOME_PROJECT_IMAGES[w.slug] ?? seededImage(w.slug, w.category),
+    fallbackImage: w.gallery?.[0],
+    title: w.project,
+    client: w.cardName ?? w.name,
+    services: w.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + "),
+    result: w.result,
+    tint: w.tint,
+  }));
 
 const initials = (name: string) => {
   const parts = name.trim().split(/\s+/);
@@ -211,7 +226,7 @@ export default function HomePage() {
             </div>
 
             <div className="process-stage reveal">
-              <CardSwap width={340} height={240} cardDistance={45} verticalDistance={40} skewAmount={4} delay={2800} pauseOnHover={false}>
+              <CardSwap width={340} height={240} cardDistance={45} verticalDistance={20} dropDistance={200} skewAmount={4} delay={2800} pauseOnHover={false}>
                 {PROCESS.map((p, i) => (
                   <Card key={p.step}>
                     <div className="card-top">
