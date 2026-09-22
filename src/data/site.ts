@@ -807,14 +807,13 @@ export interface WorkItem {
 export interface WorkCategory {
   slug: "smm" | "performance-marketing" | "branding" | "web-app";
   label: string;
-  index: string;
 }
 
 export const WORK_CATEGORIES: WorkCategory[] = [
-  { slug: "smm", label: "Social Media Marketing", index: "01" },
-  { slug: "performance-marketing", label: "Performance Marketing", index: "02" },
-  { slug: "branding", label: "Branding", index: "03" },
-  { slug: "web-app", label: "Web + App Development", index: "04" },
+  { slug: "smm", label: "Social Media Marketing" },
+  { slug: "performance-marketing", label: "Performance Marketing" },
+  { slug: "branding", label: "Branding" },
+  { slug: "web-app", label: "Web + App Development" },
 ];
 
 // Deliberately not grouped by discipline: a young studio doesn't have proof
@@ -894,9 +893,9 @@ export const WORK_ITEMS: WorkItem[] = [
   },
 
   // Branding engagements shown on /work under the Branding section.
-  // Slot IT and Kaicho are placeholders -- real mockups and case-study
-  // copy to follow; a 5th client is reserved via workSections' pendingNote
-  // in work/page.tsx rather than a fabricated card here.
+  // Slot IT is a placeholder -- real mockups and case-study copy to
+  // follow; a 5th client is reserved via workSections' pendingNote in
+  // work/page.tsx rather than a fabricated card here.
   {
     slug: "bougain-kayak",
     name: "Bougain Kayak",
@@ -925,6 +924,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+    gallery: brandingGallery("vadakara-events", 15),
   },
   {
     slug: "slot-it",
@@ -942,9 +942,9 @@ export const WORK_ITEMS: WorkItem[] = [
     gallery: brandingGallery("slot-it", 10),
   },
   {
-    slug: "kaicho",
-    name: "Kaicho",
-    project: "Brand identity for Kaicho",
+    slug: "fanpoll",
+    name: "Fanpoll",
+    project: "Brand identity for Fanpoll",
     services: ["branding"],
     result: "Case study write-up coming soon",
     tint: "38 75% 55%",
@@ -954,6 +954,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+    gallery: brandingGallery("fanpoll", 9),
   },
   {
     slug: "verde",
@@ -1195,29 +1196,6 @@ export const WORK_ITEMS: WorkItem[] = [
        }, // post 9 becomes a video/reel instead of an image
     },
   },
-  {
-    slug: "educ-kshetra-smm",
-    name: "Educ Kshetra",
-    project: "Instagram growth for Educ Kshetra",
-    services: ["social-media-marketing"],
-    result: "Case study write-up coming soon",
-    tint: "18 80% 55%",
-    category: "smm",
-    caseStudy: {
-      challenge: "Case study details to be added.",
-      approach: "Case study details to be added.",
-      outcome: "Case study details to be added.",
-    },
-    // instagram: {
-    //   handle: "@educkshetra",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
-    // },
-  },
-
   // Performance Marketing engagements. Every one of these clients also
   // has a separate SMM entry above -- same client, separate paid-media
   // engagement, own section (see WORK_CATEGORIES). Case-study copy and

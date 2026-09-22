@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import WorkTile from "./WorkTile";
-import SectionHead from "./SectionHead";
 import InstagramCaseStudy, { type GridPost } from "./InstagramCaseStudy";
 import { SERVICES, seededImage, seededLogo, seededHandle, seededInstagramPosts, type WorkItem } from "../data/site";
 
@@ -21,8 +20,7 @@ function buildGridPosts(item: WorkItem): GridPost[] {
 }
 
 export interface WorkSection {
-  index: string;
-  heading: string;
+  heading: string; // used as the section's React key only -- the hero above already shows this as its <h1>, so it's not rendered again here
   items: WorkItem[];
   pendingNote?: string; // e.g. "More on the way" -- a real, honestly labeled empty slot, not a fabricated card
 }
@@ -60,7 +58,6 @@ export default function WorkGrid({ sections }: Props) {
       {sections.map((section) => (
         <section key={section.heading} className="work-section">
           <div className="wrap">
-            <SectionHead eyebrow="Case studies" heading={section.heading} index={section.index} />
             <div className="work-tile-grid">
               {section.items.map((item) => (
                 <WorkTile

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 interface Props {
@@ -16,6 +16,22 @@ interface Props {
 
 export default function WorkCard({ href, image, fallbackImage, title, client, services, result, tint }: Props) {
   const [src, setSrc] = useState(image);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // The <img> starts loading from the SSR-rendered src before React
+  // hydrates and attaches onError below -- if that request 404s fast
+  // enough (no real network latency, e.g. a local/static build), the
+  // error event fires and is lost before any listener exists to catch
+  // it, leaving a permanently broken image despite a valid fallback.
+  // This catches that already-failed state once on mount; onError below
+  // still handles the normal case where hydration wins the race.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0 && fallbackImage && src !== fallbackImage) {
+      setSrc(fallbackImage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Link href={href} className="work-card reveal work-card-clickable" style={{ "--tint": tint } as React.CSSProperties}>
@@ -34,6 +50,7 @@ export default function WorkCard({ href, image, fallbackImage, title, client, se
       <div className="work-media">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          ref={imgRef}
           className="work-media-fill"
           src={src}
           alt={`${title} — ${client}`}
