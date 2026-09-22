@@ -1336,6 +1336,53 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .trust-rating { margin-top: 4px; font-size: 13px; font-weight: 500; color: #111; display: flex; align-items: center; gap: 8px; }
 .trust-rating span { font-size: 12px; letter-spacing: 3px; }
 
+/* spotlight -- trial replacement for the 3-up testimonial cards, still
+   inside .testimonial-fullbleed so it keeps the section's background/
+   border palette. Takes cols 1-3 (the old cards' footprint), heading col
+   4 untouched. Literal colors throughout to match the rest of this
+   section (see the comment above .testimonials-section). */
+.spotlight-cell {
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; padding: 28px 20px;
+}
+@media (min-width: 810px) { .spotlight-cell { grid-column: 1 / 4; padding: 28px; } }
+
+.spotlight { max-width: 560px; margin: 0 auto; text-align: center; }
+.spotlight-stars { display: flex; justify-content: center; gap: 4px; margin: var(--space-4) 0 var(--space-6); }
+.spotlight-stars .on { color: #111; }
+.spotlight-stars .off { color: #e5e4e1; }
+
+/* reserve room for 3 lines so a one-line quote and a three-line quote
+   take up the same space -- nav never shifts between slides. Bottom
+   margin dropped to 0 since the star row (now below the quote, not
+   above it) carries the gap down to .spotlight-who instead. */
+.spotlight blockquote {
+  margin: var(--space-5) 0 0; font: 600 clamp(1.3rem, 2.6vw, 1.7rem) / 1.45 var(--font-display); letter-spacing: normal; color: #111;
+  min-height: calc(1.45em * 3); display: flex; align-items: center; justify-content: center;
+}
+
+/* same idea for the person block -- fixed height regardless of name/company length. */
+.spotlight-who {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+  margin-bottom: var(--space-6); min-height: 104px; justify-content: center;
+}
+.spotlight-avatar {
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: #e5e4e1;
+  display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #111;
+}
+.spotlight-name { font: 600 14px/1 var(--font-body); color: #111; margin: 0; }
+.spotlight-company { font: 400 13px/1 var(--font-body); color: #8a8a85; margin: 2px 0 0; }
+
+.spotlight-nav { display: flex; align-items: center; justify-content: center; gap: var(--space-4); }
+.spotlight-counter { font: 600 12.5px/1 var(--font-body); color: #8a8a85; min-width: 46px; }
+.spotlight-nav-btn {
+  border-radius: var(--radius-pill); border: 0; background: #111; color: #fff; cursor: pointer;
+  padding: 10px 13px; min-width: 44px; display: flex; align-items: center; justify-content: center;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.spotlight-nav-btn:hover { opacity: 0.8; }
+.spotlight-nav-btn.ghost { background: transparent; color: #111; border: 1px solid #d8d7d3; }
+
 /* faq + social proof — a self-contained 4-column ledger box per an exact
    design spec (exact colors/sizes/container width given directly, not
    measured off the reference), independent of the site-wide .wrap module:
@@ -1451,10 +1498,10 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   border-top: 1px solid #2a2a2a;
 }
 .contact-left, .contact-form-ledger { grid-column: 1 / -1; }
-.contact-left { padding-block: var(--space-8); }
+.contact-left { padding-block: var(--space-8); padding-left: var(--space-4); }
 .contact-form-ledger { display: grid; grid-template-columns: repeat(2, 1fr); }
 @media (min-width: 810px) {
-  .contact-left { grid-column: 1 / 3; border-right: 1px solid #2a2a2a; padding: var(--space-8) var(--space-8) var(--space-16) 0; }
+  .contact-left { grid-column: 1 / 3; border-right: 1px solid #2a2a2a; padding: var(--space-8) var(--space-8) var(--space-16) var(--space-5); }
   .contact-form-ledger { grid-column: 3 / 5; grid-template-columns: subgrid; }
 }
 
@@ -1626,7 +1673,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 
 /* col 4, sitting beside the submit pill (col 3) on the same row -- status
    dot uses the site's one lime accent token, not a one-off green. */
-.contact-status-block { grid-column: 1 / -1; margin-top: var(--space-8); align-self: end; }
+.contact-status-block { grid-column: 1 / -1; margin-top: var(--space-8); align-self: end; padding-left: var(--space-4); }
 @media (min-width: 810px) {
   .contact-status-block { grid-column: 2 / 3; margin-top: 0; }
 }
