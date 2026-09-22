@@ -7,7 +7,7 @@ import SectionHead from "../components/SectionHead";
 import RevealHeading from "../components/RevealHeading";
 import WorkCard from "../components/WorkCard";
 import FaqAccordion from "../components/FaqAccordion";
-import Testimonial from "../components/Testimonial";
+import { TestimonialSpotlight } from "../components/TestimonialSpotlight";
 import ServiceWheelSection from "../components/ServiceWheelSection";
 import CardSwap, { Card } from "../components/CardSwap";
 import SplitLineHeading from "../components/SplitLineHeading";
@@ -75,27 +75,13 @@ const teamStats = [
 ];
 
 const testimonials = [
-  {
-    name: "Rahul Menon",
-    company: "Arena Animation",
-    rating: 5,
-    quote: "“They asked better questions than any consultant we've used.”",
-    metaOrder: "person-first" as const,
-  },
-  {
-    name: "Sarah Thomas",
-    company: "Beyond Borders",
-    rating: 5,
-    quote: "“Fast, structured, and refreshingly honest.”",
-    metaOrder: "rating-first" as const,
-  },
-  {
-    name: "Vishnu Nair",
-    company: "Zica Calicut",
-    rating: 4.5,
-    quote: "“The kind of studio that treats your brand like it's their own.”",
-    metaOrder: "person-first" as const,
-  },
+  { name: "Rahul Menon", company: "Arena Animation", rating: 5, quote: "They asked better questions than any consultant we've used." },
+  { name: "Sarah Thomas", company: "Beyond Borders", rating: 5, quote: "Fast, structured, and refreshingly honest." },
+  { name: "Vishnu Nair", company: "Zica Calicut", rating: 4.5, quote: "The kind of studio that treats your brand like it's their own." },
+  { name: "Anjali Pillai", company: "Coastal Retail Group", rating: 4.5, quote: "Every deliverable landed exactly when they said it would." },
+  { name: "Kiran Das", company: "Spice Route Exports", rating: 5, quote: "No fluff in the reporting — just what moved and why." },
+  { name: "Meera Krishnan", company: "Udayam International", rating: 4.5, quote: "We finally understood our own funnel." },
+  { name: "Thomas Abraham", company: "Golden Hill Dairy", rating: 5, quote: "They rebuilt our sales process, not just our website." },
 ];
 const avgRating = (testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length).toFixed(1);
 
@@ -296,9 +282,9 @@ export default function HomePage() {
         <section className="testimonials-section panel-light">
           <div className="wrap">
             <div className="testimonial-fullbleed">
-              {testimonials.map((t) => (
-                <Testimonial key={t.name} {...t} />
-              ))}
+              <div className="spotlight-cell">
+                <TestimonialSpotlight items={testimonials} />
+              </div>
 
               <div className="testimonial-heading-col">
                 <div className="eyebrow-row">
