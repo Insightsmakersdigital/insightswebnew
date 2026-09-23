@@ -1736,7 +1736,6 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .work-card-clickable { cursor: pointer; }
 
 .work-section + .work-section { margin-top: var(--space-12); }
-.work-section .section-head { margin-bottom: var(--space-8); }
 
 /* Static 3-column case-study grid, one per /work section. Deliberately
    NO hover transform/scale/zoom anywhere in this block -- interaction is

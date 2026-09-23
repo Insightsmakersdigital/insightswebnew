@@ -785,6 +785,7 @@ export interface WorkItem {
     posts?: string;
     followers?: string;
     following?: string;
+    category?: string; // the grey business-category line under the display name, e.g. "Education", "Clothing (Brand)"
     bio?: string;
     // Turns a grid post into a reel: key is the post number (1-12, matches
     // post-N.jpg's thumbnail), value is the video link -- a direct file
@@ -807,14 +808,13 @@ export interface WorkItem {
 export interface WorkCategory {
   slug: "smm" | "performance-marketing" | "branding" | "web-app";
   label: string;
-  index: string;
 }
 
 export const WORK_CATEGORIES: WorkCategory[] = [
-  { slug: "smm", label: "Social Media Marketing", index: "01" },
-  { slug: "performance-marketing", label: "Performance Marketing", index: "02" },
-  { slug: "branding", label: "Branding", index: "03" },
-  { slug: "web-app", label: "Web + App Development", index: "04" },
+  { slug: "smm", label: "Social Media Marketing" },
+  { slug: "performance-marketing", label: "Performance Marketing" },
+  { slug: "branding", label: "Branding" },
+  { slug: "web-app", label: "Web + App Development" },
 ];
 
 // Deliberately not grouped by discipline: a young studio doesn't have proof
@@ -894,9 +894,9 @@ export const WORK_ITEMS: WorkItem[] = [
   },
 
   // Branding engagements shown on /work under the Branding section.
-  // Slot IT and Kaicho are placeholders -- real mockups and case-study
-  // copy to follow; a 5th client is reserved via workSections' pendingNote
-  // in work/page.tsx rather than a fabricated card here.
+  // Slot IT is a placeholder -- real mockups and case-study copy to
+  // follow; a 5th client is reserved via workSections' pendingNote in
+  // work/page.tsx rather than a fabricated card here.
   {
     slug: "bougain-kayak",
     name: "Bougain Kayak",
@@ -925,6 +925,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+    gallery: brandingGallery("vadakara-events", 15),
   },
   {
     slug: "slot-it",
@@ -942,9 +943,9 @@ export const WORK_ITEMS: WorkItem[] = [
     gallery: brandingGallery("slot-it", 10),
   },
   {
-    slug: "kaicho",
-    name: "Kaicho",
-    project: "Brand identity for Kaicho",
+    slug: "fanpoll",
+    name: "Fanpoll",
+    project: "Brand identity for Fanpoll",
     services: ["branding"],
     result: "Case study write-up coming soon",
     tint: "38 75% 55%",
@@ -954,6 +955,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+    gallery: brandingGallery("fanpoll", 9),
   },
   {
     slug: "verde",
@@ -996,11 +998,15 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@arenaanimationthrissur",
+      category: "Education",
       bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,Thrissur, Kerala,DM for Admissions",
       posts: "542",
       followers: "15.2K",
       following: "12",
-      reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788524815/arenaanimationthrissur_otxjkd.mp4" }, // direct file -- plays inline, no Instagram chrome
+      reels: { 5: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1790152392/tcr-post-5_jluqcv.mp4",
+                8: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1790152404/tcr-post-8_yjihaq.mp4",
+                11: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1790152397/tcr-post-11_exwn7c.mp4",
+       }, // direct file -- plays inline, no Instagram chrome
     },
   },
   {
@@ -1018,6 +1024,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@beyond_borders_study",
+      category: "Education Consultant",
       bio: "Trusted Career Guidance Since 2015",
       posts: "82",
       followers: "57.3k",
@@ -1045,7 +1052,8 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@arenaanimationthiruvananthapuram",
-      bio: "Real bio text for this account goes here",
+      category: "Education",
+      bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,TVM, Kerala,DM for Admissions",
       posts: "142",
       followers: "3,204",
       following: "180",
@@ -1070,10 +1078,11 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@arena.animation.koramangala",
-      bio: "Real bio text for this account goes here",
+      category: "Education",
+      bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,Koranmangala, Banglore,DM for Admissions",
       posts: "142",
-      followers: "3,204",
-      following: "180",
+      followers: "500",
+      following: "80",
       reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761643/koramangala-9_hgmwsv.mp4",
                 6: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761642/koramangala-6_oezynm.mp4"
        }, // post 9 becomes a video/reel instead of an image
@@ -1093,14 +1102,14 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    // instagram: {
-    //   handle: "@arenaanimationkannur",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
-    // },
+    instagram: {
+      handle: "@arenaanimationkannur",
+      category: "Education",
+      bio: "Animation | VFX | Gaming | UI/UX,Industry-ready training,Portfolio & Placement Support,Expert mentors,Kannur, Kerala,DM for Admissions",
+      posts: "789",
+      followers: "10k",
+      following: "134",
+    },
   },
   {
     slug: "zica-calicut-smm",
@@ -1117,10 +1126,11 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@zicacalicut",
-      bio: "Real bio text for this account goes here",
-      posts: "142",
-      followers: "3,204",
-      following: "180",
+      category: "Education",
+      bio: "Start Your Creative Journey,Animation | VFX | Gaming | Design,Calicut, Kerala,Admissions Open Now",
+      posts: "43",
+      followers: "170",
+      following: "51",
       reels: { 11: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757120/zicacalicut-11_wrbdsp.mp4",
                 4:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757125/zicacalicut-4_rekytk.mp4",
                 12:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757117/zicacalicut-12_rz1xny.mp4",
@@ -1140,14 +1150,14 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    // instagram: {
-    //   handle: "@laviadeux",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
-    // },
+    instagram: {
+      handle: "@laviadeuxofficial",
+      category: "Clothing (Brand)",
+      bio: "The Way of Love,🌍 International Couples Fashion Brand,✨ Premium Matching Outfits,🇮🇳 Pan India Delivery | Shop Below ↓",
+      posts: "82",
+      followers: "7,231",
+      following: "2",
+    },
   },
   {
     slug: "dhub",
@@ -1162,13 +1172,14 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    // instagram: {
-    //   handle: "@dhub",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    // },
+    instagram: {
+      handle: "@d.hub.kannur",
+      category: "Event Planner",
+      bio: "D HUB | A Unit of @kannur.events,Rental & Sale Solutions for Every Event,All Your Decoration Needs,Quality Equipment • Reliable Service,📩 DM/Call",
+      posts: "105",
+      followers: "549",
+      following: "5",
+    },
   },
   {
     slug: "clear-2-start",
@@ -1185,6 +1196,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@clear2start_",
+      category: "Business Consultant",
       bio: "Kerala’s most trusted digital-final finance partner for Startups and NRI’s",
       posts: "1070",
       followers: "2,200",
@@ -1195,29 +1207,6 @@ export const WORK_ITEMS: WorkItem[] = [
        }, // post 9 becomes a video/reel instead of an image
     },
   },
-  {
-    slug: "educ-kshetra-smm",
-    name: "Educ Kshetra",
-    project: "Instagram growth for Educ Kshetra",
-    services: ["social-media-marketing"],
-    result: "Case study write-up coming soon",
-    tint: "18 80% 55%",
-    category: "smm",
-    caseStudy: {
-      challenge: "Case study details to be added.",
-      approach: "Case study details to be added.",
-      outcome: "Case study details to be added.",
-    },
-    // instagram: {
-    //   handle: "@educkshetra",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
-    // },
-  },
-
   // Performance Marketing engagements. Every one of these clients also
   // has a separate SMM entry above -- same client, separate paid-media
   // engagement, own section (see WORK_CATEGORIES). Case-study copy and

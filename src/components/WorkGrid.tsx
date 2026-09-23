@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import WorkTile from "./WorkTile";
-import SectionHead from "./SectionHead";
-import InstagramCaseStudy, { type GridPost } from "./InstagramCaseStudy";
+import InstagramCaseStudy, { isVideoUrl, type GridPost } from "./InstagramCaseStudy";
 import { SERVICES, seededImage, seededLogo, seededHandle, seededInstagramPosts, type WorkItem } from "../data/site";
 
 // Post thumbnails come from the fixed post-1..post-N folder convention;
@@ -21,8 +20,7 @@ function buildGridPosts(item: WorkItem): GridPost[] {
 }
 
 export interface WorkSection {
-  index: string;
-  heading: string;
+  heading: string; // used as the section's React key only -- the hero above already shows this as its <h1>, so it's not rendered again here
   items: WorkItem[];
   pendingNote?: string; // e.g. "More on the way" -- a real, honestly labeled empty slot, not a fabricated card
 }
@@ -37,6 +35,29 @@ export default function WorkGrid({ sections }: Props) {
   const active = sections.flatMap((s) => s.items).find((w) => w.slug === openSlug) ?? null;
   const isSmm = active?.category === "smm";
   const hasGallery = !isSmm && !!active?.gallery && active.gallery.length > 0;
+
+  // Reel videos are Cloudinary-hosted and only ever requested once someone
+  // opens a card's popup -- without this, that first playback starts cold.
+  // Warming the browser's HTTP cache for every direct-file reel across
+  // this page as soon as it mounts means whichever card gets opened is
+  // already local. Landing on a /work/[service] page is a stronger signal
+  // of intent than the homepage, so prefetching everything here (rather
+  // than gating per-card on hover) is a reasonable trade against the
+  // extra bandwidth on a visitor who never opens a single card.
+  useEffect(() => {
+    const urls = new Set<string>();
+    for (const section of sections) {
+      for (const item of section.items) {
+        for (const url of Object.values(item.instagram?.reels ?? {})) {
+          if (isVideoUrl(url)) urls.add(url);
+        }
+      }
+    }
+    urls.forEach((url) => {
+      fetch(url, { cache: "force-cache" }).catch(() => {});
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!openSlug) return;
@@ -60,7 +81,6 @@ export default function WorkGrid({ sections }: Props) {
       {sections.map((section) => (
         <section key={section.heading} className="work-section">
           <div className="wrap">
-            <SectionHead eyebrow="Case studies" heading={section.heading} index={section.index} />
             <div className="work-tile-grid">
               {section.items.map((item) => (
                 <WorkTile
@@ -103,6 +123,7 @@ export default function WorkGrid({ sections }: Props) {
                 <InstagramCaseStudy
                   handle={active.instagram?.handle ?? `@${seededHandle(active.cardName ?? active.name)}`}
                   displayName={active.cardName ?? active.name}
+                  category={active.instagram?.category}
                   bio={
                     active.instagram?.bio ??
                     active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" · ")

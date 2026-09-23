@@ -36,7 +36,6 @@ export default async function WorkServicePage({ params }: { params: Promise<{ se
 
   const workSections = [
     {
-      index: category.index,
       heading: category.label,
       items,
       pendingNote: items.length === 0 ? "More on the way" : undefined,

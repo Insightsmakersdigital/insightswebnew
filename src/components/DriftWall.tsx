@@ -296,11 +296,18 @@ const DriftWall = ({
           loading="lazy"
           decoding="async"
           draggable={false}
+          // Imperative, not state -- renderTile is a plain function
+          // called per tile, not a component, so there's no hook to hang
+          // per-tile state off. Guard against looping if the fallback
+          // itself 404s too. The ref callback covers the case where the
+          // SSR-rendered src already 404'd before this listener existed
+          // to catch it (fires on mount, same imperative swap as onError).
+          ref={(el) => {
+            if (el && el.complete && el.naturalWidth === 0 && item.fallbackImage && el.src !== item.fallbackImage) {
+              el.src = item.fallbackImage;
+            }
+          }}
           onError={(e) => {
-            // Imperative, not state -- renderTile is a plain function
-            // called per tile, not a component, so there's no hook to
-            // hang per-tile state off. Guard against looping if the
-            // fallback itself 404s too.
             const img = e.currentTarget;
             if (item.fallbackImage && img.src !== item.fallbackImage) {
               img.src = item.fallbackImage;

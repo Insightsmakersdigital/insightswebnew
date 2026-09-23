@@ -272,7 +272,7 @@ const TABS = [
 // plus the video link to open when it's tapped.
 export type GridPost = string | { thumbnail: string; video: string };
 
-function isVideoUrl(src: string) {
+export function isVideoUrl(src: string) {
   return /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(src);
 }
 

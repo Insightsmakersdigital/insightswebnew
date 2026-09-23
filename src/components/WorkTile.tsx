@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   image: string; // seededImage(slug, category) -- the dedicated cover, tried first
@@ -26,6 +26,22 @@ interface Props {
 // without needing to know in advance which one exists.
 export default function WorkTile({ image, fallbackImage, title, client, tint, onClick }: Props) {
   const [src, setSrc] = useState(image);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // The <img> starts loading from the SSR-rendered src before React
+  // hydrates and attaches onError below -- if that request 404s fast
+  // enough (no real network latency, e.g. a local/static build), the
+  // error event fires and is lost before any listener exists to catch
+  // it, leaving a permanently broken image despite a valid fallback.
+  // This catches that already-failed state once on mount; onError below
+  // still handles the normal case where hydration wins the race.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0 && fallbackImage && src !== fallbackImage) {
+      setSrc(fallbackImage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <article
@@ -44,6 +60,7 @@ export default function WorkTile({ image, fallbackImage, title, client, tint, on
       <div className="work-tile-media">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          ref={imgRef}
           src={src}
           alt={`${title} — ${client}`}
           loading="lazy"
