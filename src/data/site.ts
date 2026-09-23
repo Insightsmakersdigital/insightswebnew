@@ -785,6 +785,7 @@ export interface WorkItem {
     posts?: string;
     followers?: string;
     following?: string;
+    category?: string; // the grey business-category line under the display name, e.g. "Education", "Clothing (Brand)"
     bio?: string;
     // Turns a grid post into a reel: key is the post number (1-12, matches
     // post-N.jpg's thumbnail), value is the video link -- a direct file
@@ -997,11 +998,15 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@arenaanimationthrissur",
+      category: "Education",
       bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,Thrissur, Kerala,DM for Admissions",
       posts: "542",
       followers: "15.2K",
       following: "12",
-      reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788524815/arenaanimationthrissur_otxjkd.mp4" }, // direct file -- plays inline, no Instagram chrome
+      reels: { 5: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1790152392/tcr-post-5_jluqcv.mp4",
+                8: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1790152404/tcr-post-8_yjihaq.mp4",
+                11: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1790152397/tcr-post-11_exwn7c.mp4",
+       }, // direct file -- plays inline, no Instagram chrome
     },
   },
   {
@@ -1019,6 +1024,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@beyond_borders_study",
+      category: "Education Consultant",
       bio: "Trusted Career Guidance Since 2015",
       posts: "82",
       followers: "57.3k",
@@ -1046,7 +1052,8 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@arenaanimationthiruvananthapuram",
-      bio: "Real bio text for this account goes here",
+      category: "Education",
+      bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,TVM, Kerala,DM for Admissions",
       posts: "142",
       followers: "3,204",
       following: "180",
@@ -1071,10 +1078,11 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@arena.animation.koramangala",
-      bio: "Real bio text for this account goes here",
+      category: "Education",
+      bio: "Animation | VFX | Gaming | UI/UX, Industry-ready training,Portfolio & Placement Support,Expert mentors,Koranmangala, Banglore,DM for Admissions",
       posts: "142",
-      followers: "3,204",
-      following: "180",
+      followers: "500",
+      following: "80",
       reels: { 9: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761643/koramangala-9_hgmwsv.mp4",
                 6: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788761642/koramangala-6_oezynm.mp4"
        }, // post 9 becomes a video/reel instead of an image
@@ -1094,14 +1102,14 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    // instagram: {
-    //   handle: "@arenaanimationkannur",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
-    // },
+    instagram: {
+      handle: "@arenaanimationkannur",
+      category: "Education",
+      bio: "Animation | VFX | Gaming | UI/UX,Industry-ready training,Portfolio & Placement Support,Expert mentors,Kannur, Kerala,DM for Admissions",
+      posts: "789",
+      followers: "10k",
+      following: "134",
+    },
   },
   {
     slug: "zica-calicut-smm",
@@ -1118,10 +1126,11 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@zicacalicut",
-      bio: "Real bio text for this account goes here",
-      posts: "142",
-      followers: "3,204",
-      following: "180",
+      category: "Education",
+      bio: "Start Your Creative Journey,Animation | VFX | Gaming | Design,Calicut, Kerala,Admissions Open Now",
+      posts: "43",
+      followers: "170",
+      following: "51",
       reels: { 11: "https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757120/zicacalicut-11_wrbdsp.mp4",
                 4:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757125/zicacalicut-4_rekytk.mp4",
                 12:"https://res.cloudinary.com/drhrjuqsx/video/upload/v1788757117/zicacalicut-12_rz1xny.mp4",
@@ -1141,14 +1150,14 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    // instagram: {
-    //   handle: "@laviadeux",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    //   reels: { 9: "https://imgpile.com/embed/ozwhron" }, // post 9 becomes a video/reel instead of an image
-    // },
+    instagram: {
+      handle: "@laviadeuxofficial",
+      category: "Clothing (Brand)",
+      bio: "The Way of Love,🌍 International Couples Fashion Brand,✨ Premium Matching Outfits,🇮🇳 Pan India Delivery | Shop Below ↓",
+      posts: "82",
+      followers: "7,231",
+      following: "2",
+    },
   },
   {
     slug: "dhub",
@@ -1163,13 +1172,14 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    // instagram: {
-    //   handle: "@dhub",
-    //   bio: "Real bio text for this account goes here",
-    //   posts: "142",
-    //   followers: "3,204",
-    //   following: "180",
-    // },
+    instagram: {
+      handle: "@d.hub.kannur",
+      category: "Event Planner",
+      bio: "D HUB | A Unit of @kannur.events,Rental & Sale Solutions for Every Event,All Your Decoration Needs,Quality Equipment • Reliable Service,📩 DM/Call",
+      posts: "105",
+      followers: "549",
+      following: "5",
+    },
   },
   {
     slug: "clear-2-start",
@@ -1186,6 +1196,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
     instagram: {
       handle: "@clear2start_",
+      category: "Business Consultant",
       bio: "Kerala’s most trusted digital-final finance partner for Startups and NRI’s",
       posts: "1070",
       followers: "2,200",
