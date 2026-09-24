@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
-import SpecularButton from "./SpecularButton";
+import HoldButton from "./HoldButton";
 import { SITE_SHORT, SERVICES, PILLARS, servicesByPillar } from "../data/site";
+
+const WHATSAPP_HREF = "https://wa.me/917012151014?text=Hi%2C+I%27d+like+to+get+in+touch.";
 
 interface NavItem {
   label: string;
@@ -65,27 +69,27 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
             )}
           </div>
           <div className="header-actions">
-            <SpecularButton
-              href="https://wa.me/917012151014?text=Hi%2C+I%27d+like+to+get+in+touch."
-              target="_blank"
-              rel="noopener noreferrer"
+            <HoldButton
+              doneLabel="welcome"
+              backgroundColor="#000000"
+              fillColor="#1cd0ab"
+              textColor="#f5f5f5"
+              fillTextColor="#ffffff"
               size="md"
-              radius={100}
-              tint="#0f0f0f"
-              tintOpacity={1}
-              textColor="#f6f6f6"
-              lineColor="#1F7E7A"
-              baseColor="#00c951"
-              intensity={2}
-              shineSize={24}
-              shineFade={45}
-              thickness={1.5}
-              proximity={220}
-              autoAnimate
+              radius={20}
+              fillDirection="up"
+              holdTime={400}
+              releaseTime={100}
+              pressScale={0.92}
+              wave
+              waveAmplitude={12}
+              glow
+              resetAfter={500}
+              onHold={() => window.open(WHATSAPP_HREF, "_blank", "noopener,noreferrer")}
               className="nav-cta-specular"
             >
               Start a project
-            </SpecularButton>
+            </HoldButton>
           </div>
         </div>
       </nav>
@@ -119,9 +123,26 @@ export default function Header({ navItems = DEFAULT_NAV_ITEMS }: { navItems?: Na
             ))}
           </div>
           <div className="nav-mobile-footer">
-            <Link href="/contact" className="btn btn-primary nav-mobile-cta">
+            <HoldButton
+              backgroundColor="#111111"
+              fillColor="#00c951"
+              textColor="#f6f6f6"
+              fillTextColor="#0f0f0f"
+              size="lg"
+              radius={999}
+              fillDirection="right"
+              holdTime={600}
+              releaseTime={150}
+              pressScale={0.97}
+              wave
+              waveAmplitude={10}
+              glow
+              resetAfter={400}
+              onHold={() => window.open(WHATSAPP_HREF, "_blank", "noopener,noreferrer")}
+              className="nav-mobile-cta"
+            >
               Start a project
-            </Link>
+            </HoldButton>
           </div>
         </div>
       </div>
