@@ -1753,7 +1753,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 }
 .work-tile:hover .work-tile-media img { transform: scale(1.06); }
 .work-tile-info { padding-top: var(--space-4); }
-.work-tile-info h3 { font-size: 1.05rem; font-weight: 500; color: #fff; margin-bottom: 2px; }
+.work-tile-info h3 { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 2px; }
 .work-tile-service { font-size: 12px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; margin-top: var(--space-2); }
 @media (max-width: 479.98px) {
   .work-tile-info { padding-top: var(--space-3); }
@@ -1858,7 +1858,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
    under the close button. */
 .case-modal-body--no-media { padding-top: var(--space-10); }
 .case-modal-body { padding: var(--space-8) var(--space-7); }
-.case-modal-body .eyebrow { color: var(--text-faint); margin-bottom: var(--space-2); }
+.case-modal-body .eyebrow { color: var(--text-faint); margin-bottom: var(--space-2); font-size: 20px; }
 .case-modal-heading { font-size: 1.75rem; }
 .case-modal-services { color: var(--text-dim); font-size: 0.92rem; margin-top: var(--space-2); }
 .case-modal-section { margin-top: var(--space-6); }

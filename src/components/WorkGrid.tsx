@@ -138,18 +138,15 @@ export default function WorkGrid({ sections }: Props) {
               ) : hasGallery ? (
                 <>
                   <div className="case-modal-body case-modal-body--gallery-head">
-                    <p className="eyebrow">{active.cardName ?? active.name}</p>
-                    <h2 id="case-modal-heading" className="case-modal-heading">
-                      {active.project}
-                    </h2>
-                    <p className="case-modal-services">
-                      {active.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + ")}
+                    <p className="eyebrow" id="case-modal-heading">
+                      {active.cardName ?? active.name}
                     </p>
                   </div>
 
-                  {/* The slide deck already carries the challenge/approach/
-                      outcome copy as baked-in text, so it's not repeated as
-                      page text here -- it's still present for screen readers
+                  {/* The slide deck already carries the project title,
+                      services, and challenge/approach/outcome copy as
+                      baked-in text, so none of it is repeated as page
+                      text here -- it's still present for screen readers
                       and search, just moved onto the first slide's alt. */}
                   <div className="case-modal-gallery">
                     {active.gallery!.map((src, i) => (
