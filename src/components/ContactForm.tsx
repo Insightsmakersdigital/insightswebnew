@@ -7,7 +7,10 @@ import { SOCIAL_LINKS } from "../data/site";
 // and the dedicated /contact page. Row hairlines arm once the form scrolls
 // into view (IntersectionObserver, one-shot); submit is a client-only stub
 // (no backend wired up yet) that swaps in a status message and resets.
-export default function ContactForm() {
+// variant="compact" (homepage) drops Email/Message for just Name + Number
+// -- a lower-friction ask than the full form on the dedicated /contact page.
+export default function ContactForm({ variant = "full" }: { variant?: "full" | "compact" }) {
+  const compact = variant === "compact";
   const formRef = useRef<HTMLFormElement>(null);
   const [visible, setVisible] = useState(false);
   const [status, setStatus] = useState("");
@@ -62,28 +65,35 @@ export default function ContactForm() {
           Name*
         </label>
       </div>
-      <div className="contact-field-wrap">
-        <input className="contact-field" id="email" name="email" type="email" placeholder=" " autoComplete="email" required />
-        <label className="contact-field-label" htmlFor="email">
-          Email*
-        </label>
-      </div>
-      <div className="contact-field-wrap contact-field-wrap-message">
-        <textarea className="contact-field contact-field-message" id="message" name="message" placeholder=" " required></textarea>
-        <label className="contact-field-label contact-field-label-message" htmlFor="message">
-          Message*
-        </label>
-      </div>
+      {compact ? (
+        <div className="contact-field-wrap">
+          <input className="contact-field" id="phone" name="phone" type="tel" placeholder=" " autoComplete="tel" required />
+          <label className="contact-field-label" htmlFor="phone">
+            Number*
+          </label>
+        </div>
+      ) : (
+        <>
+          <div className="contact-field-wrap">
+            <input className="contact-field" id="email" name="email" type="email" placeholder=" " autoComplete="email" required />
+            <label className="contact-field-label" htmlFor="email">
+              Email*
+            </label>
+          </div>
+          <div className="contact-field-wrap contact-field-wrap-message">
+            <textarea className="contact-field contact-field-message" id="message" name="message" placeholder=" " required></textarea>
+            <label className="contact-field-label contact-field-label-message" htmlFor="message">
+              Message*
+            </label>
+          </div>
+        </>
+      )}
       <div className="contact-submit-row">
         <button type="submit" className="contact-submit magnetic">
           <span>Send message</span>
         </button>
       </div>
       <div className="contact-status-block">
-        <div className="contact-status-line">
-          <span className="contact-status-dot" aria-hidden="true"></span>
-          <span>Available for projects</span>
-        </div>
         <p className="contact-status-reply">Replies within one business day</p>
         <div className="contact-socials">
           {SOCIAL_LINKS.map((social) => (

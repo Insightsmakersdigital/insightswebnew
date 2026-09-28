@@ -60,7 +60,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <ContactForm />
+              <ContactForm variant="compact" />
             </div>
           </div>
         </section>

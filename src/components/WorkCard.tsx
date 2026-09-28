@@ -8,13 +8,12 @@ interface Props {
   image: string; // dedicated cover, tried first
   fallbackImage?: string; // gallery[0], used only if `image` fails to load
   title: string; // the project -- what was done, leads the card
-  client: string; // who it was for -- byline, not headline
   services: string; // joined service titles, e.g. "Branding + Website Development"
   result: string; // the outcome
   tint: string;
 }
 
-export default function WorkCard({ href, image, fallbackImage, title, client, services, result, tint }: Props) {
+export default function WorkCard({ href, image, fallbackImage, title, services, result, tint }: Props) {
   const [src, setSrc] = useState(image);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -38,10 +37,6 @@ export default function WorkCard({ href, image, fallbackImage, title, client, se
       <div className="work-col-name">
         <div className="work-name-block">
           <h3>{title}</h3>
-          <p>{client}</p>
-          {/* Always visible (not hover-gated): a client name can repeat
-              across multiple work items, so the service is what tells
-              two cards apart at rest, before any hover reveal. */}
           <p className="work-card-service">{services}</p>
         </div>
         <p className="work-jump">View case study</p>
@@ -53,7 +48,7 @@ export default function WorkCard({ href, image, fallbackImage, title, client, se
           ref={imgRef}
           className="work-media-fill"
           src={src}
-          alt={`${title} — ${client}`}
+          alt={title}
           loading="lazy"
           onError={() => {
             if (fallbackImage && src !== fallbackImage) setSrc(fallbackImage);

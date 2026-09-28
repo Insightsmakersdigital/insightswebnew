@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import TextLoop from "./TextLoop";
 
 interface Stat {
   value: string;
@@ -145,6 +146,25 @@ export default function Hero({ brand, primaryCta, secondaryCta, stats }: Props) 
               ))}
             </div>
             <div className="hero-stat-display">
+              <div className="hero-stat-bg-loop" aria-hidden="true">
+                <TextLoop
+                  text="mark your signature"
+                  shape="wave"
+                  speed={120}
+                  direction="forward"
+                  separator=""
+                  curviness={90}
+                  fontSize={46}
+                  fontWeight={800}
+                  letterSpacing={3.5}
+                  uppercase
+                  color="#b9b9b9"
+                  ribbon
+                  ribbonColor="#e6e6e6"
+                  ribbonWidth={48}
+                  pauseOnHover={false}
+                />
+              </div>
               {stats.map((stat, i) => (
                 <div className={`hero-stat-slide${i === 0 ? " is-active" : ""}`} data-stat-slide key={i}>
                   <span className="hero-stat-value">{stat.value}</span>

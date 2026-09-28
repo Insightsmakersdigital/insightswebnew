@@ -76,6 +76,10 @@ export interface ServiceStep {
   title: string;
   body: string;
   detail: string;
+  // Mobile-only "what happens in this step" breakdown, shown between the
+  // description and the "You get" line. Optional since it's being rolled
+  // out service by service, not backfilled everywhere at once.
+  checklist?: [string, string, string];
 }
 
 export interface ServiceFaq {
@@ -136,10 +140,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " chosen on purpose, not habit." },
     ],
     approach: [
-      { title: "Understand the audience", body: "We map who you're trying to reach: demographics, behaviour, and where they spend their time.", detail: "Audience & platform brief" },
-      { title: "Choose the right platforms", body: "We commit to the two or three that match your audience, not all nine at once.", detail: "2–3 platform strategy" },
-      { title: "Build and publish", body: "Content goes out on a real calendar, tailored per platform, in one consistent voice.", detail: "Weekly content calendar" },
-      { title: "Measure and refine", body: "Weekly reviews of what's landing, so the strategy follows the data, not the assumptions.", detail: "Weekly performance review" },
+      {
+        title: "Understand the audience", body: "We map who you're trying to reach: demographics, behaviour, and where they spend their time.", detail: "Audience & platform brief",
+        checklist: ["Map who you're trying to reach", "Study behaviour and habits", "Find where they spend time"],
+      },
+      {
+        title: "Choose the right platforms", body: "We commit to the two or three that match your audience, not all nine at once.", detail: "2–3 platform strategy",
+        checklist: ["Match platforms to audience", "Commit to two or three", "Skip the rest on purpose"],
+      },
+      {
+        title: "Build and publish", body: "Content goes out on a real calendar, tailored per platform, in one consistent voice.", detail: "Weekly content calendar",
+        checklist: ["Build a real content calendar", "Tailor content per platform", "Publish in one consistent voice"],
+      },
+      {
+        title: "Measure and refine", body: "Weekly reviews of what's landing, so the strategy follows the data, not the assumptions.", detail: "Weekly performance review",
+        checklist: ["Review what's landing weekly", "Follow data, not assumptions", "Refine the strategy weekly"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -189,10 +205,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " built to keep compounding long after we're done." },
     ],
     approach: [
-      { title: "Audit", body: "A full technical and content crawl to see exactly where the site is losing search visibility today.", detail: "Technical + content audit" },
-      { title: "Research", body: "Keyword and competitor research to define which searches are actually worth winning.", detail: "Keyword & competitor map" },
-      { title: "Fix and build", body: "On-page fixes, technical repairs, and new content, shipped, not just listed.", detail: "4–8 weeks to implement" },
-      { title: "Report and compound", body: "Monthly reporting on rankings and traffic, with the strategy adjusted as the site climbs.", detail: "Monthly ranking report" },
+      {
+        title: "Audit", body: "A full technical and content crawl to see exactly where the site is losing search visibility today.", detail: "Technical + content audit",
+        checklist: ["Crawl pages for technical issues", "Review content for gaps", "Flag what's capping rankings"],
+      },
+      {
+        title: "Research", body: "Keyword and competitor research to define which searches are actually worth winning.", detail: "Keyword & competitor map",
+        checklist: ["Audit where you rank today", "Map what competitors rank for", "Shortlist keywords worth chasing"],
+      },
+      {
+        title: "Fix and build", body: "On-page fixes, technical repairs, and new content, shipped, not just listed.", detail: "4–8 weeks to implement",
+        checklist: ["Ship on-page fixes sitewide", "Repair technical issues found", "Publish new SEO content"],
+      },
+      {
+        title: "Report and compound", body: "Monthly reporting on rankings and traffic, with the strategy adjusted as the site climbs.", detail: "Monthly ranking report",
+        checklist: ["Track rankings and traffic", "Report what moved, and why", "Adjust strategy as you climb"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -242,10 +270,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " you can see in real time." },
     ],
     approach: [
-      { title: "Initial consultation", body: "We start with your business goals and budget, not a generic campaign template.", detail: "Goals & budget brief" },
-      { title: "Strategy & keyword plan", body: "A targeting plan built around the searches most likely to convert, at a cost that fits your margins.", detail: "Keyword & bid strategy" },
-      { title: "Launch", body: "Campaigns go live with tested ad copy and a conversion-ready landing page.", detail: "Live within 1–2 weeks" },
-      { title: "Monitor & optimize", body: "Continuous adjustment to bids, targeting, and copy, so performance keeps improving.", detail: "Weekly performance review" },
+      {
+        title: "Initial consultation", body: "We start with your business goals and budget, not a generic campaign template.", detail: "Goals & budget brief",
+        checklist: ["Start with goals and budget", "Skip the generic template", "Learn what success looks like"],
+      },
+      {
+        title: "Strategy & keyword plan", body: "A targeting plan built around the searches most likely to convert, at a cost that fits your margins.", detail: "Keyword & bid strategy",
+        checklist: ["Target searches likely to convert", "Set a budget-fit bid strategy", "Build the keyword plan"],
+      },
+      {
+        title: "Launch", body: "Campaigns go live with tested ad copy and a conversion-ready landing page.", detail: "Live within 1–2 weeks",
+        checklist: ["Test ad copy before launch", "Align landing page to the ad", "Go live within 1–2 weeks"],
+      },
+      {
+        title: "Monitor & optimize", body: "Continuous adjustment to bids, targeting, and copy, so performance keeps improving.", detail: "Weekly performance review",
+        checklist: ["Adjust bids continuously", "Refine targeting and copy", "Report performance weekly"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -294,10 +334,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " process." },
     ],
     approach: [
-      { title: "Research", body: "Topic and keyword research, competitor analysis, and a clear read on who we're writing for.", detail: "Topic & keyword brief" },
-      { title: "Strategy", body: "Objectives, audience, formats, and a distribution plan, decided before a single word is written.", detail: "Content calendar & plan" },
-      { title: "Create & publish", body: "Content built to align with your site and brand from the start, not bolted on after design is finished.", detail: "Consistent publishing schedule" },
-      { title: "Analyze & report", body: "Performance tracked against traffic, engagement, and conversion, refined as the data comes in.", detail: "Monthly performance report" },
+      {
+        title: "Research", body: "Topic and keyword research, competitor analysis, and a clear read on who we're writing for.", detail: "Topic & keyword brief",
+        checklist: ["Research topics and keywords", "Analyze what competitors publish", "Define who we're writing for"],
+      },
+      {
+        title: "Strategy", body: "Objectives, audience, formats, and a distribution plan, decided before a single word is written.", detail: "Content calendar & plan",
+        checklist: ["Set objectives and formats", "Plan distribution up front", "Build the content calendar"],
+      },
+      {
+        title: "Create & publish", body: "Content built to align with your site and brand from the start, not bolted on after design is finished.", detail: "Consistent publishing schedule",
+        checklist: ["Write content aligned to brand", "Publish on a steady schedule", "Never bolt content on after"],
+      },
+      {
+        title: "Analyze & report", body: "Performance tracked against traffic, engagement, and conversion, refined as the data comes in.", detail: "Monthly performance report",
+        checklist: ["Track traffic and engagement", "Measure conversion by piece", "Report monthly, refine after"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -346,10 +398,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " long after launch." },
     ],
     approach: [
-      { title: "Research", body: "Market and competitor research to understand the landscape you're branding into.", detail: "Market & competitor findings" },
-      { title: "Position", body: "A clear audience and value proposition, defined before any visual work starts.", detail: "Positioning & messaging brief" },
-      { title: "Design", body: "Logo, visual identity, and style guide, built to be consistent across every touchpoint.", detail: "Logo, identity & style guide" },
-      { title: "Roll out", body: "Brand assets applied consistently across web, social, and print, ready for your team to keep using.", detail: "Applied to every touchpoint" },
+      {
+        title: "Research", body: "Market and competitor research to understand the landscape you're branding into.", detail: "Market & competitor findings",
+        checklist: ["Study the market landscape", "Analyze competitor positioning", "Find where the real gaps are"],
+      },
+      {
+        title: "Position", body: "A clear audience and value proposition, defined before any visual work starts.", detail: "Positioning & messaging brief",
+        checklist: ["Define your target audience", "Write the value proposition", "Lock positioning before design"],
+      },
+      {
+        title: "Design", body: "Logo, visual identity, and style guide, built to be consistent across every touchpoint.", detail: "Logo, identity & style guide",
+        checklist: ["Design the logo and identity", "Build a full style guide", "Keep every touchpoint consistent"],
+      },
+      {
+        title: "Roll out", body: "Brand assets applied consistently across web, social, and print, ready for your team to keep using.", detail: "Applied to every touchpoint",
+        checklist: ["Apply assets across channels", "Roll out web, social, print", "Hand off for your team to use"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -399,10 +463,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " before anything ships." },
     ],
     approach: [
-      { title: "Brief & research", body: "Understanding the product, the shelf it competes on, and what competitors are already doing.", detail: "Shelf & competitor analysis" },
-      { title: "Structural design", body: "Dielines engineered for the format and production method before any visual design starts.", detail: "Engineered dielines" },
-      { title: "Visual design", body: "Brand identity applied to the structure, tested at actual scale, not just on a screen.", detail: "Full packaging artwork" },
-      { title: "Production handoff", body: "Print-ready files and production guidance, so the packaging that ships matches what was approved.", detail: "Print-ready files" },
+      {
+        title: "Brief & research", body: "Understanding the product, the shelf it competes on, and what competitors are already doing.", detail: "Shelf & competitor analysis",
+        checklist: ["Study the product and shelf", "Analyze competitor packaging", "Map what's already out there"],
+      },
+      {
+        title: "Structural design", body: "Dielines engineered for the format and production method before any visual design starts.", detail: "Engineered dielines",
+        checklist: ["Engineer dielines for format", "Plan for the production method", "Build the structure first"],
+      },
+      {
+        title: "Visual design", body: "Brand identity applied to the structure, tested at actual scale, not just on a screen.", detail: "Full packaging artwork",
+        checklist: ["Apply brand to the structure", "Test the design at real scale", "Finalize the packaging artwork"],
+      },
+      {
+        title: "Production handoff", body: "Print-ready files and production guidance, so the packaging that ships matches what was approved.", detail: "Print-ready files",
+        checklist: ["Prepare print-ready files", "Guide the production process", "Match what ships to approval"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -451,10 +527,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " that carry the same identity onto the shelf." },
     ],
     approach: [
-      { title: "Understand the brief", body: "Your brand goals and audience, first, so every design decision has a reason behind it.", detail: "Brand & audience brief" },
-      { title: "Concept", body: "Initial directions explored and refined with your feedback from the start.", detail: "Initial design directions" },
-      { title: "Design", body: "Assets built to your style guide, so everything reads as the same brand.", detail: "Final, on-brand assets" },
-      { title: "Deliver", body: "Final files handed off in every format you'll need, print and digital.", detail: "Files in every format needed" },
+      {
+        title: "Understand the brief", body: "Your brand goals and audience, first, so every design decision has a reason behind it.", detail: "Brand & audience brief",
+        checklist: ["Learn your brand goals first", "Understand your audience", "Set the reasoning for design"],
+      },
+      {
+        title: "Concept", body: "Initial directions explored and refined with your feedback from the start.", detail: "Initial design directions",
+        checklist: ["Explore initial directions", "Refine with your feedback", "Narrow to the right concept"],
+      },
+      {
+        title: "Design", body: "Assets built to your style guide, so everything reads as the same brand.", detail: "Final, on-brand assets",
+        checklist: ["Build assets to style guide", "Keep every piece on-brand", "Finalize the design system"],
+      },
+      {
+        title: "Deliver", body: "Final files handed off in every format you'll need, print and digital.", detail: "Files in every format needed",
+        checklist: ["Hand off print-ready files", "Deliver every format needed", "Package for print and digital"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -504,10 +592,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: ", whichever fits." },
     ],
     approach: [
-      { title: "Discover", body: "Understanding your business, goals, and audience before a single wireframe gets drawn.", detail: "Goals & sitemap brief" },
-      { title: "Design", body: "UX/UI design focused on the shortest path from visitor to conversion.", detail: "UX/UI design & prototype" },
-      { title: "Build & test", body: "Front-end and back-end development, tested rigorously across devices before launch.", detail: "Tested across every device" },
-      { title: "Launch & maintain", body: "A proper launch, followed by ongoing maintenance so the site keeps performing after day one.", detail: "Ongoing support & monitoring" },
+      {
+        title: "Discover", body: "Understanding your business, goals, and audience before a single wireframe gets drawn.", detail: "Goals & sitemap brief",
+        checklist: ["Learn your business and goals", "Map the sitemap early", "Define the target audience"],
+      },
+      {
+        title: "Design", body: "UX/UI design focused on the shortest path from visitor to conversion.", detail: "UX/UI design & prototype",
+        checklist: ["Design for fastest conversion", "Build UX/UI and prototype", "Map the visitor's journey"],
+      },
+      {
+        title: "Build & test", body: "Front-end and back-end development, tested rigorously across devices before launch.", detail: "Tested across every device",
+        checklist: ["Build front-end and back-end", "Test rigorously on devices", "Fix issues before launch"],
+      },
+      {
+        title: "Launch & maintain", body: "A proper launch, followed by ongoing maintenance so the site keeps performing after day one.", detail: "Ongoing support & monitoring",
+        checklist: ["Launch the site properly", "Monitor performance ongoing", "Maintain it after day one"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -557,10 +657,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " so every cut performs where it lands." },
     ],
     approach: [
-      { title: "Understand the brand", body: "A real understanding of your brand and goals before any storyboard gets drawn.", detail: "Creative brief" },
-      { title: "Storyboard", body: "The story mapped out shot by shot, so filming has a clear plan to execute against.", detail: "Shot-by-shot storyboard" },
-      { title: "Film", body: "Production handled by an experienced crew, whether that's a studio shoot or on-location work.", detail: "Studio or on-location shoot" },
-      { title: "Edit & deliver", body: "Editing, colour, and sound polished to a result that performs, delivered everywhere you need it.", detail: "Final cuts, every platform" },
+      {
+        title: "Understand the brand", body: "A real understanding of your brand and goals before any storyboard gets drawn.", detail: "Creative brief",
+        checklist: ["Learn your brand and goals", "Set the creative direction", "Define the video's purpose"],
+      },
+      {
+        title: "Storyboard", body: "The story mapped out shot by shot, so filming has a clear plan to execute against.", detail: "Shot-by-shot storyboard",
+        checklist: ["Map the story shot by shot", "Plan the filming approach", "Lock the storyboard first"],
+      },
+      {
+        title: "Film", body: "Production handled by an experienced crew, whether that's a studio shoot or on-location work.", detail: "Studio or on-location shoot",
+        checklist: ["Shoot in studio or on location", "Run production with a real crew", "Capture footage to the plan"],
+      },
+      {
+        title: "Edit & deliver", body: "Editing, colour, and sound polished to a result that performs, delivered everywhere you need it.", detail: "Final cuts, every platform",
+        checklist: ["Edit, color, and mix sound", "Polish to a finished cut", "Deliver for every platform"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -610,10 +722,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " to launch." },
     ],
     approach: [
-      { title: "Scope", body: "We define what the app needs to do, for whom, and on which platforms before any design starts.", detail: "Product scope & platform brief" },
-      { title: "Design", body: "UX/UI designed around real phone usage, prototyped and tested before development starts.", detail: "Prototype & UX/UI design" },
-      { title: "Build & test", body: "Development across the agreed platforms, tested continuously rather than all at once at the end.", detail: "Tested across real devices" },
-      { title: "Launch & maintain", body: "Store submission handled end-to-end, followed by updates so the app keeps working as OS versions change.", detail: "Ongoing updates & support" },
+      {
+        title: "Scope", body: "We define what the app needs to do, for whom, and on which platforms before any design starts.", detail: "Product scope & platform brief",
+        checklist: ["Define what the app must do", "Choose the right platforms", "Scope it before design starts"],
+      },
+      {
+        title: "Design", body: "UX/UI designed around real phone usage, prototyped and tested before development starts.", detail: "Prototype & UX/UI design",
+        checklist: ["Design for real phone usage", "Build a working prototype", "Test the flow before build"],
+      },
+      {
+        title: "Build & test", body: "Development across the agreed platforms, tested continuously rather than all at once at the end.", detail: "Tested across real devices",
+        checklist: ["Build across agreed platforms", "Test continuously, not at the end", "Catch issues on real devices"],
+      },
+      {
+        title: "Launch & maintain", body: "Store submission handled end-to-end, followed by updates so the app keeps working as OS versions change.", detail: "Ongoing updates & support",
+        checklist: ["Submit to app and play store", "Handle listings end-to-end", "Keep it updated after launch"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -662,10 +786,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " your team can actually maintain." },
     ],
     approach: [
-      { title: "Audit", body: "Mapping current workflows to find exactly where manual, repetitive work is costing time.", detail: "Process & time audit" },
-      { title: "Design the automation", body: "Deciding what should run automatically and what still needs a human in the loop.", detail: "Automation blueprint" },
-      { title: "Build & connect", body: "Tools wired together and tested against real data, not a demo environment.", detail: "Live tool integrations" },
-      { title: "Monitor & refine", body: "Automations watched after launch and adjusted as your workflows change.", detail: "Ongoing monitoring" },
+      {
+        title: "Audit", body: "Mapping current workflows to find exactly where manual, repetitive work is costing time.", detail: "Process & time audit",
+        checklist: ["Map your current workflows", "Find where time gets lost", "Flag manual, repetitive work"],
+      },
+      {
+        title: "Design the automation", body: "Deciding what should run automatically and what still needs a human in the loop.", detail: "Automation blueprint",
+        checklist: ["Decide what runs automatically", "Keep humans where they matter", "Draft the automation blueprint"],
+      },
+      {
+        title: "Build & connect", body: "Tools wired together and tested against real data, not a demo environment.", detail: "Live tool integrations",
+        checklist: ["Connect your tools together", "Test against real data", "Wire up live integrations"],
+      },
+      {
+        title: "Monitor & refine", body: "Automations watched after launch and adjusted as your workflows change.", detail: "Ongoing monitoring",
+        checklist: ["Watch automations after launch", "Adjust as workflows change", "Keep everything running smoothly"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -714,10 +850,22 @@ export const SERVICES: Service[] = [
       { kind: "text", text: " as your needs keep changing." },
     ],
     approach: [
-      { title: "Discover", body: "Understanding the exact process, users, and constraints the software needs to work within.", detail: "Requirements & process map" },
-      { title: "Architect", body: "Planning the technical foundation to handle real usage and future growth, not just the demo.", detail: "System architecture" },
-      { title: "Build & test", body: "Development in stages you can see and test, not one long build with a single reveal at the end.", detail: "Staged builds & QA" },
-      { title: "Launch & evolve", body: "A proper rollout, followed by ongoing development as the business and its needs change.", detail: "Ongoing development" },
+      {
+        title: "Discover", body: "Understanding the exact process, users, and constraints the software needs to work within.", detail: "Requirements & process map",
+        checklist: ["Map the process and users", "Note every real constraint", "Define requirements clearly"],
+      },
+      {
+        title: "Architect", body: "Planning the technical foundation to handle real usage and future growth, not just the demo.", detail: "System architecture",
+        checklist: ["Plan the technical foundation", "Design for real usage and load", "Architect for future growth"],
+      },
+      {
+        title: "Build & test", body: "Development in stages you can see and test, not one long build with a single reveal at the end.", detail: "Staged builds & QA",
+        checklist: ["Build in visible stages", "Test each stage as it ships", "Review before moving forward"],
+      },
+      {
+        title: "Launch & evolve", body: "A proper rollout, followed by ongoing development as the business and its needs change.", detail: "Ongoing development",
+        checklist: ["Roll out the finished system", "Keep developing as needs change", "Support it for the long run"],
+      },
     ],
     proof: {
       eyebrow: "Why it works",
@@ -986,7 +1134,7 @@ export const WORK_ITEMS: WorkItem[] = [
     slug: "arena-animation-thrissur",
     name: "Arena Animation",
     cardName: "Arena Animation Thrissur",
-    project: "Instagram growth — Thrissur campus",
+    project: "SMM for Arena Animation",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "12 85% 58%",
@@ -1040,7 +1188,7 @@ export const WORK_ITEMS: WorkItem[] = [
     slug: "arena-animation-thiruvananthapuram",
     name: "Arena Animation",
     cardName: "Arena Animation Thiruvananthapuram",
-    project: "Instagram growth — Thiruvananthapuram campus",
+    project: "SMM for Arena Animation",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "260 70% 65%",
@@ -1066,7 +1214,7 @@ export const WORK_ITEMS: WorkItem[] = [
     slug: "arena-animation-koramangala",
     name: "Arena Animation",
     cardName: "Arena Animation Koramangala",
-    project: "Instagram growth — Koramangala campus",
+    project: "SMM for Arena Animation",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "150 55% 45%",
@@ -1092,7 +1240,7 @@ export const WORK_ITEMS: WorkItem[] = [
     slug: "arena-animation-kannur",
     name: "Arena Animation",
     cardName: "Arena Animation Kannur",
-    project: "Instagram growth — Kannur campus",
+    project: "SMM for Arena Animation",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "45 90% 55%",
@@ -1114,7 +1262,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     slug: "zica-calicut-smm",
     name: "Zica Calicut",
-    project: "Instagram growth for Zica Calicut",
+    project: "SMM for Zica Calicut",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "205 80% 55%",
@@ -1140,7 +1288,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     slug: "la-via-deux-smm",
     name: "La Via Deux",
-    project: "Instagram growth for La Via Deux",
+    project: "SMM for La Via Deux",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "320 75% 60%",
@@ -1162,7 +1310,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     slug: "dhub",
     name: "D-Hub",
-    project: "Instagram growth for D-Hub",
+    project: "SMM for D-Hub",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "175 60% 42%",
@@ -1184,7 +1332,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     slug: "clear-2-start",
     name: "Clear 2 Start",
-    project: "Instagram growth for Clear 2 Start",
+    project: "SMM for Clear 2 Start",
     services: ["social-media-marketing"],
     result: "Case study write-up coming soon",
     tint: "95 60% 45%",
