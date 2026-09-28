@@ -1,25 +1,28 @@
 ## Development
 
-When starting the dev server, use background mode:
+Start the dev server with:
 
 ```
-astro dev --background
+npm run dev
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Build the static export with `npm run build` (writes to `out/`, since
+`next.config.mjs` sets `output: "export"`). Preview a production build with
+`npm run start` (note: `next start` doesn't serve the static `out/`
+export — use a static file server, e.g. `npx serve out`, to preview the
+actual exported site).
 
 ## Documentation
 
-Full documentation: https://docs.astro.build
+Full documentation: https://nextjs.org/docs
 
 Consult these guides before working on related tasks:
 
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+- [App Router routing, dynamic routes, layouts](https://nextjs.org/docs/app/building-your-application/routing)
+- [Static exports](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
+- [Data fetching, `generateStaticParams`](https://nextjs.org/docs/app/building-your-application/data-fetching)
+- [Styling (CSS Modules, global CSS)](https://nextjs.org/docs/app/building-your-application/styling)
+- [Metadata and SEO](https://nextjs.org/docs/app/building-your-application/optimizing/metadata)
 
 <!-- BEGIN:nextjs-agent-rules -->
 

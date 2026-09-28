@@ -29,7 +29,7 @@ The differentiator is transparent, direct access to the whole team actually doin
 
 - Founded 2024, led directly by two founders (Nived A. Sumithran — CEO, Nuhman Daris — CMO).
 - Nine disciplines across three pillars (see Operating Context). Services and their detail pages, work/case-study pages, and pricing are not all uniformly proven out yet — the site is honest about which disciplines have shipped work and which don't.
-- Astro-based static site (see `## Stack` equivalent: existing codebase, not greenfield — Astro, vanilla TS in component `<script>` blocks, no UI framework, hand-authored CSS design-token system in `src/styles/tokens.css`/`global.css`).
+- Next.js App Router static export (existing codebase, not greenfield — TypeScript/React, `output: "export"` in `next.config.mjs`, hand-authored CSS design-token system in `src/app/tokens.css`/`globals.css`, no Tailwind).
 
 ## Brand Commitments
 
@@ -40,7 +40,7 @@ The differentiator is transparent, direct access to the whole team actually doin
 
 ## Evidence on Hand
 
-- Real testimonials: Rahul Menon (Arena Animation), Sarah Thomas (Beyond Borders), Vishnu Nair (Zica Calicut) — in `src/pages/index.astro`.
+- Real testimonials: Rahul Menon (Arena Animation), Sarah Thomas (Beyond Borders), Vishnu Nair (Zica Calicut) — in `src/app/page.tsx`.
 - Real case study: Arena Animation (3 campuses rebranded, 60% more enquiries, 4 months to launch) — homepage case-study section.
 - Work items and their real/placeholder status are tracked per-discipline in `src/data/site.ts` (`WORK_ITEMS`, `workForService`); pages must not fabricate case studies for disciplines that don't have one — the "open, no case study yet" pattern exists specifically so this isn't necessary.
 
