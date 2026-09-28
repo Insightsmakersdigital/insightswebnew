@@ -27,15 +27,29 @@ const smmLogos = WORK_ITEMS.filter((w) => w.category === "smm");
 const logoTrack = [...smmLogos, ...smmLogos];
 
 // Picked deliberately, not just the first 3 in WORK_ITEMS.
-const FEATURED_SLUGS = ["beyond-borders-performance-marketing", "slot-it", "arena-animation-thiruvananthapuram"];
+const FEATURED_SLUGS = ["beyond-borders-performance-marketing", "slot-it", "arena-animation-thiruvananthapuram", "beyond-borders-web-app"];
 
 // Dedicated photos for this section specifically (public/images/home-projects/),
 // not the same crop used for the /work grid cards -- keyed by slug so a
 // featured pick without one just falls through to the usual seededImage cover.
+// Named for the work done (service), not the client, matching this
+// section's client-free titles above.
 const HOME_PROJECT_IMAGES: Partial<Record<string, string>> = {
-  "beyond-borders-performance-marketing": "/images/home-projects/beyond-borders.jpg",
-  "slot-it": "/images/home-projects/slot-it.jpg",
-  "arena-animation-thiruvananthapuram": "/images/home-projects/arena-tvm.jpg",
+  "beyond-borders-performance-marketing": "/images/home-projects/performance-marketing.jpg",
+  "slot-it": "/images/home-projects/branding.jpg",
+  "arena-animation-thiruvananthapuram": "/images/home-projects/smm.jpg",
+  "beyond-borders-web-app": "/images/home-projects/web-app.png",
+};
+
+// w.project reads as a full sentence ("Performance marketing for Beyond
+// Borders") that names the client -- fine on /work, but this section
+// dropped client names entirely (see WorkCard), so the headline itself
+// can't still say one. Client-free title just for these 4 cards.
+const HOME_PROJECT_TITLES: Partial<Record<string, string>> = {
+  "beyond-borders-performance-marketing": "Performance marketing",
+  "slot-it": "Brand identity",
+  "arena-animation-thiruvananthapuram": "Social media management",
+  "beyond-borders-web-app": "Website & app development",
 };
 
 const featuredWork = FEATURED_SLUGS.map((slug) => WORK_ITEMS.find((w) => w.slug === slug))
@@ -44,8 +58,7 @@ const featuredWork = FEATURED_SLUGS.map((slug) => WORK_ITEMS.find((w) => w.slug 
     href: `/work/${w.category}`,
     image: HOME_PROJECT_IMAGES[w.slug] ?? seededImage(w.slug, w.category),
     fallbackImage: w.gallery?.[0],
-    title: w.project,
-    client: w.cardName ?? w.name,
+    title: HOME_PROJECT_TITLES[w.slug] ?? w.project,
     services: w.services.map((slug) => SERVICES.find((s) => s.slug === slug)?.title).filter(Boolean).join(" + "),
     result: w.result,
     tint: w.tint,
@@ -143,65 +156,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="case-study">
-          <div className="wrap case-grid">
-            <div className="case-copy reveal">
-              <div className="eyebrow-row">
-                <span className="section-index">03</span>
-                <p className="eyebrow">Case study</p>
-              </div>
-              <RevealHeading as="h2" className="case-heading" text="How Arena Animation filled three campuses" />
-              <p className="case-body">
-                Arena Animation had strong instructors but a brand that undersold them: generic collateral, no
-                consistent identity across branches. We rebuilt the brand and digital presence around one goal: make
-                enquiry-to-enrolment as short as possible.
-              </p>
-              <blockquote className="case-quote">
-                &quot;They didn&apos;t just redesign our logo — they rebuilt how every campus presents itself, online and
-                off.&quot;
-                <cite>— Arena Animation</cite>
-              </blockquote>
-            </div>
-            <div className="case-right reveal">
-              <div className="case-visual">
-                <span className="case-visual-label">Image placeholder: Arena Animation</span>
-              </div>
-              <ul className="case-results">
-                <li className="case-result-row">
-                  <span className="case-result-label">campuses rebranded</span>
-                  <span className="case-result-value">
-                    <strong data-count="3" className="counted">
-                      0
-                    </strong>
-                  </span>
-                </li>
-                <li className="case-result-row">
-                  <span className="case-result-label">more enquiries</span>
-                  <span className="case-result-value">
-                    <strong data-count="60" className="counted">
-                      0
-                    </strong>
-                    <span className="stat-suffix">%</span>
-                  </span>
-                </li>
-                <li className="case-result-row">
-                  <span className="case-result-label">months to launch</span>
-                  <span className="case-result-value">
-                    <strong data-count="4" className="counted">
-                      0
-                    </strong>
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
         <section className="panel-light" id="process">
           <div className="wrap process-wrap">
             <div className="process-intro reveal">
               <div className="eyebrow-row">
-                <span className="section-index">04</span>
+                <span className="section-index">03</span>
                 <p className="eyebrow">How we work</p>
               </div>
               <RevealHeading as="h2" text="Four steps, every time." />
@@ -235,7 +194,7 @@ export default function HomePage() {
             <div className="team-ledger">
               <div className="team-left reveal">
                 <div className="eyebrow-row">
-                  <span className="section-index">05</span>
+                  <span className="section-index">04</span>
                   <p className="eyebrow">The studio</p>
                 </div>
                 <h2 className="team-heading">
@@ -288,7 +247,7 @@ export default function HomePage() {
 
               <div className="testimonial-heading-col">
                 <div className="eyebrow-row">
-                  <span className="section-index">06</span>
+                  <span className="section-index">05</span>
                   <p className="eyebrow">Client feedback</p>
                 </div>
                 <RevealHeading as="h2" text="Why Brands Choose To Work With Us" className="testimonial-heading" />
@@ -320,7 +279,7 @@ export default function HomePage() {
             <div className="faq-social-box">
               <div className="faq-editorial reveal">
                 <div className="eyebrow-row">
-                  <span className="section-index">07</span>
+                  <span className="section-index">06</span>
                   <p className="eyebrow">FAQ</p>
                 </div>
                 <p className="faq-statement">
@@ -364,7 +323,7 @@ export default function HomePage() {
             <div className="contact-ledger" data-contact>
               <div className="contact-left reveal">
                 <div className="eyebrow-row">
-                  <span className="section-index">08</span>
+                  <span className="section-index">07</span>
                   <p className="eyebrow">Get in touch</p>
                 </div>
                 <SplitLineHeading text="CONTACT THE STUDIO" className="contact-heading" />
@@ -383,7 +342,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <ContactForm />
+              <ContactForm variant="compact" />
             </div>
           </div>
         </section>

@@ -104,6 +104,18 @@ export default function ApproachTrack({ steps }: { steps: ServiceStep[] }) {
               <span className="approach-column-num">{String(i + 1).padStart(2, "0")}</span>
               <h3 className="approach-column-title">{step.title}</h3>
               <p className="approach-column-desc">{step.body}</p>
+              {step.checklist && (
+                <ul className="approach-checklist">
+                  {step.checklist.map((line) => (
+                    <li className="approach-checklist-item" key={line}>
+                      <span className="approach-checklist-dash" aria-hidden="true">
+                        —
+                      </span>
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <div className="approach-column-detail">
                 <p className="approach-detail-label">You get</p>
                 <p className="approach-detail-value">{step.detail}</p>
