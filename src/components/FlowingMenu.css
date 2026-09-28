@@ -44,6 +44,13 @@
   font-size: min(4vh, 7vw);
 }
 
+@media (max-width: 809px) {
+  .menu__item-link {
+    font-size: min(3vh, 5.5vw);
+    padding-block: 1.25rem;
+  }
+}
+
 .menu__item-link:hover {
   color: inherit;
 }

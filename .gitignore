@@ -1,6 +1,7 @@
 # build output
 .next/
 out/
+.astro/
 
 # dependencies
 node_modules/

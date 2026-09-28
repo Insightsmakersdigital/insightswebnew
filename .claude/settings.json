@@ -4,5 +4,29 @@
       "Bash(node \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook-admin.mjs\" --help)",
       "Bash(node \"C:\\\\Users\\\\hehea\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\hook-admin.mjs\" ignore-value design-system-font-size 1.25rem --shared --reason \"test\")"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard search",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard read",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
