@@ -1494,6 +1494,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
+    gallery: webAppGallery("beyond-borders-web-app", 5),
   },
 ];
 
@@ -1532,6 +1533,11 @@ export function performGallery(slug: string, count: number) {
 // public/images/work-branding/{slug}/ -- branding case-study photos.
 export function brandingGallery(slug: string, count: number) {
   return workGallery("work-branding", slug, count);
+}
+
+// public/images/work-webapp/{slug}/ -- website & app case-study screenshots.
+export function webAppGallery(slug: string, count: number) {
+  return workGallery("work-webapp", slug, count);
 }
 
 // Every SMM WorkItem gets its own folder at public/images/instagram/{slug}/
