@@ -108,6 +108,7 @@ export default function WorkGrid({ sections }: Props) {
           <div className="case-modal-backdrop" onClick={() => setOpenSlug(null)}>
             <div
               className={`case-modal${isSmm ? " case-modal--ig" : ""}${hasGallery ? " case-modal--gallery" : ""}`}
+              data-slug={active.slug}
               role="dialog"
               aria-modal="true"
               aria-labelledby={isSmm ? undefined : "case-modal-heading"}

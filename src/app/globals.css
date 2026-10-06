@@ -1862,6 +1862,23 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 @media (min-width: 810px) {
   .case-modal--gallery { max-width: 900px; }
 }
+
+/* Beyond Borders' web-app gallery is phone-screenshot portraits (839x1874),
+   not the 1600x900 slide decks the rule above was sized for -- at the
+   gallery-variant's width those stretched into an oversized, overlong
+   popup. Cap just this item's modal + slides back down near native size. */
+.case-modal[data-slug="beyond-borders-web-app"] { max-width: 640px; }
+.case-modal[data-slug="beyond-borders-web-app"] .case-modal-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  padding: 0 var(--space-3);
+}
+.case-modal[data-slug="beyond-borders-web-app"] .case-modal-gallery-item {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
 .case-modal-body--gallery-head { padding-bottom: 0; }
 /* No .case-modal-media above this anymore (see WorkGrid's non-gallery
    branch) -- a bit more top clearance so the heading doesn't sit flush
