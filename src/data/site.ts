@@ -1494,7 +1494,7 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    gallery: webAppGallery("beyond-borders-web-app", 5),
+    gallery: webAppGallery("beyond-borders-web-app", 6),
   },
 ];
 
