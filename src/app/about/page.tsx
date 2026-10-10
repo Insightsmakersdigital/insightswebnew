@@ -115,7 +115,7 @@ export default function AboutPage() {
                 <h3 className={styles.mvHeading}>What we&apos;re here to do</h3>
                 <p className={styles.mvText}>
                   Turn a business&apos;s marketing, branding, and digital presence into one connected system, planned
-                  and built by the same team, instead of three disconnected vendors that never compare notes.
+                  and built by the same team from the first brief to the last handoff.
                 </p>
               </div>
 
