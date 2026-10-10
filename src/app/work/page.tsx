@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import type { Metadata } from "next";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -11,9 +13,13 @@ export const metadata: Metadata = {
   description: "Real work, for real clients, organized by discipline -- pick one to see the case studies.",
 };
 
-const driftItems = WORK_ITEMS.map((w) => ({
+// This wall only ever shows the real public/images/work/ thumbnail, never a
+// gallery/case-study photo from some other folder -- a handful of legacy
+// WORK_ITEMS have no thumbnail there yet (no category, or an empty category
+// folder), and those get skipped here rather than falling back to an
+// unrelated image.
+const driftItems = WORK_ITEMS.filter((w) => fs.existsSync(path.join(process.cwd(), "public", seededImage(w.slug, w.category)))).map((w) => ({
   image: seededImage(w.slug, w.category),
-  fallbackImage: w.gallery?.[0],
   title: w.project,
 }));
 

@@ -247,7 +247,7 @@ export const SERVICES: Service[] = [
     headline: "Instant Visibility, Measurable ROI",
     pillar: "Marketing",
     description:
-      "Instant search visibility through targeted Pay-Per-Click (PPC) campaigns on search engines like Google Ads. Focuses on high-converting keyword targeting, compelling ad copy, and continuous ROI optimization so every rupee spent drives measurable leads.",
+      "Instant search visibility through targeted Pay-Per-Click (PPC) campaigns on search engines like Google Ads. Focuses on high-converting keyword targeting, ad copy built to earn the click, and continuous ROI optimization so every rupee spent drives measurable leads.",
     highlights: ["PPC campaigns", "Ad copywriting", "ROI optimization"],
     quickFacts: [
       { value: "Same-day", label: "visibility at the top of search results" },
