@@ -3,10 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { SOCIAL_LINKS } from "../data/site";
 
+// Web3Forms access key for info@insightsmarketers.com -- this is a public
+// key by Web3Forms' own design (safe in client-side code; it only lets
+// someone submit TO this inbox, not read from it), see web3forms.com/docs.
+const WEB3FORMS_ACCESS_KEY = "c901731c-77a0-4feb-8c7d-7073263c9082";
+
 // The contact form ledger, shared between the homepage's #contact section
 // and the dedicated /contact page. Row hairlines arm once the form scrolls
-// into view (IntersectionObserver, one-shot); submit is a client-only stub
-// (no backend wired up yet) that swaps in a status message and resets.
+// into view (IntersectionObserver, one-shot); submit posts straight to
+// Web3Forms (static export has no backend of its own to receive it).
 // variant="compact" (homepage) drops Email/Message for just Name + Number
 // -- a lower-friction ask than the full form on the dedicated /contact page.
 export default function ContactForm({ variant = "full" }: { variant?: "full" | "compact" }) {
@@ -14,6 +19,7 @@ export default function ContactForm({ variant = "full" }: { variant?: "full" | "
   const formRef = useRef<HTMLFormElement>(null);
   const [visible, setVisible] = useState(false);
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const form = formRef.current;
@@ -40,15 +46,39 @@ export default function ContactForm({ variant = "full" }: { variant?: "full" | "
     return () => io.disconnect();
   }, []);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
-    setStatus("Thanks. We'll be in touch within one business day.");
-    form.reset();
+
+    const data = new FormData(form);
+    data.append("access_key", WEB3FORMS_ACCESS_KEY);
+    data.append("subject", `New ${compact ? "homepage" : "contact page"} enquiry from ${data.get("name")}`);
+    data.append("from_name", "Insights Marketers website");
+
+    setSubmitting(true);
+    setStatus("Sending...");
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+      const result = await res.json();
+      if (result.success) {
+        setStatus("Thanks. We'll be in touch within one business day.");
+        form.reset();
+      } else {
+        setStatus("Something went wrong. Please email or WhatsApp us directly.");
+      }
+    } catch {
+      setStatus("Something went wrong. Please email or WhatsApp us directly.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -88,9 +118,10 @@ export default function ContactForm({ variant = "full" }: { variant?: "full" | "
           </div>
         </>
       )}
+      <input type="checkbox" name="botcheck" className="contact-field-honeypot" tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <div className="contact-submit-row">
-        <button type="submit" className="contact-submit magnetic">
-          <span>Send message</span>
+        <button type="submit" className="contact-submit magnetic" disabled={submitting}>
+          <span>{submitting ? "Sending..." : "Send message"}</span>
         </button>
       </div>
       <div className="contact-status-block">

@@ -1641,6 +1641,10 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .contact-field-wrap + .contact-field-wrap { margin-top: 4px; }
 .contact-field-wrap:focus-within { border-color: #fff; }
 
+/* Web3Forms spam honeypot -- present in the DOM (bots fill every field;
+   real visitors never see or reach it) but invisible and unfocusable. */
+.contact-field-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
 .contact-field {
   position: absolute; inset: 0;
   background: transparent; border: none; border-radius: 0;
