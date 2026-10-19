@@ -6,7 +6,7 @@ import { SOCIAL_LINKS } from "../data/site";
 // Web3Forms access key for info@insightsmarketers.com -- this is a public
 // key by Web3Forms' own design (safe in client-side code; it only lets
 // someone submit TO this inbox, not read from it), see web3forms.com/docs.
-const WEB3FORMS_ACCESS_KEY = "c901731c-77a0-4feb-8c7d-7073263c9082";
+const WEB3FORMS_ACCESS_KEY = "f5543978-3e6a-486b-8d3a-69fea2f8023f";
 
 // The contact form ledger, shared between the homepage's #contact section
 // and the dedicated /contact page. Row hairlines arm once the form scrolls
@@ -96,12 +96,20 @@ export default function ContactForm({ variant = "full" }: { variant?: "full" | "
         </label>
       </div>
       {compact ? (
-        <div className="contact-field-wrap">
-          <input className="contact-field" id="phone" name="phone" type="tel" placeholder=" " autoComplete="tel" required />
-          <label className="contact-field-label" htmlFor="phone">
-            Number*
-          </label>
-        </div>
+        <>
+          <div className="contact-field-wrap">
+            <input className="contact-field" id="phone" name="phone" type="tel" placeholder=" " autoComplete="tel" required />
+            <label className="contact-field-label" htmlFor="phone">
+              Number*
+            </label>
+          </div>
+          <div className="contact-field-wrap contact-field-wrap-message-small">
+            <textarea className="contact-field contact-field-message" id="message-compact" name="message" placeholder=" "></textarea>
+            <label className="contact-field-label contact-field-label-message" htmlFor="message-compact">
+              Message (optional)
+            </label>
+          </div>
+        </>
       ) : (
         <>
           <div className="contact-field-wrap">

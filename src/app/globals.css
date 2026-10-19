@@ -1653,6 +1653,7 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
 .contact-field::placeholder { color: transparent; }
 .contact-field:focus { outline: none; }
 .contact-field-wrap-message { height: 180px; }
+.contact-field-wrap-message-small { height: 90px; }
 .contact-field-message { padding-top: var(--space-5); resize: vertical; }
 
 .contact-field-label {
