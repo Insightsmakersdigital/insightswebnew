@@ -35,14 +35,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/icon.png",
   },
-  // Development-mode lockdown: remove this block before launch (see the SEO
-  // indexing SOP) -- it keeps the unfinished site out of search results
-  // alongside the disallow-all rule in robots.ts.
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
