@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NotFoundFlipCards from "../components/NotFoundFlipCards";
+import CrowdCanvas from "../components/CrowdCanvas";
 import styles from "./not-found.module.css";
 
 export const metadata: Metadata = {
@@ -11,25 +11,18 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <main id="main">
-      <section className={styles.notfoundStage}>
-        <div className="wrap">
-          <div className={styles.notfoundInner}>
-            <h1 className={styles.srOnly}>404 — Page not found</h1>
-
-            <NotFoundFlipCards />
-
-            <div className={`${styles.notfoundCaption} reveal`}>
-              <p className={styles.notfoundEyebrow}>Page not found</p>
-              <p className={styles.notfoundLine}>This page doesn&apos;t exist. It might have moved, or it was never there.</p>
-            </div>
-
-            <Link href="/" className={`btn btn-primary btn-lg magnetic reveal ${styles.notfoundCta}`}>
-              <span>Back to home</span>
-            </Link>
-          </div>
-        </div>
-      </section>
+    <main id="main" className={styles.stage}>
+      <div className={styles.copy}>
+        <p className={styles.eyebrow}>404 — Page not found</p>
+        <h1 className={styles.title}>Are you lost?</h1>
+        <p className={styles.line}>
+          This page doesn&apos;t exist. It might have moved, or it was never there.
+        </p>
+        <Link href="/" className={`btn btn-primary btn-lg ${styles.cta}`}>
+          <span>Back to home</span>
+        </Link>
+      </div>
+      <CrowdCanvas src="/images/peeps/all-peeps.png" rows={15} cols={7} className={styles.canvas} />
     </main>
   );
 }
