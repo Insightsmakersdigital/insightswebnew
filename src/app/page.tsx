@@ -132,7 +132,7 @@ export default function HomePage() {
       <script
         dangerouslySetInnerHTML={{
           __html:
-            'var p=location.pathname;if(p!=="/"&&p!=="/index.html"){location.replace("/404.html")}',
+            'var p=location.pathname;if(p!=="/"&&p!=="/index.html"){try{sessionStorage.setItem("nf-url",p+location.search+location.hash)}catch(e){}location.replace("/404.html")}',
         }}
       />
       <Header />

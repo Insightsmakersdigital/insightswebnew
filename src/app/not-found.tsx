@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CrowdCanvas from "../components/CrowdCanvas";
+import RestoreUrl from "../components/RestoreUrl";
 import styles from "./not-found.module.css";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function NotFound() {
           <span>Back to home</span>
         </Link>
       </div>
+      <RestoreUrl />
       <CrowdCanvas src="/images/peeps/all-peeps.png" rows={15} cols={7} className={styles.canvas} />
     </main>
   );
