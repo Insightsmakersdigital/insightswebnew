@@ -126,6 +126,15 @@ export default function HomePage() {
     // .home-page scopes the decorative column-guide grid lines (see
     // globals.css's "page column grid" rule) to this page only.
     <div className="home-page">
+      {/* The production nginx serves this page (index.html) for any unknown
+          URL. index.html is only ever meant for "/", so if we're anywhere
+          else, send the visitor to the static 404 page instead. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            'var p=location.pathname;if(p!=="/"&&p!=="/index.html"){location.replace("/404.html")}',
+        }}
+      />
       <Header />
 
       <main id="main">
