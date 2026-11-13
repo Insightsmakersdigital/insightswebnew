@@ -54,7 +54,7 @@ const discFragShaderSource = `#version 300 es
 precision highp float;
 
 uniform sampler2D uTex;
-uniform int uItemCount;
+uniform int uItemMap[64];
 uniform int uAtlasSize;
 
 out vec4 outColor;
@@ -64,7 +64,7 @@ in float vAlpha;
 flat in int vInstanceId;
 
 void main() {
-    int itemIndex = vInstanceId % uItemCount;
+    int itemIndex = uItemMap[vInstanceId];
     int cellsPerRow = uAtlasSize;
     int cellX = itemIndex % cellsPerRow;
     int cellY = itemIndex / cellsPerRow;
@@ -661,7 +661,7 @@ class InfiniteGridMenu {
       uRotationAxisVelocity: gl.getUniformLocation(this.discProgram, 'uRotationAxisVelocity'),
       uTex: gl.getUniformLocation(this.discProgram, 'uTex'),
       uFrames: gl.getUniformLocation(this.discProgram, 'uFrames'),
-      uItemCount: gl.getUniformLocation(this.discProgram, 'uItemCount'),
+      uItemMap: gl.getUniformLocation(this.discProgram, 'uItemMap'),
       uAtlasSize: gl.getUniformLocation(this.discProgram, 'uAtlasSize')
     };
 
@@ -680,6 +680,7 @@ class InfiniteGridMenu {
     this.icoGeo.subdivide(1).spherize(this.SPHERE_RADIUS);
     this.instancePositions = this.icoGeo.vertices.map(v => v.position);
     this.DISC_INSTANCE_COUNT = this.icoGeo.vertices.length;
+    this.vertexItem = this.#assignItems();
     this.#initDiscInstances(this.DISC_INSTANCE_COUNT);
 
     this.worldMatrix = mat4.create();
@@ -714,11 +715,14 @@ class InfiniteGridMenu {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => resolve(img);
+            // A single failed image must not block the whole atlas upload.
+            img.onerror = () => resolve(null);
             img.src = item.image;
           })
       )
     ).then(images => {
       images.forEach((img, i) => {
+        if (!img) return;
         const x = (i % this.atlasSize) * cellSize;
         const y = Math.floor(i / this.atlasSize) * cellSize;
         ctx.drawImage(img, x, y, cellSize, cellSize);
@@ -810,7 +814,7 @@ class InfiniteGridMenu {
       this.smoothRotationVelocity * 1.1
     );
 
-    gl.uniform1i(this.discLocations.uItemCount, this.items.length);
+    gl.uniform1iv(this.discLocations.uItemMap, this.vertexItem);
     gl.uniform1i(this.discLocations.uAtlasSize, this.atlasSize);
 
     gl.uniform1f(this.discLocations.uFrames, this.#frames);
@@ -867,8 +871,7 @@ class InfiniteGridMenu {
 
     if (!this.control.isPointerDown) {
       const nearestVertexIndex = this.#findNearestVertexIndex();
-      const itemIndex = nearestVertexIndex % Math.max(1, this.items.length);
-      this.onActiveItemChange(itemIndex);
+      this.onActiveItemChange(this.vertexItem[nearestVertexIndex]);
       const snapDirection = vec3.normalize(vec3.create(), this.#getVertexWorldPosition(nearestVertexIndex));
       this.control.snapTargetDirection = snapDirection;
     } else {
@@ -878,6 +881,43 @@ class InfiniteGridMenu {
 
     this.camera.position[2] += (cameraTargetZ - this.camera.position[2]) / damping;
     this.#updateCameraMatrix();
+  }
+
+  // Maps each sphere vertex to an item so no two neighbouring discs show the
+  // same photo (a plain `index % itemCount` puts repeats side by side). Greedy
+  // colouring: never reuse a neighbour's item, prefer items not seen two
+  // steps away, then the least-used item so repeats stay evenly spread.
+  #assignItems() {
+    const count = this.icoGeo.vertices.length;
+    const itemCount = Math.max(1, this.items.length);
+    const adj = Array.from({ length: count }, () => new Set());
+    this.icoGeo.faces.forEach(({ a, b, c }) => {
+      [[a, b], [b, c], [c, a]].forEach(([p, q]) => {
+        adj[p].add(q);
+        adj[q].add(p);
+      });
+    });
+
+    const map = new Int32Array(64).fill(-1);
+    const used = new Array(itemCount).fill(0);
+    for (let v = 0; v < count; ++v) {
+      const blocked = new Set([...adj[v]].map(n => map[n]));
+      const nearby = new Set();
+      adj[v].forEach(n => adj[n].forEach(m => nearby.add(map[m])));
+      let best = 0;
+      let bestScore = Infinity;
+      for (let item = 0; item < itemCount; ++item) {
+        const score = (blocked.has(item) ? 1000 : 0) + (nearby.has(item) ? 100 : 0) + used[item];
+        if (score < bestScore) {
+          bestScore = score;
+          best = item;
+        }
+      }
+      map[v] = best;
+      used[best]++;
+    }
+    for (let v = count; v < 64; ++v) map[v] = 0;
+    return map;
   }
 
   #findNearestVertexIndex() {

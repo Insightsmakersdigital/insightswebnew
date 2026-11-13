@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import RevealHeading from "../../components/RevealHeading";
 import InfiniteMenu from "../../components/InfiniteMenu";
 import TeamHero from "../../components/TeamHero";
+import StatsCascade from "../../components/StatsCascade";
 import { FOUNDERS, ROSTER } from "../../data/site";
 import styles from "./team.module.css";
 
@@ -13,22 +14,43 @@ export const metadata: Metadata = {
 };
 
 const teamStats = [
-  { label: "Studio founded", value: "2024" },
-  { label: "Founders, no managers", value: "2" },
-  { label: "Core disciplines", value: "9" },
+  { label: "Studio founded", value: "2024", emoji: "🥳", from: 2000 },
+  { label: "Projects done", value: "50+", emoji: "🏆" },
+  { label: "Services", value: "12", emoji: "🧰" },
 ];
 
 // Photo seeds are presentation-only, so they stay local here rather than
 // living in the shared ROSTER data (see data/site.ts) -- one seed per seat,
 // in the same order.
 const PHOTO_SEEDS = [
-  "wall-nived", "wall-nuhman", "wall-arjun", "wall-seat-04", "wall-seat-05", "wall-seat-06",
+  "wall-nived", "wall-nuhman", "wall-seat-04", "wall-seat-05", "wall-seat-06",
   "wall-seat-07", "wall-seat-08", "wall-seat-09", "wall-seat-10", "wall-seat-11", "wall-seat-12", "wall-seat-13",
 ];
-const roster = ROSTER.map((seat, i) => ({
-  ...seat,
-  photo: `https://picsum.photos/seed/${PHOTO_SEEDS[i]}/600/600?grayscale`,
-}));
+// Real team photos in public/images/team/, one per seat index (the file name
+// doubles as the display name). Seats 0-1 are the founders (names/roles come
+// from ROSTER).
+const TEAM_PHOTOS: Record<number, { photo: string; name?: string; role?: string }> = {
+  0: { photo: "/images/team/nived.png" },
+  1: { photo: "/images/team/nuhman.png" },
+  2: { photo: "/images/team/lisni.png", name: "Lisni", role: "Video Presenter" },
+  3: { photo: "/images/team/jibin.png", name: "Jibin", role: "Video Editor" },
+  4: { photo: "/images/team/athul%20krishna.png", name: "Athul Krishna", role: "Tech Lead" },
+  5: { photo: "/images/team/anupama.png", name: "Anupama", role: "Project Manager" },
+  6: { photo: "/images/team/shafaf.png", name: "Shafaf", role: "Graphic Designer" },
+  7: { photo: "/images/team/sethu.png", name: "Sethu", role: "Operation Manager" },
+  8: { photo: "/images/team/ziya.png", name: "Ziya", role: "Content Writer" },
+  9: { photo: "/images/team/athul.png", name: "Athul MR", role: "Creative Director" },
+  10: { photo: "/images/team/anand.png", name: "Anand", role: "Business Development Head" },
+};
+const roster = ROSTER.map((seat, i) => {
+  const t = TEAM_PHOTOS[i];
+  return {
+    ...seat,
+    // A seat with a name here is a real hire: it overrides the ROSTER entry.
+    ...(t?.name ? { name: t.name, role: t.role ?? seat.role, filled: true } : {}),
+    photo: t?.photo ?? `https://picsum.photos/seed/${PHOTO_SEEDS[i]}/600/600?grayscale`,
+  };
+});
 
 // The Roster Wall -- a draggable photo sphere (InfiniteMenu, from React
 // Bits), per direct founder feedback that the roster read as "text, not a
@@ -36,20 +58,19 @@ const roster = ROSTER.map((seat, i) => ({
 // picsum placeholder run through picsum's own `grayscale` param to match
 // the site's monochrome palette. Swap `photo` for real headshots once
 // people exist.
+// One line per seat, in ROSTER order, written to match each person's role.
 const funLines = [
-  "Answers his own phone. Wild, right?",
-  "Has opinions about your logo.",
-  "Fixes it before you notice it broke.",
-  "Still workshopping the pun in this bio.",
-  "Sees a brand where you see a business card.",
-  "Center it. No, the other way.",
-  "Cuts on the beat, judges your playlist.",
-  "Sends the friendly reminder. And the next one.",
-  "Knows the algorithm's mood before you do.",
-  "Turns \"maybe\" into a signed contract.",
-  "Optimizes everything, including this bio.",
-  "Replies faster than you can finish typing.",
-  "Genuinely still being figured out.",
+  "Sets the direction and answers for the result.", // Nived, CEO
+  "Turns your story into a plan the market notices.", // Nuhman, CMO
+  "The face and voice that put your brand on camera.", // Lisni, Video Presenter
+  "Cuts raw footage into videos people watch to the end.", // Jibin, Video Editor
+  "Builds the site and keeps it fast, secure and live.", // Athul Krishna, Tech Lead
+  "Keeps every project on schedule and everyone in the loop.", // Anupama, Project Manager
+  "Designs the visuals that make your brand look sharp.", // Shafaf, Graphic Designer
+  "Runs the day-to-day so every delivery lands on time.", // Sethu, Operation Manager
+  "Writes the words that make your audience act.", // Ziya, Content Writer
+  "Shapes the big idea and the look behind every campaign.", // Athul MR, Creative Director
+  "Finds new clients and grows partnerships for the studio.", // Anand, Business Development Head
 ];
 let openSeatCount = 0;
 const menuItems = roster.map((r, i) => ({
@@ -58,16 +79,6 @@ const menuItems = roster.map((r, i) => ({
   title: r.filled ? r.name! : `Name ${++openSeatCount}`,
   role: r.role ?? "Not confirmed yet",
   description: funLines[i],
-}));
-
-// The Open Roster (section 03's dot ledger): reuses the site's existing
-// "some of this is done, some is honestly not yet" mechanic (the coverage
-// dots on /work) for people instead of case studies. Derived from `roster`
-// above rather than kept as a second hardcoded list.
-const rosterSeats = roster.map((seat) => ({
-  filled: seat.filled,
-  name: seat.filled ? seat.name! : seat.role ?? "Unnamed",
-  sub: seat.filled ? seat.role! : seat.role ? "Role to be added" : "Not confirmed yet",
 }));
 
 export default function TeamPage() {
@@ -88,7 +99,10 @@ export default function TeamPage() {
             <div className="founder-grid">
               {FOUNDERS.map((founder) => (
                 <div className="founder-card reveal" key={founder.name}>
-                  <span className="founder-avatar" aria-hidden="true"></span>
+                  <span className="founder-avatar founder-avatar--photo">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={founder.photo} alt={founder.name} />
+                  </span>
                   <h3>{founder.name}</h3>
                   <p>{founder.role}</p>
                 </div>
@@ -116,34 +130,7 @@ export default function TeamPage() {
               <span className="section-index">03</span>
               <p className="eyebrow">In numbers</p>
             </div>
-            <div className="team-stats">
-              {teamStats.map((stat, i) => (
-                <div className="team-stat-row reveal" key={stat.label}>
-                  <div className="team-stat-dots" aria-hidden="true">
-                    {[0, 1, 2].map((d) => (
-                      <span className={d === i ? "active" : ""} key={d}></span>
-                    ))}
-                  </div>
-                  <p className="team-stat-label">{stat.label}</p>
-                  <p className="team-stat-number">{stat.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="roster-ledger reveal">
-              <p className="roster-ledger-label">
-                {rosterSeats.filter((s) => s.filled).length} of {rosterSeats.length} seats named publicly
-              </p>
-              <ul className="roster-seats">
-                {rosterSeats.map((seat, i) => (
-                  <li className="roster-seat" key={i}>
-                    <span className={["roster-dot", seat.filled && "is-filled"].filter(Boolean).join(" ")} aria-hidden="true"></span>
-                    <span className="roster-seat-name">{seat.name}</span>
-                    <span className="roster-seat-sub">{seat.sub}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <StatsCascade stats={teamStats} />
           </div>
         </section>
       </main>
