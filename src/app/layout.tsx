@@ -4,7 +4,7 @@ import { SITE_NAME, SITE_DESCRIPTION, SITE_SHORT } from "../data/site";
 import SiteChrome from "../components/SiteChrome";
 import IntroLoader from "../components/IntroLoader";
 
-const SITE_URL = "https://example.com";
+const SITE_URL = "https://www.insightsmarketers.com";
 const DEFAULT_OG_IMAGE = "/og-default.jpg";
 
 export const metadata: Metadata = {

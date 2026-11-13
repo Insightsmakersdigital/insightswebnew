@@ -9,8 +9,8 @@ export const SITE_DESCRIPTION =
   "Insights Marketers is a Kerala-based digital marketing, branding, and web development studio. You work with us, not an account manager.";
 
 export const FOUNDERS = [
-  { name: "Nived A. Sumithran", role: "Chief Executive Officer" },
-  { name: "Nuhman Daris", role: "Chief Marketing Officer" },
+  { name: "Nived A. Sumithran", role: "Chief Executive Officer", photo: "/images/team/nived.png" },
+  { name: "Nuhman Daris", role: "Chief Marketing Officer", photo: "/images/team/nuhman.png" },
 ];
 
 export const CONTACT = {
@@ -26,7 +26,7 @@ export const SOCIAL_LINKS = [
 ];
 
 // The roster's real facts (who's named, who isn't) -- the single source
-// both /team's roster wall and /about's ledger read from, so "3 of 13
+// both /team's roster wall and /about's ledger read from, so "2 of 11
 // named publicly" can't drift out of sync between the two pages. Photo
 // seeds and per-seat bio lines are presentation-only and stay local to
 // the team page, not duplicated here.
@@ -39,9 +39,6 @@ export interface RosterSeat {
 export const ROSTER: RosterSeat[] = [
   { role: "CEO", name: "Nived A. Sumithran", filled: true },
   { role: "CMO", name: "Nuhman Daris", filled: true },
-  // Placeholder name -- swap for the real hire's name once they're
-  // announced; the seat itself and its role are real.
-  { role: "Tech Lead", name: "Arjun Menon", filled: true },
   { role: "Content Writer", filled: false },
   { role: "Creative Head", filled: false },
   { role: "Graphic Designer", filled: false },
@@ -51,10 +48,6 @@ export const ROSTER: RosterSeat[] = [
   { role: "Business Development Head", filled: false },
   { role: "Performance Marketing", filled: false },
   { role: "Sales Head", filled: false },
-  // No role, on purpose: the founder dictating this roster said, live,
-  // "one more dude I forgot what he does" -- not smoothed into a
-  // placeholder title.
-  { role: null, filled: false },
 ];
 
 export interface ServiceStat {
