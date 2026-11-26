@@ -1084,6 +1084,21 @@ export const WORK_ITEMS: WorkItem[] = [
     gallery: brandingGallery("slot-it", 10),
   },
   {
+    slug: "dezwell",
+    name: "Dezwell",
+    project: "Brand identity for Dezwell",
+    services: ["branding"],
+    result: "Case study write-up coming soon",
+    tint: "194 88% 34%",
+    category: "branding",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    gallery: brandingGallery("dezwell", 17),
+  },
+  {
     slug: "fanpoll",
     name: "Fanpoll",
     project: "Brand identity for Fanpoll",
