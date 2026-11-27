@@ -1582,6 +1582,31 @@ export const WORK_ITEMS: WorkItem[] = [
       ],
     },
   },
+  {
+    slug: "dezwell-website",
+    name: "Dezwell",
+    project: "Website development for Dezwell",
+    services: ["website-development"],
+    result: "Case study write-up coming soon",
+    tint: "194 88% 34%",
+    category: "web-app",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    website: {
+      icon: "/images/work-webapp/dezwell-website/icon.webp",
+      summary: "Website for a refurbished laptop seller in Dubai.",
+      // No mobile captures yet: add `mobile` per page when they exist.
+      pages: [
+        { label: "Home", desktop: webPage("dezwell-website", "home", 9) },
+        { label: "About", desktop: webPage("dezwell-website", "about", 4) },
+        { label: "Quality", desktop: webPage("dezwell-website", "quality", 4) },
+        { label: "Services", desktop: webPage("dezwell-website", "services", 3) },
+      ],
+    },
+  },
 ];
 
 export function workForService(slug: string) {
