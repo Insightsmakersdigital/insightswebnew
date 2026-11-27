@@ -1886,6 +1886,16 @@ section { padding-block: var(--space-16); background: var(--bg); color: var(--te
   max-width: none;
   margin: 0;
 }
+/* Golden Hill's packaging shots are 4:5 portraits -- two-up keeps each
+   one within a screen's height; single column on phones. */
+@media (min-width: 810px) {
+  .case-modal[data-slug="golden-hill"] .case-modal-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    padding: 0 var(--space-3);
+  }
+}
 .case-modal-body--gallery-head { padding-bottom: 0; }
 /* No .case-modal-media above this anymore (see WorkGrid's non-gallery
    branch) -- a bit more top clearance so the heading doesn't sit flush

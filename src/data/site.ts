@@ -940,14 +940,17 @@ export interface WorkItem {
   // (e.g. an SMM engagement can be shelved under the Web + App section
   // while it's still filler content). Unset items render in none of the
   // 3 sections until they're deliberately placed in one.
-  category?: "smm" | "performance-marketing" | "branding" | "web-app";
+  category?: "smm" | "performance-marketing" | "branding" | "web-app" | "package-designing";
+  // Optional per-slide alt text, in gallery order, for galleries that are
+  // plain photos (no baked-in case-study copy to carry on slide 1).
+  galleryAlt?: string[];
 }
 
 // The 4 top-level /work categories, in display order. Both /work (the
 // FlowingMenu landing list) and /work/[service] (the per-category grid)
 // read from this single list, so adding a category is a one-place edit.
 export interface WorkCategory {
-  slug: "smm" | "performance-marketing" | "branding" | "web-app";
+  slug: "smm" | "performance-marketing" | "branding" | "web-app" | "package-designing";
   label: string;
 }
 
@@ -956,6 +959,7 @@ export const WORK_CATEGORIES: WorkCategory[] = [
   { slug: "performance-marketing", label: "Performance Marketing" },
   { slug: "branding", label: "Branding" },
   { slug: "web-app", label: "Web + App Development" },
+  { slug: "package-designing", label: "Package Designing" },
 ];
 
 // Deliberately not grouped by discipline: a young studio doesn't have proof
@@ -1127,6 +1131,30 @@ export const WORK_ITEMS: WorkItem[] = [
       outcome: "Case study details to be added.",
     },
     gallery: brandingGallery("verde", 10),
+  },
+
+  // Package Designing engagements. Photo-only: the popup shows the gallery
+  // with no case-study copy.
+  {
+    slug: "golden-hill",
+    name: "Golden Hill",
+    project: "Package design for Golden Hill",
+    services: ["graphic-designing"],
+    result: "Packaging across the dairy range",
+    tint: "158 78% 22%",
+    category: "package-designing",
+    caseStudy: {
+      challenge: "",
+      approach: "",
+      outcome: "",
+    },
+    gallery: workGallery("work-packaging", "golden-hill", 4),
+    galleryAlt: [
+      "Golden Hill ghee package design: yellow jar with a grazing cow label",
+      "Golden Hill sambharam spiced buttermilk package design: bottle with a green label",
+      "Golden Hill unsalted cooking butter package design: 200g carton",
+      "Golden Hill skimmed milk curd package design: 500g pouch",
+    ],
   },
 
   // Social Media Marketing engagements, shown with the Instagram-replica

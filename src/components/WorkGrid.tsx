@@ -157,9 +157,10 @@ export default function WorkGrid({ sections }: Props) {
                         className="case-modal-gallery-item"
                         src={src}
                         alt={
-                          i === 0
+                          active.galleryAlt?.[i] ??
+                          (i === 0
                             ? `${active.project} — ${active.caseStudy.challenge} ${active.caseStudy.approach} ${active.caseStudy.outcome}`
-                            : `${active.project} — slide ${i + 1}`
+                            : `${active.project} — slide ${i + 1}`)
                         }
                       />
                     ))}
