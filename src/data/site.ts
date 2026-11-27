@@ -1600,7 +1600,7 @@ export const WORK_ITEMS: WorkItem[] = [
       summary: "Website for a refurbished laptop seller in Dubai.",
       // No mobile captures yet: add `mobile` per page when they exist.
       pages: [
-        { label: "Home", desktop: webPage("dezwell-website", "home", 9) },
+        { label: "Home", desktop: webPage("dezwell-website", "home", 7) },
         { label: "About", desktop: webPage("dezwell-website", "about", 4) },
         { label: "Quality", desktop: webPage("dezwell-website", "quality", 4) },
         { label: "Services", desktop: webPage("dezwell-website", "services", 3) },
