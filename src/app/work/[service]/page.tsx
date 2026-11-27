@@ -5,6 +5,7 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import RevealHeading from "../../../components/RevealHeading";
 import WorkGrid from "../../../components/WorkGrid";
+import WebAppShowcase from "../../../components/WebAppShowcase";
 import DriftWall from "../../../components/DriftWall";
 import { WORK_ITEMS, WORK_CATEGORIES, seededImage } from "../../../data/site";
 
@@ -80,11 +81,15 @@ export default async function WorkServicePage({ params }: { params: Promise<{ se
               <p className="eyebrow reveal">Case studies</p>
               <RevealHeading as="h1" text={category.label} className="work-hero-heading" />
             </div>
-            <p className="work-hero-sub reveal">Real case studies from this discipline. Click any of them for the full story.</p>
+            <p className="work-hero-sub reveal">
+              {category.slug === "web-app"
+                ? "Apps and websites we've worked on. Open one and look through its screens."
+                : "Real case studies from this discipline. Click any of them for the full story."}
+            </p>
           </div>
         </section>
 
-        <WorkGrid sections={workSections} />
+        {category.slug === "web-app" ? <WebAppShowcase items={items} /> : <WorkGrid sections={workSections} />}
       </main>
 
       <Footer />

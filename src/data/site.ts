@@ -944,6 +944,21 @@ export interface WorkItem {
   // Optional per-slide alt text, in gallery order, for galleries that are
   // plain photos (no baked-in case-study copy to carry on slide 1).
   galleryAlt?: string[];
+  // /work/web-app only (see WebAppShowcase). `app` puts the item on the
+  // phone; `website` gives it a browser tab. An item can have both.
+  app?: {
+    icon: string;
+    summary: string; // one line shown beside the phone
+    screens: { src: string; alt: string; caption?: string }[]; // in swipe order, ideally 1080x2323
+  };
+  website?: {
+    icon: string; // square, shown on the start page shortcut
+    summary: string;
+    url?: string; // the live site; omit to hide "Visit live site"
+    // One entry per page of the client's site, in tab order. Each list is
+    // that page's full-length screenshot, cut into top-to-bottom pieces.
+    pages: { label: string; desktop: string[]; mobile?: string[] }[];
+  };
 }
 
 // The 4 top-level /work categories, in display order. Both /work (the
@@ -1530,7 +1545,42 @@ export const WORK_ITEMS: WorkItem[] = [
       approach: "Case study details to be added.",
       outcome: "Case study details to be added.",
     },
-    gallery: webAppGallery("beyond-borders-web-app", 6),
+    app: {
+      icon: "/images/work-webapp/beyond-borders-web-app/icon.webp",
+      summary: "Manage student loans, track payments and stay on top of dues.",
+      screens: [
+        appScreen("beyond-borders-web-app", "dashboard", "Dashboard"),
+        appScreen("beyond-borders-web-app", "students", "Students"),
+        appScreen("beyond-borders-web-app", "add-student", "Add student"),
+        appScreen("beyond-borders-web-app", "student-details", "Student details"),
+        appScreen("beyond-borders-web-app", "payments", "Payments"),
+        appScreen("beyond-borders-web-app", "notifications", "Notifications"),
+      ],
+    },
+  },
+  {
+    slug: "ikon-engineering",
+    name: "IKON Engineering",
+    project: "Website development for IKON Engineering",
+    services: ["website-development"],
+    result: "Case study write-up coming soon",
+    tint: "356 72% 50%",
+    category: "web-app",
+    caseStudy: {
+      challenge: "Case study details to be added.",
+      approach: "Case study details to be added.",
+      outcome: "Case study details to be added.",
+    },
+    website: {
+      icon: "/images/work-webapp/ikon-engineering/icon.webp",
+      summary: "Website for a machine shop and engineering workshop in Sharjah.",
+      pages: [
+        { label: "Home", desktop: webPage("ikon-engineering", "home", 4), mobile: webPage("ikon-engineering", "home-m", 9) },
+        { label: "About", desktop: webPage("ikon-engineering", "about", 6), mobile: webPage("ikon-engineering", "about-m", 14) },
+        { label: "Capabilities", desktop: webPage("ikon-engineering", "capabilities", 3), mobile: webPage("ikon-engineering", "capabilities-m", 5) },
+        { label: "Industries", desktop: webPage("ikon-engineering", "industries", 3), mobile: webPage("ikon-engineering", "industries-m", 6) },
+      ],
+    },
   },
 ];
 
@@ -1571,9 +1621,15 @@ export function brandingGallery(slug: string, count: number) {
   return workGallery("work-branding", slug, count);
 }
 
-// public/images/work-webapp/{slug}/ -- website & app case-study screenshots.
-export function webAppGallery(slug: string, count: number) {
-  return workGallery("work-webapp", slug, count);
+// public/images/work-webapp/{slug}/{page}-1.webp..{page}-N.webp -- one
+// website page, top to bottom.
+export function webPage(slug: string, page: string, count: number) {
+  return Array.from({ length: count }, (_, i) => `/images/work-webapp/${slug}/${page}-${i + 1}.webp`);
+}
+
+// public/images/work-webapp/{slug}/{file}.webp -- one app screen.
+export function appScreen(slug: string, file: string, caption: string) {
+  return { src: `/images/work-webapp/${slug}/${file}.webp`, alt: `${caption} screen`, caption };
 }
 
 // Every SMM WorkItem gets its own folder at public/images/instagram/{slug}/
