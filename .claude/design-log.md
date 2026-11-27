@@ -16,3 +16,12 @@ Rejected, with reason:
 
 Standing rules:
 - Keep it light: no new libraries, load images only when needed.
+
+## Navbar (Nov 2026)
+Decided (user):
+- Apple-style floating glass island, centred. Rejected: full-width frosted bar (the first version).
+Built:
+- Logo, tabs and Start a project are separate bubbles at page top; they merge into one island on scroll (logo + menu button on mobile).
+- One pill slides between desktop tabs, also across page changes. Services opens as a floating card.
+- Mobile menu: glass card growing down from the island; Services expands by pillar; WhatsApp, Call, Email.
+- .nav-underlay keeps the glass white at page top (body is dark).
