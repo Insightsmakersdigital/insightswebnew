@@ -443,6 +443,8 @@ body.ig-modal-open #siteHeader { display: none; }
 .nav-mobile__panel.is-open .nav-mobile-items a:nth-child(2) { transition-delay: 210ms; }
 .nav-mobile__panel.is-open .nav-mobile-items a:nth-child(3) { transition-delay: 270ms; }
 .nav-mobile__panel.is-open .nav-mobile-items a:nth-child(4) { transition-delay: 330ms; }
+.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(5) { transition-delay: 390ms; }
+.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(6) { transition-delay: 450ms; }
 
 .nav-mobile-footer {
   margin-top: auto; padding-top: 24px;

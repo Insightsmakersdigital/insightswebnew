@@ -12,6 +12,7 @@ interface NavItem {
 }
 
 const DEFAULT_NAV_ITEMS: NavItem[] = [
+  { label: "Home", href: "/" },
   { label: "Work", href: "/work" },
   { label: "Services", href: "/services" },
   { label: "About", href: "/about" },

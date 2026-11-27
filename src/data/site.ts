@@ -14,9 +14,9 @@ export const FOUNDERS = [
 ];
 
 export const CONTACT = {
-  email: "info@insightsmarketers.com",
-  phones: ["+91 70121 51014", "+91 97466 55279", "+91 73069 83081"],
-  whatsapp: "https://wa.me/910000000001",
+  email: "dm@insightsmarketers.com",
+  phones: ["+91 70121 51014", "+91 97466 55279", "+91 98955 36633"],
+  whatsapp: "https://wa.me/917012151014",
 };
 
 export const SOCIAL_LINKS = [
