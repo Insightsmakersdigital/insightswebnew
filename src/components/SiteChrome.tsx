@@ -18,7 +18,7 @@ const animate = rawAnimate as unknown as (
   options?: Record<string, unknown>
 ) => ReturnType<typeof rawAnimate>;
 
-// Shared chrome behavior needed on every page — mobile nav, reveal-on-scroll,
+// Shared chrome behavior needed on every page — reveal-on-scroll,
 // magnetic buttons, back-to-top, year. The intro loader lives in its own
 // IntroLoader component (see that file for why). Ported verbatim from
 // BaseLayout.astro's inline <script>, run once on mount instead of once per
@@ -26,7 +26,7 @@ const animate = rawAnimate as unknown as (
 export default function SiteChrome() {
   const pathname = usePathname();
 
-  // Per-page bindings: mobile nav, reveal-on-scroll, magnetic buttons,
+  // Per-page bindings: reveal-on-scroll, magnetic buttons,
   // back-to-top, year. Re-runs on every client-side route change since
   // each page swaps in its own Header/Footer/.reveal nodes under this
   // persistent root layout.
@@ -36,36 +36,10 @@ export default function SiteChrome() {
     const revealDuration = 0.8;
     const inViewOptions = { amount: 0.15, margin: "0px 0px -8% 0px" } as const;
 
-    // Every listener attached below is torn down in this effect's cleanup.
-    // Without that, React dev mode's StrictMode double-invoke (mount ->
-    // cleanup -> mount) leaves two listeners on the same element -- e.g.
-    // two click handlers on navToggle that fire on the same click and
-    // cancel each other out (one flips the panel open, the second flips it
-    // straight back closed), which is exactly what made the mobile nav
-    // look broken.
+    // Every listener attached below is torn down in this effect's cleanup,
+    // so React dev mode's StrictMode double-invoke can't leave two of them
+    // on the same element.
     const cleanups: Array<() => void> = [];
-
-    const navToggle = document.getElementById("navToggle");
-    const mobileNavPanel = document.getElementById("mobileNavPanel");
-    if (navToggle && mobileNavPanel) {
-      const onToggleClick = () => {
-        const open = navToggle.getAttribute("aria-expanded") === "true";
-        navToggle.setAttribute("aria-expanded", String(!open));
-        mobileNavPanel.classList.toggle("is-open", !open);
-        document.body.style.overflow = !open ? "hidden" : "";
-      };
-      navToggle.addEventListener("click", onToggleClick);
-      cleanups.push(() => navToggle.removeEventListener("click", onToggleClick));
-
-      const onLinkClick = () => {
-        navToggle.setAttribute("aria-expanded", "false");
-        mobileNavPanel.classList.remove("is-open");
-        document.body.style.overflow = "";
-      };
-      const links = Array.from(mobileNavPanel.querySelectorAll("a"));
-      links.forEach((a) => a.addEventListener("click", onLinkClick));
-      cleanups.push(() => links.forEach((a) => a.removeEventListener("click", onLinkClick)));
-    }
 
     // Every one of these elements starts in a deliberately hidden CSS
     // state (opacity:0 / translateY / clipped) and only becomes visible

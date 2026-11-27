@@ -244,14 +244,58 @@ main { position: relative; z-index: 0; }
    display:none'd. #siteHeader itself carries the sticky positioning as
    the shared outer wrapper; only ONE of the two children is ever
    display:block at a given viewport, so it alone determines the header's
-   rendered height. Always a solid, opaque, single-colored bar (paper bg,
+   rendered height. Always a frosted-paper bar (paper bg,
    ink text) -- it used to invert to transparent + white over dark
    sections via a scroll-driven class toggle in BaseLayout, but that was
    glitchy on real scroll paths, so it's gone; the header no longer
    changes at all as the page scrolls. Colors here are hardcoded (not
    var(--bg)/var(--text)) since this bar intentionally never follows the
    panel-light/dark cascade underneath it. */
-#siteHeader { position: sticky; top: 0; z-index: 100; }
+/* The header is an invisible slot: only its bubbles take clicks, so the
+   page around the island stays usable while it scrolls underneath. */
+#siteHeader { position: sticky; top: 0; z-index: 100; height: 72px; pointer-events: none; }
+
+/* paper behind the header's own slot. It scrolls away with the page, so the
+   glass reads white at the top (not tinted by the dark body) and shows
+   real content once scrolled. Takes no space: the margin cancels it. */
+.nav-underlay { height: 72px; margin-bottom: -72px; background: var(--paper); }
+
+#siteHeader {
+  --glass: linear-gradient(180deg, rgb(255 255 255 / 76%), rgb(246 246 246 / 66%));
+  --glass-sheet: rgb(246 246 246 / 88%);
+  --glass-blur: blur(22px) saturate(180%);
+  /* bright top edge + faint dark outline + soft lift */
+  --glass-rim: inset 0 1px 0 rgb(255 255 255 / 95%), inset 0 0 0 1px rgb(255 255 255 / 45%),
+    0 0 0 1px rgb(15 15 15 / 7%), 0 10px 30px rgb(15 15 15 / 14%);
+  --nav-morph: 560ms var(--ease-out);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #siteHeader { --glass: #f6f6f6; --glass-sheet: #f6f6f6; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  #siteHeader { --glass: #f6f6f6; --glass-sheet: #f6f6f6; }
+}
+
+/* each bubble has its own glass; once the page scrolls, the bubbles close
+   up and one shared island glass takes over. The blur sits on ::before so
+   the dropdown inside can still blur the page. */
+.nav-island, .nav-bubble { position: relative; isolation: isolate; color: var(--ink); }
+.nav-island { pointer-events: auto; gap: var(--space-3); transition: gap var(--nav-morph), width var(--nav-morph); }
+.nav-bubble { height: 52px; display: flex; align-items: center; border-radius: var(--radius-pill); }
+.nav-island::before, .nav-bubble::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  border-radius: var(--radius-pill);
+  background: var(--glass); box-shadow: var(--glass-rim);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  transition: opacity var(--nav-morph);
+}
+.nav-island::before { opacity: 0; }
+#siteHeader[data-merged="true"] .nav-island { gap: 0; }
+#siteHeader[data-merged="true"] .nav-island::before { opacity: 1; }
+#siteHeader[data-merged="true"] .nav-bubble::before { opacity: 0; }
+
+.nav-bubble-logo { padding-inline: var(--space-5); }
+.nav-bubble-logo img { height: 32px; width: auto; display: block; }
 
 /* Hidden while the Instagram-replica case study is open (see WorkGrid's
    "ig-modal-open" body class) -- the IG chrome has its own top bar, so
@@ -274,27 +318,34 @@ body.ig-modal-open #siteHeader { display: none; }
 }
 
 /* ===== desktop nav (>=901px) ===================================== */
-.nav-desktop {
-  display: none;
-  background: var(--paper); color: var(--ink);
-  border-bottom: 1px solid rgb(0 0 0 / 8%);
-}
-.nav-desktop-inner { display: flex; align-items: center; gap: var(--space-6); width: 100%; height: 60px; }
-@media (min-width: 901px) { .nav-desktop { display: block; } }
+.nav-desktop { display: none; justify-content: center; padding-top: var(--space-3); }
+@media (min-width: 901px) { .nav-desktop { display: flex; } }
+.nav-cluster { display: flex; align-items: center; }
+.nav-bubble-tabs { padding-inline: 6px; }
+.nav-bubble-cta { padding-inline: 6px; }
 
-.nav-desktop-links { display: flex; gap: var(--space-8); align-items: center; }
-.nav-desktop-links a {
-  font-size: 0.92rem; font-weight: 500; color: rgb(15 15 15 / 65%);
+.nav-desktop-links { position: relative; display: flex; gap: var(--space-1); align-items: center; }
+.nav-tab {
+  position: relative; display: inline-flex; align-items: center; height: 40px;
+  padding-inline: var(--space-4); border-radius: var(--radius-pill);
+  font-size: 0.92rem; font-weight: 500; color: rgb(15 15 15 / 80%); white-space: nowrap;
   transition: color var(--dur-fast) var(--ease-out);
-  position: relative;
 }
-.nav-desktop-links a:hover { color: var(--ink); }
-.nav-desktop-links a::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px;
-  background: var(--ink); transform: scaleX(0); transform-origin: right;
-  transition: transform var(--dur-fast) var(--ease-out);
+.nav-tab:hover, .nav-tab:focus-visible, .nav-tab[aria-current="page"] { color: var(--ink); }
+.nav-tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: var(--radius-pill); }
+/* small dot keeps the current page marked while the pill is away on hover */
+.nav-tab[aria-current="page"]::after {
+  content: ""; position: absolute; left: 50%; bottom: 4px; width: 4px; height: 4px;
+  margin-left: -2px; border-radius: 50%; background: var(--ink);
 }
-.nav-desktop-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+/* the one pill that slides between tabs; position/width set by DesktopTabs */
+.nav-pill {
+  position: absolute; left: 0; top: 50%; height: 40px; margin-top: -20px; width: 0;
+  border-radius: var(--radius-pill); pointer-events: none; opacity: 0;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: inset 0 0 0 1px rgb(15 15 15 / 7%), 0 3px 12px rgb(15 15 15 / 12%);
+  transition: transform var(--dur-med) var(--ease-out), width var(--dur-med) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
 
 /* services mega-dropdown -- .nav-services is forced to the header's full
    60px height (not just its link's own line-height) so the hover area
@@ -308,7 +359,7 @@ body.ig-modal-open #siteHeader { display: none; }
    against the DARK root theme by default (this header isn't inside a
    .panel-light section), which is exactly the invisible-text bug already
    hit once on /services. */
-.nav-services { position: relative; height: 60px; display: flex; align-items: center; }
+.nav-services { position: relative; height: 52px; display: flex; align-items: center; }
 .nav-caret {
   display: inline-block; width: 6px; height: 6px; margin-left: 6px; margin-bottom: 1px;
   border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
@@ -317,11 +368,11 @@ body.ig-modal-open #siteHeader { display: none; }
 .nav-services:hover .nav-caret, .nav-services:focus-within .nav-caret { transform: rotate(-135deg); }
 
 .nav-services-panel {
-  position: fixed; top: 60px; left: 0; right: 0; z-index: 90;
-  background: var(--paper); color: var(--ink);
-  border-top: 1px solid rgb(0 0 0 / 8%);
-  border-bottom: 1px solid rgb(0 0 0 / 8%);
-  box-shadow: 0 20px 40px rgb(0 0 0 / 10%);
+  position: fixed; top: 76px; left: 0; right: 0; z-index: 90;
+  width: min(1100px, calc(100% - 32px)); margin-inline: auto; border-radius: 28px;
+  background: var(--glass-sheet); color: var(--ink);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-rim);
   opacity: 0; visibility: hidden; pointer-events: none;
   transform: translateY(-6px);
   transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out), visibility 0s linear var(--dur-med);
@@ -332,12 +383,14 @@ body.ig-modal-open #siteHeader { display: none; }
   transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out), visibility 0s;
 }
 
+/* invisible bridge so the cursor can travel from the tab to the card */
+.nav-services-panel::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 13px; }
+
 .nav-services-inner {
   width: 100%; max-width: var(--container-max); margin-inline: auto;
-  padding: var(--space-8) var(--space-5) var(--space-10);
+  padding: var(--space-8) var(--space-7) var(--space-8);
   display: grid; grid-template-columns: repeat(var(--grid-cols), 1fr); gap: var(--space-8);
 }
-@media (min-width: 810px) { .nav-services-inner { padding-inline: var(--page-gutter); } }
 
 .nav-services-heading {
   font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
@@ -366,97 +419,157 @@ body.ig-modal-open #siteHeader { display: none; }
 .nav-services-viewall:hover span { transform: translateX(3px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-services-panel, .nav-caret { transition: none; }
+  .nav-services-panel, .nav-caret, .nav-pill,
+  .nav-island, .nav-island::before, .nav-bubble::before { transition: none; }
 }
 
-.header-actions { display: none; align-items: center; gap: var(--space-6); }
-@media (min-width: 901px) { .header-actions { display: flex; } }
+/* the "Start a project" CTA inside its bubble */
+.nav-cta-specular { font-weight: 600; font-size: 0.92rem; white-space: nowrap; }
+.nav-bubble-cta .nav-cta-specular { height: 40px; }
 
-/* the "Start a project" nav CTA -- matches .btn/.btn-primary's weight and
-   pill radius so swapping to SpecularButton's WebGL shine doesn't also
-   shift the rest of its type/shape off the site's button system. */
-.nav-cta-specular { font-weight: 600; font-size: 0.95rem; }
-
+/* narrow desktops: tighten so all three bubbles fit */
+@media (min-width: 901px) and (max-width: 1080px) {
+  .nav-tab { padding-inline: 10px; }
+  .nav-bubble-logo { padding-inline: var(--space-4); }
+  .nav-bubble-logo img { height: 28px; }
+}
 
 /* ===== mobile nav (<901px) ========================================
-   Closed bar: persistent, logo + toggle only -- nothing else lives
-   here, so there's nothing for it to overflow around. The panel is a
-   completely separate, position:fixed element, absent from normal
-   layout (and therefore incapable of pushing the bar around) until
-   .is-open is added. */
-.nav-mobile { display: block; }
+   Logo and menu bubbles at the edges; once scrolled they draw together
+   into one centred island. The card and scrim are position:fixed, so they
+   never push anything around. State lives in MobileNav.tsx. */
+.nav-mobile { display: block; padding-top: var(--space-3); }
 @media (min-width: 901px) { .nav-mobile { display: none; } }
 
 .nav-mobile-bar {
   display: flex; align-items: center; justify-content: space-between;
-  height: 64px;
-  background: #f6f6f6; color: #0f0f0f;
-  border-bottom: 1px solid #e5e4e1;
+  z-index: 1000; width: calc(100% - 24px); margin-inline: auto;
 }
-.nav-mobile-brand { font-size: 18px; font-weight: 700; }
+#siteHeader[data-merged="true"] .nav-mobile-bar { width: min(264px, calc(100% - 24px)); }
+.nav-bubble-toggle { width: 52px; justify-content: center; }
 
 .nav-mobile-toggle {
-  width: 44px; height: 44px; flex-shrink: 0;
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  background: none; border: 0; padding: 0; cursor: pointer;
+  background: transparent; border: 0; padding: 0; cursor: pointer;
+  transition: background var(--dur-med) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
 }
 .nav-mobile-toggle span {
-  display: block; width: 20px; height: 1.5px; background: #0f0f0f;
+  display: block; width: 18px; height: 1.5px; background: var(--ink);
   transform-origin: center;
-  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), background var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-med) var(--ease-out), background var(--dur-med) var(--ease-out);
 }
-/* forming a clean X (not a ">") needs both bars rotating around the
-   SAME point -- at rest they sit 6px apart (each still offset from the
-   button's true center), so opening has to cancel that offset (+-3.75px,
-   half the 7.5px gap between each bar's own center and the shared
-   midpoint) at the same time as the 45deg rotation, not after it */
-.nav-mobile-toggle[aria-expanded="true"] span:first-child { transform: translateY(3.75px) rotate(45deg); }
-.nav-mobile-toggle[aria-expanded="true"] span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+.nav-mobile.is-open .nav-mobile-toggle { background: var(--ink); }
+/* both bars rotate around the shared midpoint: 3.75px is half the gap
+   between their centres */
+.nav-mobile.is-open .nav-mobile-toggle span { background: var(--paper); }
+.nav-mobile.is-open .nav-mobile-toggle span:first-child { transform: translateY(3.75px) rotate(45deg); }
+.nav-mobile.is-open .nav-mobile-toggle span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+
+.nav-mobile__scrim {
+  position: fixed; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh; z-index: 998;
+  background: rgb(15 15 15 / 36%);
+  opacity: 0; visibility: hidden;
+  transition: opacity var(--dur-med) var(--ease-out), visibility 0s linear var(--dur-med);
+}
+.nav-mobile.is-open .nav-mobile__scrim {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity var(--dur-med) var(--ease-out), visibility 0s;
+}
 
 .nav-mobile__panel {
-  position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
-  background: #f6f6f6; color: #0f0f0f;
-  z-index: 999;
+  position: fixed; top: 76px; left: 0; right: 0; margin-inline: auto; width: min(420px, calc(100% - 24px));
+  max-height: calc(100vh - 88px); max-height: calc(100dvh - 88px);
+  z-index: 999; overflow-y: auto; overscroll-behavior: contain;
   display: flex; flex-direction: column;
-  padding: 24px;
-  overflow-y: auto;
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 450ms cubic-bezier(0.76, 0, 0.24, 1);
-  pointer-events: none;
+  padding: var(--space-4);
+  border-radius: 28px; color: var(--ink);
+  background: var(--glass-sheet);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 70%), 0 24px 60px rgb(15 15 15 / 24%);
+  /* closed = squeezed to a small pill just under the island */
+  clip-path: inset(0 30% calc(100% - 20px) 30% round 28px);
+  opacity: 0; visibility: hidden;
+  transition: clip-path 320ms var(--ease-in-out), opacity 200ms linear 120ms, visibility 0s linear 320ms;
 }
-.nav-mobile__panel.is-open { clip-path: inset(0 0 0 0); pointer-events: auto; }
+.nav-mobile.is-open .nav-mobile__panel {
+  clip-path: inset(0 0 0 0 round 28px); opacity: 1; visibility: visible; pointer-events: auto;
+  transition: clip-path 520ms var(--ease-out), opacity 160ms linear, visibility 0s;
+}
 
-.nav-mobile-items { display: flex; flex-direction: column; gap: 28px; }
-.nav-mobile-items a {
-  display: flex; align-items: center; min-height: 48px;
-  font-size: 32px; font-weight: 500; color: #0f0f0f;
-  opacity: 0; transform: translateY(20px);
-  transition: opacity 200ms ease-out, transform 200ms ease-out;
+.nav-mobile-items { display: flex; flex-direction: column; }
+.nav-mobile-row {
+  flex-shrink: 0; opacity: 0; transform: translateY(12px);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
 }
-/* asymmetric on purpose: closing (removing .is-open) falls back to this
-   base rule -- fast, no delay, so items fade first. Opening (below) adds
-   the longer duration + stagger only in that direction. */
-.nav-mobile__panel.is-open .nav-mobile-items a {
-  opacity: 1; transform: translateY(0);
-  transition-duration: 400ms; transition-delay: 150ms;
+/* stagger on the way in only; closing is immediate */
+.nav-mobile.is-open .nav-mobile-row {
+  opacity: 1; transform: none;
+  transition: opacity 360ms var(--ease-out), transform 480ms var(--ease-out);
+  transition-delay: calc(80ms + var(--i) * 40ms);
 }
-.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(2) { transition-delay: 210ms; }
-.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(3) { transition-delay: 270ms; }
-.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(4) { transition-delay: 330ms; }
-.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(5) { transition-delay: 390ms; }
-.nav-mobile__panel.is-open .nav-mobile-items a:nth-child(6) { transition-delay: 450ms; }
+.nav-mobile-link {
+  display: flex; flex: 1; align-items: center; justify-content: space-between;
+  min-height: 52px; padding-inline: var(--space-4); border-radius: var(--radius-pill);
+  font-family: var(--font-display); font-size: 26px; font-weight: 600; color: var(--ink);
+  transition: background var(--dur-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-mobile-link:active { background: rgb(15 15 15 / 6%); }
+.nav-mobile-link[aria-current="page"] {
+  background: rgb(255 255 255 / 85%);
+  box-shadow: inset 0 0 0 1px rgb(15 15 15 / 8%), 0 4px 14px rgb(15 15 15 / 8%);
+}
+.nav-mobile-link[aria-current="page"]::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ink);
+}
+
+.nav-mobile-split { display: flex; align-items: center; gap: var(--space-2); }
+.nav-mobile-expand {
+  width: 48px; height: 48px; flex-shrink: 0; border: 0; border-radius: 50%; padding: 0;
+  display: grid; place-items: center; cursor: pointer; color: var(--ink);
+  background: rgb(15 15 15 / 6%);
+}
+.nav-mobile-expand .nav-caret { width: 8px; height: 8px; margin: 0 0 3px; }
+.nav-mobile-expand[aria-expanded="true"] .nav-caret { transform: rotate(-135deg); margin: 3px 0 0; }
+
+.nav-mobile-sub {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-med) var(--ease-out);
+}
+.nav-mobile-sub.is-open { grid-template-rows: 1fr; }
+.nav-mobile-sub > div { overflow: hidden; min-height: 0; }
+.nav-mobile-pillar { padding: var(--space-4) var(--space-4) 0; }
+.nav-mobile-pillar p {
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+  color: rgb(15 15 15 / 60%);
+}
+.nav-mobile-pillar ul { margin-top: var(--space-1); }
+.nav-mobile-pillar a {
+  display: flex; align-items: center; min-height: 44px;
+  font-size: 1rem; font-weight: 500; color: var(--ink);
+}
+.nav-mobile-pillar:last-child { padding-bottom: var(--space-4); }
 
 .nav-mobile-footer {
-  margin-top: auto; padding-top: 24px;
-  border-top: 1px solid #e5e4e1;
-  display: flex; flex-direction: column; gap: 16px;
+  flex-shrink: 0; margin-top: var(--space-4); padding-top: var(--space-4);
+  border-top: 1px solid rgb(15 15 15 / 10%);
+  display: flex; flex-direction: column; gap: var(--space-3);
 }
 .nav-mobile-cta { width: 100%; height: 56px; border-radius: 999px; }
+.nav-mobile-contact { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.nav-mobile-contact a {
+  display: flex; align-items: center; justify-content: center; min-height: 48px;
+  border-radius: var(--radius-pill); font-size: 0.95rem; font-weight: 600; color: var(--ink);
+  background: rgb(255 255 255 / 70%); box-shadow: inset 0 0 0 1px rgb(15 15 15 / 10%);
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-mobile-toggle span { transition: none; }
-  .nav-mobile__panel { transition: none; }
-  .nav-mobile-items a { transition: none; }
+  .nav-mobile-toggle, .nav-mobile-toggle span, .nav-mobile-sub,
+  .nav-mobile__scrim, .nav-mobile.is-open .nav-mobile__scrim,
+  .nav-mobile__panel, .nav-mobile.is-open .nav-mobile__panel,
+  .nav-mobile-row, .nav-mobile.is-open .nav-mobile-row { transition: none; }
 }
 
 /* page column grid — measured directly off the reference (see tokens.css):
