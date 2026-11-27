@@ -1,0 +1,129 @@
+/* Material: a sheet of the site's own paper on the dark page. Monochrome;
+   the only colour on screen comes from clients' own icons and screenshots. */
+
+.window {
+  --line: rgb(15 15 15 / 12%);
+  display: flex; flex-direction: column;
+  /* fills the window under the site nav and the Websites / Apps switch */
+  min-height: clamp(440px, calc(100svh - 192px), 760px);
+  overflow: hidden; border-radius: 16px;
+  background: var(--paper); color: var(--ink);
+}
+
+.titlebar { display: flex; align-items: flex-end; gap: 16px; padding: 8px 16px 0; background: #e4e4e2; }
+.dots { display: inline-flex; align-self: center; gap: 8px; padding-bottom: 8px; }
+.dots i { width: 12px; height: 12px; border-radius: 50%; background: #bdbdba; }
+.newTab { min-width: 160px; padding: 8px 16px; border-radius: 12px 12px 0 0; background: var(--paper); font-size: 13px; font-weight: 500; }
+
+.home { display: flex; flex: 1; flex-direction: column; align-items: center; padding: 32px 16px 16px; text-align: center; }
+.logo { width: clamp(200px, 32vw, 320px); height: auto; margin-top: auto; }
+
+.search {
+  display: flex; align-items: center; gap: 12px; width: min(600px, 100%); min-height: 56px;
+  margin-top: 32px; padding: 0 20px; border: 1px solid var(--line); border-radius: 28px;
+  background: #fff; color: #666;
+  box-shadow: 0 1px 2px rgb(15 15 15 / 6%), 0 8px 24px -12px rgb(15 15 15 / 18%);
+}
+.search:focus-within { border-color: var(--ink); outline: 2px solid var(--ink); outline-offset: 2px; }
+.search input {
+  flex: 1; min-width: 0; height: 54px; border: 0; outline: 0; background: none;
+  color: var(--ink); font: inherit; font-size: 16px; /* 16px stops iOS zooming on focus */
+  text-overflow: ellipsis;
+}
+.search input::placeholder { color: #666; }
+
+.shortcuts {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  width: min(720px, 100%); margin: 32px 0 0; padding: 0; list-style: none;
+}
+.shortcuts button {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; width: 128px; padding: 16px 8px;
+  border: 0; border-radius: 16px; background: none; color: var(--ink); font: inherit; cursor: pointer;
+  transition: background-color 200ms ease, transform 100ms ease;
+}
+.shortcuts button:hover { background: #eaeae8; }
+.shortcuts button:active { transform: scale(0.97); }
+.shortcuts button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.tile {
+  display: grid; place-items: center; width: 72px; height: 72px; overflow: hidden; border-radius: 20px;
+  background: #fff; box-shadow: 0 0 0 1px var(--line), 0 4px 12px -4px rgb(15 15 15 / 20%);
+}
+.tile img { width: 100%; height: 100%; object-fit: cover; }
+.label {
+  display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  font-size: 13px; font-weight: 500; line-height: 1.35; overflow-wrap: anywhere;
+}
+
+.noMatch { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 32px; padding: 16px; }
+.noMatch p { overflow-wrap: anywhere; }
+.noMatch button {
+  min-height: 44px; padding: 0 20px; border: 1px solid var(--line); border-radius: var(--radius-pill);
+  background: #fff; color: var(--ink); font: inherit; font-weight: 600; cursor: pointer;
+}
+
+/* auto top margin pins this to the bottom of the start page */
+.cta { display: inline-block; margin-top: auto; padding: 12px 8px; color: #555; font-size: 14px; line-height: 1.5; }
+.cta strong { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- Full-screen browsing ---------- */
+.full {
+  display: flex; flex-direction: column;
+  width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none;
+  margin: 0; padding: 0; border: 0; overflow: hidden; background: var(--ink); color: var(--ink);
+  animation: grow 460ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Grows out of the clicked shortcut. Without an origin (Forward button) the
+   variables are unset and it opens from a slightly inset rectangle. */
+@keyframes grow {
+  from { clip-path: inset(var(--from-top, 8%) var(--from-right, 8%) var(--from-bottom, 8%) var(--from-left, 8%) round 20px); }
+  to { clip-path: inset(0 0 0 0 round 0); }
+}
+
+.chrome { flex: none; background: var(--paper); border-bottom: 1px solid rgb(15 15 15 / 16%); }
+.tabRow { display: flex; align-items: flex-end; gap: 8px; padding: 8px 8px 0; background: #e4e4e2; }
+.close {
+  display: grid; place-items: center; flex: none; width: 44px; height: 44px;
+  border: 0; border-radius: 12px; background: none; color: var(--ink); cursor: pointer;
+}
+.close:hover { background: #d4d4d1; }
+.tabs { display: flex; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.tabs button {
+  flex: none; min-width: 112px; min-height: 44px; padding: 0 20px;
+  border: 0; border-radius: 12px 12px 0 0; background: none; color: #4d4d4d;
+  font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer;
+}
+.tabs button:hover { background: #d9d9d6; }
+.tabs button[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+.close:focus-visible, .tabs button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; }
+.address {
+  display: flex; flex: 1 1 160px; align-items: center; gap: 12px; min-width: 0; min-height: 44px;
+  padding: 0 16px; border-radius: var(--radius-pill); background: #eaeae8; font-size: 14px;
+}
+.address img { flex: none; border-radius: 4px; }
+.address span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.devices { display: inline-flex; gap: 4px; }
+.devices button, .action {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 1px solid rgb(15 15 15 / 18%); border-radius: var(--radius-pill); background: none;
+  color: var(--ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.devices button[aria-pressed="true"], .action.primary { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+
+.page { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; background: var(--ink); }
+.page:focus { outline: 0; }
+.page img { display: block; width: 100%; height: auto; }
+.pageDesktop { max-width: 1920px; margin-inline: auto; }
+.pageMobile { width: min(430px, 100%); margin-inline: auto; }
+
+/* A phone already gets the mobile capture; the switch would only take room,
+   and a desktop page is unreadable at that width. */
+@media (max-width: 809px) {
+  .devices { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .full { animation: none; }
+  .shortcuts button { transition: none; }
+}
